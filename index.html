@@ -3330,7 +3330,7 @@ window.copyLink=()=>{navigator.clipboard&&navigator.clipboard.writeText(location
 
 /* ================= COMPOSANTS ================= */
 const cardArt=(a,pool)=>`<a class="card" href="#/${pool}/${a.slug}" data-reveal>
- <div class="img"><img src="${IMG(a.seed,600,380)}" alt="" loading="lazy"></div>
+ <div class="img"><img src="${a.customImg || IMG(a.seed,600,380)}" alt="" loading="lazy"></div>
  <div class="body"><span class="tag ${a.cls}" style="align-self:flex-start">${a.cat}</span><h3>${a.title}</h3><p>${a.ex}</p>
  <div class="card-foot"><span class="meta">${a.date} · ${a.mins} min</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`;
 
@@ -3568,7 +3568,7 @@ function vHome(){return `
  <div class="section-head" data-reveal><div><span class="kicker">À la une</span><h2>Ce qui fait l'actualité</h2></div><a class="see-all" href="#/actualites">Toutes les actualités →</a></div>
  <div class="une-grid">
   <a class="une-feature" href="#/actualites/${ARTICLES[0].slug}" data-reveal>
-   <div class="img"><img src="${IMG(ARTICLES[0].seed,1200,750)}" alt="" loading="lazy"></div>
+   <div class="img"><img src="${ARTICLES[0].customImg || IMG(ARTICLES[0].seed,1200,750)}" alt="" loading="lazy"></div>
    <div class="body"><span class="tag ${ARTICLES[0].cls}">${ARTICLES[0].cat} · Décryptage</span><h3>${ARTICLES[0].title}</h3><p>${ARTICLES[0].ex} Récit d'une révolution silencieuse, au cœur du plus grand marché de la capitale.</p><div class="meta" style="margin-top:.9rem">Par la Rédaction · ${ARTICLES[0].mins} min de lecture · ${ARTICLES[0].date}</div></div></a>
   <div class="une-list">
    ${ARTICLES.slice(1,5).map((a,i)=>`<a class="une-item" href="#/actualites/${a.slug}" data-reveal data-delay="${i*70}">
@@ -3582,7 +3582,7 @@ function vHome(){return `
  ${ARTICLES.slice(5,9).map((a,i)=>`<a class="actu-row" href="#/actualites/${a.slug}" data-reveal data-delay="${i*60}">
   <div><span class="tag ${a.cls}">${a.cat}</span><div class="meta" style="margin-top:.5rem">${a.date}</div></div>
   <div><h3>${a.title}</h3><p>${a.ex}</p></div>
-  <div class="actu-thumb"><img src="${IMG(a.seed,300,220)}" alt="" loading="lazy"></div>
+  <div class="actu-thumb"><img src="${a.customImg || IMG(a.seed,300,220)}" alt="" loading="lazy"></div>
   <span class="meta">${a.mins} min</span></a>`).join("")}
  </div>
 </div></section>
@@ -5543,62 +5543,74 @@ if(typeof addEventListener === "function"){
 }
 
 
+
 /* ================= WORDPRESS LIVE SYNC BRIDGE ================= */
 const WP_API_BASE = "https://admin.femcurrent.com/wp-json/wp/v2";
 
+function decodeEntities(str) {
+  if (!str) return "";
+  const el = document.createElement("div");
+  el.innerHTML = str;
+  return el.textContent || el.innerText || str;
+}
+
 async function syncWithWordPress() {
   try {
-    // 1. Fetch live Articles
     const resPosts = await fetch(`${WP_API_BASE}/posts?_embed&per_page=20`, { cache: 'no-cache' });
     if (resPosts.ok) {
       const posts = await resPosts.json();
       if (posts && posts.length > 0) {
-        const liveArticles = posts.map(p => {
-          let featImg = p.featured_image_url || "";
-          if (!featImg && p._embedded && p._embedded['wp:featuredmedia'] && p._embedded['wp:featuredmedia'][0]) {
-            featImg = p._embedded['wp:featuredmedia'][0].source_url || "";
-          }
-          const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
-            ? p._embedded['wp:term'][0][0].name : "Actualités";
+        // Exclude default sample post "Hello world!"
+        const filteredPosts = posts.filter(p => p.slug !== 'hello-world');
+        
+        if (filteredPosts.length > 0) {
+          const liveArticles = filteredPosts.map(p => {
+            let featImg = p.featured_image_url || "";
+            if (!featImg && p._embedded && p._embedded['wp:featuredmedia'] && p._embedded['wp:featuredmedia'][0]) {
+              featImg = p._embedded['wp:featuredmedia'][0].source_url || "";
+            }
+            const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
+              ? decodeEntities(p._embedded['wp:term'][0][0].name) : "Actualités";
 
-          return {
-            slug: p.slug,
-            cat: catName,
-            cls: "magenta",
-            prov: p.meta && p.meta.province ? p.meta.province : "National",
-            date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
-            mins: Math.max(3, Math.round((p.content.rendered.replace(/<[^>]+>/g, '').length) / 500)),
-            seed: p.slug,
-            customImg: featImg,
-            title: p.title.rendered,
-            ex: p.excerpt.rendered.replace(/<[^>]+>/g, '').slice(0, 180) + "…",
-            body: [p.content.rendered]
-          };
-        });
+            const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+            const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
 
-        // Merge live articles at the beginning
-        liveArticles.forEach(la => {
-          const idx = ARTICLES.findIndex(a => a.slug === la.slug);
-          if (idx >= 0) ARTICLES[idx] = la;
-          else ARTICLES.unshift(la);
-        });
+            return {
+              slug: p.slug,
+              cat: catName,
+              cls: "magenta",
+              prov: (p.meta && p.meta.province) ? p.meta.province : "National",
+              date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+              mins: Math.max(3, Math.round(plainText.length / 450)),
+              seed: p.slug,
+              customImg: featImg,
+              title: decodeEntities(p.title.rendered),
+              ex: plainText.length > 0 ? (plainText.slice(0, 175) + "…") : "Lire l'intégralité de cet article sur FemCurrent.",
+              body: [rawContent || plainText]
+            };
+          });
 
-        // Re-render if on home or actualites
-        const currentHash = location.hash.replace(/^#\/?/, "");
-        if (!currentHash || currentHash === "actualites") {
+          // Prepend live articles to global ARTICLES list
+          liveArticles.reverse().forEach(la => {
+            const idx = ARTICLES.findIndex(a => a.slug === la.slug);
+            if (idx >= 0) ARTICLES[idx] = la;
+            else ARTICLES.unshift(la);
+          });
+
+          // Instant re-render of current view
           router();
         }
       }
     }
   } catch (err) {
-    console.log("WordPress API offline or unreachable, using standard fast local dataset.", err);
+    console.log("WordPress API offline, using local cache.", err);
   }
 }
 
-// Launch silent background sync
 if (typeof window !== "undefined") {
-  setTimeout(syncWithWordPress, 800);
+  syncWithWordPress();
 }
+
 
 /* ================= DÉMARRAGE ================= */
 if(!location.hash)history.replaceState(null,"","#/");
