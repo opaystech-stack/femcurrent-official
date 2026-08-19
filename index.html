@@ -3401,7 +3401,7 @@ const compSidebar=(pool,currentCat,currentSlug)=>{
         <div class="side-recent-list">
           ${recents.map(r=>`
             <a class="side-recent-item" href="/actualites/${r.slug}">
-              <div class="side-recent-thumb"><img src="${IMG(r.seed,200,150)}" alt="" loading="lazy"></div>
+              <div class="side-recent-thumb"><img src="${r.customImg || IMG(r.seed,200,150)}" alt="" loading="lazy"></div>
               <div class="side-recent-info">
                 <h5>${r.title}</h5>
                 <span>${r.date} · ${r.mins} min</span>
@@ -3543,8 +3543,8 @@ function vHome(){
 
         <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.2rem; margin-top: 1.2rem; border-top: 1px solid #E8DFEE; font-size: 0.82rem; color: #6E5E7A;">
           <div>
-            <strong style="color: #1F162B; display: block;">Par la Rédaction</strong>
-            <span style="font-size: 0.72rem;">FemCurrent Média</span>
+            <strong style="color: #1F162B; display: block;">Par ${lead.author || 'La Rédaction'}</strong>
+            <span style="font-size: 0.72rem;">${lead.authorRole || 'FemCurrent Média'}</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: #E91E63;">
             <span>${lead.mins || 5} min de lecture</span>
@@ -3638,7 +3638,7 @@ function vHome(){
  <div class="une-grid">
   <a class="une-feature" href="/actualites/${(ARTICLES[1] || ARTICLES[0]).slug}" data-reveal>
    <div class="img"><img src="${(ARTICLES[1] && ARTICLES[1].customImg) || (ARTICLES[0] && ARTICLES[0].customImg) || 'public/images/hero-cinematic-leaders.jpg'}" alt="" loading="lazy"></div>
-   <div class="body"><span class="tag ${(ARTICLES[1] || ARTICLES[0]).cls}">${(ARTICLES[1] || ARTICLES[0]).cat} · Décryptage</span><h3>${(ARTICLES[1] || ARTICLES[0]).title}</h3><p>${(ARTICLES[1] || ARTICLES[0]).ex}</p><div class="meta" style="margin-top:.9rem">Par la Rédaction · ${(ARTICLES[1] || ARTICLES[0]).mins} min de lecture · ${(ARTICLES[1] || ARTICLES[0]).date}</div></div></a>
+   <div class="body"><span class="tag ${(ARTICLES[1] || ARTICLES[0]).cls}">${(ARTICLES[1] || ARTICLES[0]).cat} · Décryptage</span><h3>${(ARTICLES[1] || ARTICLES[0]).title}</h3><p>${(ARTICLES[1] || ARTICLES[0]).ex}</p><div class="meta" style="margin-top:.9rem">Par ${(ARTICLES[1] || ARTICLES[0]).author || 'la Rédaction'} · ${(ARTICLES[1] || ARTICLES[0]).mins} min de lecture · ${(ARTICLES[1] || ARTICLES[0]).date}</div></div></a>
   <div class="une-list">
    ${(ARTICLES.length > 2 ? ARTICLES.slice(2, 6) : ARTICLES.slice(1, 5)).map((a,i)=>`<a class="une-item" href="/actualites/${a.slug}" data-reveal data-delay="${i*70}">
     <span class="num">0${i+1}</span><div><span class="tag ${a.cls}">${a.cat}</span><h4>${a.title}</h4><span class="meta">${a.date} · ${a.prov}</span></div></a>`).join("")}
@@ -3826,7 +3826,7 @@ function vActualites(){
         <!-- Grande Une Lead Story -->
         <a class="lead-hero-card" href="/actualites/${leadArt.slug}" data-reveal>
           <div class="lead-hero-img">
-            <img src="${IMG(leadArt.seed, 1000, 600)}" alt="${leadArt.title}" loading="lazy">
+            <img src="${leadArt.customImg || IMG(leadArt.seed, 1000, 600)}" alt="${leadArt.title}" loading="lazy">
             <span style="position:absolute;top:1rem;left:1rem;background:#E91E63;color:#fff;font-family:var(--mono);font-size:0.68rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:0.35rem 0.8rem;border-radius:6px;box-shadow:0 4px 10px rgba(233,30,99,0.35);">
               À LA UNE · ${leadArt.cat}
             </span>
@@ -3909,7 +3909,7 @@ function vActualites(){
                   <h3>${a.title}</h3>
                   <p>${a.ex}</p>
                 </div>
-                <div class="actu-thumb"><img src="${IMG(a.seed, 300, 220)}" alt="" loading="lazy"></div>
+                <div class="actu-thumb"><img src="${a.customImg || IMG(a.seed, 300, 220)}" alt="" loading="lazy"></div>
                 <span class="meta" style="font-weight:700;color:var(--magenta);">${a.mins} min</span>
               </a>
             `).join("")}
@@ -3953,13 +3953,14 @@ function vArticle(pool, slug) {
   const authorRole = a.authorRole || "Journaliste d'investigation économique";
   const authorBio = a.authorBio || "Grand reporter pour FemCurrent, spécialiste des dynamiques de transformation économique et des droits des femmes en RDC.";
   const authorSeed = a.authorSeed || "solange-mwamba-author";
+  const authorAvatar = a.authorAvatar || IMG(authorSeed, 120, 120);
   const subtitle = a.subtitle || a.ex;
   const keyPoints = a.keyPoints || [
-    "Une enquête approfondie et documentée au plus près des actrices de terrain.",
-    "Un protocole de vérification des faits validé par deux membres de la rédaction.",
-    "Des solutions concrètes et des perspectives d'impact pour les communautés."
+    "Une analyse approfondie et documentée au plus près des actrices de terrain.",
+    "Un protocole de vérification des faits validé par la rédaction FemCurrent.",
+    "Des perspectives concrètes et des leviers d'impact pour les communautés en RDC."
   ];
-  const tags = a.tags || [a.cat, a.prov || "RDC", "FemCurrent", "Leadership"];
+  const tags = a.tags || (a.categories && a.categories.length > 0 ? a.categories : [a.cat, a.prov || "RDC", "FemCurrent", "Leadership"]);
 
   const related = [...ARTICLES, ...ENQUETES].filter(x => x.slug !== slug).slice(0, 3);
 
@@ -3967,7 +3968,7 @@ function vArticle(pool, slug) {
   <!-- Article Header & Breadcrumbs -->
   <section class="page-hero" style="padding-bottom: 2rem;">
     <div class="container">
-      ${crumb([[pool === "enquetes" ? "Enquêtes & Analyses" : "Actualités", "#/" + pool], [a.cat]])}
+      ${crumb([[pool === "enquetes" ? "Enquêtes & Analyses" : "Actualités", "/" + pool], [a.cat]])}
       <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;flex-wrap:wrap;">
         <span class="tag ${a.cls}">${a.cat}</span>
         ${a.src ? `<span class="tag orange" style="font-size:0.64rem;">${a.src}</span>` : ''}
@@ -3989,7 +3990,7 @@ function vArticle(pool, slug) {
           <!-- Author Byline & Meta Bar -->
           <div class="article-meta-bar">
             <div class="author-byline">
-              <img src="${IMG(authorSeed, 120, 120)}" alt="${authorName}">
+              <img src="${authorAvatar}" alt="${authorName}">
               <div class="author-byline-info">
                 <strong>Par ${authorName}</strong>
                 <span>${authorRole}</span>
@@ -4003,9 +4004,9 @@ function vArticle(pool, slug) {
 
           <!-- Featured Hero Image with Photojournalist Caption -->
           <div class="article-featured-img" data-reveal>
-            <img src="${IMG(a.seed, 1200, 700)}" alt="${a.title}">
+            <img src="${a.customImg || IMG(a.seed, 1200, 700)}" alt="${a.title}">
             <div class="article-img-caption">
-              <span>Reportage exclusif sur le terrain · FemCurrent Media</span>
+              <span>Reportage exclusif · FemCurrent Media</span>
               <span>Crédit photo : Rédaction FemCurrent</span>
             </div>
           </div>
@@ -4020,17 +4021,22 @@ function vArticle(pool, slug) {
 
           <!-- Article Content Body -->
           <div class="article-content-body">
-            ${a.body.map((p, i) => `
-              <p>${p}</p>
-              ${i === 0 ? `
-                <div class="pull" data-reveal>
-                  « La parole des femmes n'est pas un supplément d'âme du débat public. Elle en constitue le moteur et l'avenir. »
-                </div>
-              ` : ''}
-              ${i === 1 ? `
-                <h2 data-reveal>Des dynamiques de terrain concrètes et mesurables</h2>
-              ` : ''}
-            `).join('')}
+            ${a.body.map((p, i) => {
+              if (typeof p === 'string' && (p.includes('<p') || p.includes('<h2') || p.includes('<div') || p.includes('<ul') || p.includes('<ol') || p.includes('<blockquote'))) {
+                return `<div class="wp-rendered-content">${p}</div>`;
+              }
+              return `
+                <p>${p}</p>
+                ${i === 0 ? `
+                  <div class="pull" data-reveal>
+                    « La parole des femmes n'est pas un supplément d'âme du débat public. Elle en constitue le moteur et l'avenir. »
+                  </div>
+                ` : ''}
+                ${i === 1 ? `
+                  <h2 data-reveal>Des dynamiques de terrain concrètes et mesurables</h2>
+                ` : ''}
+              `;
+            }).join('')}
           </div>
 
           <!-- Article Tags -->
@@ -4044,7 +4050,7 @@ function vArticle(pool, slug) {
 
           <!-- Author Bio Box -->
           <div class="author-box" data-reveal>
-            <img src="${IMG(authorSeed, 150, 150)}" alt="${authorName}">
+            <img src="${authorAvatar}" alt="${authorName}">
             <div>
               <b>${authorName}</b>
               <p style="font-size:0.86rem;color:var(--gris);margin:0.25rem 0 0.5rem;">${authorBio}</p>
@@ -5518,6 +5524,33 @@ function extractCategoryInfo(p) {
   return { catName, cls, allCats };
 }
 
+function extractAuthorInfo(p) {
+  let name = "La Rédaction";
+  let role = "FemCurrent Média · RDC";
+  let bio = "Équipe éditoriale de FemCurrent, dédiée aux voix, aux analyses et au leadership des femmes en RDC et en Afrique.";
+  let avatar = "";
+
+  if (p._embedded && p._embedded.author && p._embedded.author[0]) {
+    const a = p._embedded.author[0];
+    if (a.name) {
+      const rawName = decodeEntities(a.name).trim();
+      if (rawName.toLowerCase() === "patricia_zamwana" || rawName.toLowerCase() === "patricia zamwana") {
+        name = "Patricia Zamwana";
+        role = "Rédactrice & Analyste · FemCurrent";
+        bio = "Journaliste et analyste pour FemCurrent, engagée pour l'éducation, le leadership féminin et l'innovation technologique en RDC.";
+      } else {
+        name = rawName;
+      }
+    }
+    if (a.description) bio = decodeEntities(a.description);
+    if (a.avatar_urls && (a.avatar_urls['96'] || a.avatar_urls['48'])) {
+      avatar = a.avatar_urls['96'] || a.avatar_urls['48'];
+    }
+  }
+
+  return { name, role, bio, avatar };
+}
+
 async function fetchAndRenderArticle(pool, slug) {
   if (PENDING_FETCHES.has(slug)) return;
   PENDING_FETCHES.add(slug);
@@ -5536,6 +5569,7 @@ async function fetchAndRenderArticle(pool, slug) {
       const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
       const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
       const { catName, cls, allCats } = extractCategoryInfo(p);
+      const authorInfo = extractAuthorInfo(p);
 
       const formatted = {
         slug: p.slug,
@@ -5549,7 +5583,11 @@ async function fetchAndRenderArticle(pool, slug) {
         customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
         title: decodeEntities(p.title.rendered),
         ex: plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Lire l'article complet sur FemCurrent.",
-        body: [rawContent || plainText]
+        body: [rawContent || plainText],
+        author: authorInfo.name,
+        authorRole: authorInfo.role,
+        authorBio: authorInfo.bio,
+        authorAvatar: authorInfo.avatar
       };
 
       const idx = ARTICLES.findIndex(x => x.slug === p.slug);
@@ -5678,6 +5716,7 @@ async function syncWordPressData() {
             const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
             const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
             const { catName, cls, allCats } = extractCategoryInfo(p);
+            const authorInfo = extractAuthorInfo(p);
 
             return {
               slug: p.slug,
@@ -5691,7 +5730,11 @@ async function syncWordPressData() {
               customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
               title: decodeEntities(p.title.rendered),
               ex: plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Lire l'article complet sur FemCurrent.",
-              body: [rawContent || plainText]
+              body: [rawContent || plainText],
+              author: authorInfo.name,
+              authorRole: authorInfo.role,
+              authorBio: authorInfo.bio,
+              authorAvatar: authorInfo.avatar
             };
           });
 
