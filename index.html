@@ -507,21 +507,10 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 
 /* ================= PAGE HERO & SECTIONS ================= */
 .page-hero {
-  background: radial-gradient(55% 60% at 88% 0%, rgba(233, 30, 99, 0.13), transparent 60%),
-              radial-gradient(40% 55% at 4% 100%, rgba(255, 140, 0, 0.13), transparent 60%),
-              linear-gradient(180deg, var(--lavande), #ffffff);
-  padding: clamp(3rem, 6vw, 4.5rem) 0 clamp(2.5rem, 5vw, 3.5rem);
+  background: #FAF7FC;
+  border-bottom: 1px solid #E8DFEE;
+  padding: clamp(2.8rem, 5.5vw, 4rem) 0 clamp(2.2rem, 4.5vw, 3rem);
   position: relative;
-}
-
-.page-hero::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 4px;
-  background: var(--degrade);
 }
 
 /* Ticker */
@@ -920,33 +909,61 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 @media (min-width: 820px) { .event { grid-template-columns: auto 1fr auto; } .event-cta { grid-column: auto; } }
 
 /* Banner CTA & Forms */
-.banner-cta { background: radial-gradient(60% 80% at 15% 20%, rgba(255, 140, 0, 0.15), transparent 55%), radial-gradient(50% 70% at 90% 85%, rgba(233, 30, 99, 0.16), transparent 60%), var(--lavande); border-radius: var(--r-lg); padding: clamp(2.4rem, 5.5vw, 4rem); text-align: center; border: 1px solid rgba(75, 29, 109, 0.08); }
+.banner-cta { background: #FAF7FC; border-radius: var(--r-lg); padding: clamp(2.4rem, 5.5vw, 4rem); text-align: center; border: 1px solid #E8DFEE; }
 .banner-cta .btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.8rem; }
-.lum-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1.6rem; }
-@media (min-width: 600px) { .lum-tabs { grid-template-columns: repeat(4, 1fr); } }
-.lum-tab { padding: 0.85rem 0.6rem; border-radius: var(--r); border: 1.5px solid rgba(75, 29, 109, 0.15); font-size: 0.82rem; font-weight: 700; color: var(--gris); transition: all 0.3s; line-height: 1.3; text-align: center; background: #ffffff; }
-.lum-tab small { display: block; font-weight: 400; font-size: 0.66rem; color: var(--gris); margin-top: 2px; }
-.lum-tab:hover { border-color: var(--magenta); }
-.lum-tab[aria-selected="true"] { background: var(--violet); border-color: var(--violet); color: #ffffff; }
+.banner-cta.dark { background: var(--violet-night); border-color: rgba(233, 30, 99, 0.3); color: #ffffff; }
+.banner-cta.dark h2 { color: #ffffff; }
+.banner-cta.dark .lead { color: #C9B6DC; }
+
+/* Full-Width Form Containers & Tabs */
+.full-form-wrapper { max-width: 980px; margin: 0 auto; width: 100%; }
+.lum-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 2rem; }
+@media (min-width: 768px) { .lum-tabs { grid-template-columns: repeat(4, 1fr); } }
+.lum-tab { padding: 1.1rem 0.9rem; border-radius: 14px; border: 1.5px solid #E8DFEE; font-size: 0.88rem; font-weight: 700; color: var(--gris); transition: all 0.25s ease; line-height: 1.35; text-align: center; background: #FAF7FC; cursor: pointer; }
+.lum-tab small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--gris); margin-top: 4px; }
+.lum-tab:hover { border-color: var(--magenta); color: var(--magenta); background: #ffffff; }
+.lum-tab[aria-selected="true"] { background: var(--violet-deep); border-color: var(--violet-deep); color: #ffffff; box-shadow: 0 6px 18px rgba(30, 10, 48, 0.2); }
 .lum-tab[aria-selected="true"] small { color: #E4D2F2; }
-.lum-panel { display: none; flex-direction: column; gap: 1rem; animation: fadeUp 0.45s var(--ease); }
+.lum-panel { display: none; flex-direction: column; gap: 1.25rem; animation: fadeUp 0.4s var(--ease); }
 .lum-panel.on { display: flex; }
-.form-card { background: #ffffff; border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 2rem 1.8rem; position: relative; overflow: hidden; border: 1px solid rgba(75, 29, 109, 0.08); }
-.form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: var(--degrade); }
-.field label { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--violet); display: block; margin-bottom: 0.4rem; }
-.field input, .field select, .field textarea { width: 100%; padding: 0.85rem 1.1rem; border: 1.5px solid rgba(75, 29, 109, 0.2); border-radius: var(--r); font-family: var(--body); font-size: 0.95rem; background: #FDFCFF; transition: all 0.25s; color: var(--encre); }
-.field textarea { resize: vertical; min-height: 110px; }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--magenta); box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.12); }
-.form-grid { display: grid; gap: 1.1rem; }
+.form-card { background: #ffffff; border-radius: var(--r-lg); box-shadow: 0 4px 24px rgba(75, 29, 109, 0.05); padding: clamp(1.8rem, 3.5vw, 2.8rem); position: relative; overflow: hidden; border: 1px solid #E8DFEE; width: 100%; }
+.form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--magenta); }
+.field label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet-deep); display: block; margin-bottom: 0.45rem; font-weight: 700; }
+.field input, .field select, .field textarea { width: 100%; padding: 0.95rem 1.2rem; border: 1.5px solid #D8CEE0; border-radius: 12px; font-family: var(--body); font-size: 0.96rem; background: #FFFFFF; transition: all 0.25s; color: var(--encre); }
+.field textarea { resize: vertical; min-height: 120px; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--magenta); box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.12); background: #FFFFFF; }
+.form-grid { display: grid; gap: 1.3rem; }
 @media (min-width: 640px) { .form-grid.g2 { grid-template-columns: 1fr 1fr; } .form-grid .full { grid-column: 1 / -1; } }
-.consent { display: flex; gap: 0.75rem; font-size: 0.82rem; color: var(--gris); align-items: flex-start; margin: 0.5rem 0; }
-.consent input { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--magenta); flex-shrink: 0; }
-.success-box { display: none; text-align: center; padding: 2.2rem 0; }
+@media (min-width: 900px) { .form-grid.g3 { grid-template-columns: repeat(3, 1fr); } }
+.consent { display: flex; gap: 0.85rem; font-size: 0.85rem; color: #4A3E56; align-items: flex-start; margin: 0.8rem 0; line-height: 1.5; }
+.consent input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--magenta); flex-shrink: 0; }
+.success-box { display: none; text-align: center; padding: 2.5rem 0; }
 .success-box.on { display: block; animation: fadeUp 0.5s var(--ease); }
 .success-box svg { width: 78px; height: 78px; margin: 0 auto 1.3rem; }
 
+/* ================= STANDARD EDITORIAL LIST CARDS ================= */
+.editorial-step-grid { display: grid; grid-template-columns: 1fr; gap: 1.3rem; margin: 2rem 0; }
+@media (min-width: 600px) { .editorial-step-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px) {
+  .editorial-step-grid.c3 { grid-template-columns: repeat(3, 1fr); }
+  .editorial-step-grid.c4 { grid-template-columns: repeat(4, 1fr); }
+  .editorial-step-grid.c5 { grid-template-columns: repeat(5, 1fr); }
+}
+.editorial-step-card { background: #FFFFFF; border: 1px solid #E8DFEE; border-radius: 16px; padding: 1.8rem 1.5rem; display: flex; flex-direction: column; transition: all 0.3s ease; box-shadow: 0 4px 18px rgba(75, 29, 109, 0.04); }
+.editorial-step-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(75, 29, 109, 0.09); border-color: var(--magenta); }
+.step-num-badge { font-family: var(--display); font-size: 2.2rem; font-style: italic; font-weight: 800; color: var(--magenta); line-height: 1; margin-bottom: 0.8rem; display: block; }
+.step-card-title { font-family: var(--display); font-size: 1.22rem; font-weight: 700; color: var(--violet-deep); margin-bottom: 0.45rem; line-height: 1.3; }
+.step-card-text { font-size: 0.92rem; line-height: 1.58; color: #5A4E66; margin: 0; }
+
+.editorial-num-list { display: flex; flex-direction: column; gap: 1.25rem; margin: 2rem 0; }
+.editorial-num-item { display: grid; grid-template-columns: auto 1fr; gap: 1.6rem; align-items: center; background: #FFFFFF; border: 1px solid #E8DFEE; border-radius: 16px; padding: 1.6rem 2rem; box-shadow: 0 4px 18px rgba(75, 29, 109, 0.03); transition: all 0.25s ease; }
+.editorial-num-item:hover { border-color: var(--magenta); box-shadow: 0 8px 24px rgba(75, 29, 109, 0.07); transform: translateX(4px); }
+.num-badge-box { width: 62px; height: 62px; border-radius: 14px; background: #FAF7FC; border: 1.5px solid #E8DFEE; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-style: italic; font-weight: 800; font-size: 1.8rem; color: var(--magenta); flex-shrink: 0; }
+.num-item-content h3, .num-item-content h4 { font-family: var(--display); font-size: 1.24rem; color: var(--violet-deep); margin: 0 0 0.35rem; }
+.num-item-content p { font-size: 0.93rem; line-height: 1.58; color: #5A4E66; margin: 0; }
+
 /* Community & Partners */
-.commu { background: var(--degrade); background-size: 200% 200%; color: #ffffff; position: relative; overflow: hidden; animation: gradShift 14s ease infinite; }
+.commu { background: var(--violet-night); color: #ffffff; position: relative; overflow: hidden; border-top: 1px solid rgba(255, 255, 255, 0.1); }
 @keyframes gradShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 .commu .container { position: relative; display: grid; gap: 2.8rem; }
 @media (min-width: 980px) { .commu .container { grid-template-columns: 1.2fr 0.8fr; align-items: center; } }
@@ -967,18 +984,20 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 
 /* Social Grid & Partners */
 .social-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
-@media (min-width: 640px) { .social-grid { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1100px) { .social-grid { grid-template-columns: repeat(4, 1fr); } }
-.social-card { background: #ffffff; border: 1px solid rgba(75, 29, 109, 0.1); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; transition: all 0.4s var(--ease); box-shadow: var(--shadow-sm); }
-.social-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); }
-.sc-head { display: flex; align-items: center; gap: 0.65rem; padding: 0.9rem 1.15rem; border-bottom: 1px solid rgba(75, 29, 109, 0.08); }
-.sc-head svg { width: 18px; height: 18px; }
-.sc-head b { font-size: 0.84rem; }
-.sc-head a { margin-left: auto; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--magenta); font-weight: 700; }
-.sc-body { padding: 1.1rem 1.15rem; font-size: 0.88rem; flex: 1; display: flex; flex-direction: column; gap: 0.85rem; }
-.sc-body .img { border-radius: var(--r-sm); overflow: hidden; aspect-ratio: 4 / 3; position: relative; background: var(--lavande); }
-.sc-body img { width: 100%; height: 100%; object-fit: cover; }
-.sc-foot { padding: 0.8rem 1.15rem; border-top: 1px dashed rgba(75, 29, 109, 0.15); font-family: var(--mono); font-size: 0.68rem; color: var(--gris); display: flex; gap: 1.3rem; }
+@media (min-width: 600px) { .social-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .social-grid { grid-template-columns: repeat(4, 1fr); } }
+.social-card { background: #ffffff; border: 1px solid #E8DFEE; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: all 0.35s ease; box-shadow: 0 4px 18px rgba(75, 29, 109, 0.04); }
+.social-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(75, 29, 109, 0.09); border-color: var(--magenta); }
+.sc-head { display: flex; align-items: center; gap: 0.75rem; padding: 0.95rem 1.25rem; border-bottom: 1px solid #E8DFEE; background: #FAF7FC; }
+.sc-head svg { width: 20px; height: 20px; flex-shrink: 0; }
+.sc-head b { font-size: 0.88rem; font-weight: 700; color: var(--violet-deep); }
+.sc-head a { margin-left: auto; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--magenta); font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E8DFEE; transition: all 0.2s; text-decoration: none; }
+.sc-head a:hover { background: var(--magenta); color: #FFFFFF; border-color: var(--magenta); }
+.sc-body { padding: 1.25rem; font-size: 0.9rem; flex: 1; display: flex; flex-direction: column; gap: 0.9rem; }
+.sc-body .img { border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 10; position: relative; background: #FAF7FC; width: 100%; }
+.sc-body img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sc-body p { font-size: 0.88rem; line-height: 1.55; color: #33263F; margin: 0; flex: 1; }
+.sc-foot { padding: 0.85rem 1.25rem; border-top: 1px dashed #E8DFEE; font-family: var(--mono); font-size: 0.72rem; color: var(--gris); display: flex; justify-content: space-between; align-items: center; background: #FAF7FC; margin-top: auto; }
 .partners { padding: 3.2rem 0; border-top: 1px solid rgba(75, 29, 109, 0.08); border-bottom: 1px solid rgba(75, 29, 109, 0.08); overflow: hidden; background: #ffffff; }
 .partners p { text-align: center; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gris); margin-bottom: 1.6rem; }
 .partners-track { display: flex; gap: 4.5rem; width: max-content; animation: marquee 34s linear infinite; }
@@ -1056,6 +1075,758 @@ footer { background: var(--violet-night); color: #C9B6DC; }
 .foot-social svg { fill: #ffffff; }
 .foot-bottom { padding: 1.5rem 0; display: flex; flex-wrap: wrap; gap: 0.9rem 2.2rem; justify-content: space-between; font-family: var(--mono); font-size: 0.68rem; color: #8E74A8; }
 .foot-bottom a:hover { color: #ffffff; }
+
+/* ================= 2-COLUMN EDITORIAL ARTICLE & SIDEBAR ================= */
+.article-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (min-width: 980px) {
+  .article-layout-grid {
+    grid-template-columns: 1fr 340px;
+    gap: 3rem;
+  }
+}
+@media (min-width: 1200px) {
+  .article-layout-grid {
+    grid-template-columns: 1fr 380px;
+    gap: 3.8rem;
+  }
+}
+
+.article-main-col {
+  min-width: 0;
+}
+
+.article-header {
+  margin-bottom: 2rem;
+}
+
+.article-headline {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: 1.14;
+  font-weight: 800;
+  color: var(--violet-deep);
+  margin: 0.8rem 0 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.article-chapeau {
+  font-size: 1.18rem;
+  line-height: 1.68;
+  color: #4A3E56;
+  font-weight: 500;
+  border-left: 3px solid var(--magenta);
+  padding-left: 1.3rem;
+  margin-bottom: 1.8rem;
+  background: linear-gradient(90deg, rgba(243, 238, 247, 0.5), transparent);
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+
+.article-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 1.1rem 0;
+  border-block: 1px solid #E8DFEE;
+  margin: 1.6rem 0 2.2rem;
+}
+
+.author-byline {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.author-byline img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--magenta);
+  box-shadow: 0 4px 10px rgba(233, 30, 99, 0.2);
+}
+
+.author-byline-info strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--violet-deep);
+  font-weight: 700;
+}
+
+.author-byline-info span {
+  font-size: 0.76rem;
+  color: var(--gris);
+  display: block;
+}
+
+.article-read-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--gris);
+}
+
+.article-read-meta .read-time {
+  background: var(--magenta-light);
+  color: var(--magenta-dark);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--r-full);
+  font-weight: 700;
+}
+
+.article-featured-img {
+  margin: 0 0 2.2rem;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  position: relative;
+  background: var(--violet-night);
+}
+
+.article-featured-img img {
+  width: 100%;
+  aspect-ratio: 16 / 9.5;
+  object-fit: cover;
+}
+
+.article-img-caption {
+  font-size: 0.78rem;
+  color: var(--gris);
+  padding: 0.75rem 1rem;
+  background: #FAF7FC;
+  border-bottom: 1px solid #E8DFEE;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.article-content-body {
+  font-size: 1.12rem;
+  line-height: 1.88;
+  color: #2F243A;
+}
+
+.article-content-body p {
+  margin-bottom: 1.6rem;
+}
+
+.article-content-body p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--display);
+  font-size: 3.8rem;
+  line-height: 0.82;
+  font-weight: 800;
+  color: var(--magenta);
+  padding-right: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.article-content-body h2 {
+  font-family: var(--display);
+  font-size: 1.65rem;
+  color: var(--violet-deep);
+  margin: 2.5rem 0 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--lavande);
+}
+
+.article-content-body h3 {
+  font-family: var(--display);
+  font-size: 1.32rem;
+  color: var(--violet);
+  margin: 2rem 0 0.9rem;
+}
+
+.key-facts-card {
+  background: #FAF7FC;
+  border: 1px solid #E8DFEE;
+  border-left: 4px solid var(--violet);
+  border-radius: var(--r);
+  padding: 1.5rem 1.8rem;
+  margin: 2.4rem 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.key-facts-card h4 {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.key-facts-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.key-facts-card li {
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: #3F334C;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.key-facts-card li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--magenta);
+  font-size: 0.85em;
+}
+
+.article-tags-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 2.5rem 0 1.8rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed #E8DFEE;
+}
+
+.article-tags-bar .tag-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gris);
+  margin-right: 0.4rem;
+  text-transform: uppercase;
+}
+
+.article-tags-bar a {
+  background: var(--lavande);
+  color: var(--violet-deep);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--r-full);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.article-tags-bar a:hover {
+  background: var(--magenta);
+  color: #ffffff;
+}
+
+/* ================= EDITORIAL SIDEBAR WIDGETS ================= */
+.article-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sticky-sidebar-inner {
+  position: sticky;
+  top: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.side-widget {
+  background: #ffffff;
+  border: 1px solid #E8DFEE;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 18px rgba(75, 29, 109, 0.04);
+  transition: all 0.3s ease;
+}
+
+.side-widget:hover {
+  border-color: rgba(233, 30, 99, 0.3);
+  box-shadow: 0 8px 25px rgba(75, 29, 109, 0.08);
+}
+
+.side-widget-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--lavande);
+}
+
+.side-widget-title {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--violet-deep);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.side-widget-title::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--magenta);
+  display: inline-block;
+}
+
+/* Publicité / Partenaire Média */
+.side-ad-card {
+  background: linear-gradient(145deg, #2E1143 0%, #1A072A 100%);
+  border: 1px solid rgba(233, 30, 99, 0.3);
+  border-radius: 18px;
+  padding: 1.6rem 1.4rem;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(46, 17, 67, 0.25);
+}
+
+.side-ad-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233, 30, 99, 0.4), transparent 70%);
+}
+
+.side-ad-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: rgba(255, 140, 0, 0.2);
+  color: var(--orange);
+  border: 1px solid rgba(255, 140, 0, 0.4);
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  margin-bottom: 0.9rem;
+}
+
+.side-ad-card h4 {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  color: #ffffff;
+  line-height: 1.3;
+  margin-bottom: 0.6rem;
+}
+
+.side-ad-card p {
+  font-size: 0.82rem;
+  color: #D9CBE8;
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+}
+
+.side-ad-card .ad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  background: linear-gradient(135deg, #E91E63, #FF8C00);
+  color: #ffffff;
+  padding: 0.7rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+}
+
+.side-ad-card .ad-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 140, 0, 0.5);
+}
+
+/* Popular Stories List (01, 02, 03, 04) */
+.side-popular-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.side-popular-item {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 0.85rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid #F3EEF7;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.side-popular-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.side-popular-item:first-child {
+  padding-top: 0;
+}
+
+.side-popular-num {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1;
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--magenta);
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.side-popular-item:hover .side-popular-num {
+  color: var(--magenta);
+  -webkit-text-stroke: 0;
+  transform: scale(1.1);
+}
+
+.side-popular-info h5 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--violet-deep);
+  line-height: 1.35;
+  margin-bottom: 0.35rem;
+  transition: color 0.2s ease;
+}
+
+.side-popular-item:hover .side-popular-info h5 {
+  color: var(--magenta);
+}
+
+.side-popular-info .side-meta {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--gris);
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Recent Stories Row in Sidebar */
+.side-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.side-recent-item {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 0.85rem;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  transition: all 0.2s ease;
+}
+
+.side-recent-thumb {
+  width: 72px;
+  height: 56px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--lavande);
+}
+
+.side-recent-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.side-recent-item:hover .side-recent-thumb img {
+  transform: scale(1.08);
+}
+
+.side-recent-info h5 {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--violet-deep);
+  line-height: 1.3;
+  margin-bottom: 0.3rem;
+  transition: color 0.2s ease;
+}
+
+.side-recent-item:hover .side-recent-info h5 {
+  color: var(--magenta);
+}
+
+.side-recent-info span {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--gris);
+}
+
+/* Mini Newsletter Box */
+.side-nl-card {
+  background: #FAF7FC;
+  border: 1px solid #E8DFEE;
+  border-top: 4px solid var(--magenta);
+  border-radius: 18px;
+  padding: 1.5rem 1.4rem;
+}
+
+.side-nl-card h4 {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  color: var(--violet-deep);
+  margin-bottom: 0.5rem;
+}
+
+.side-nl-card p {
+  font-size: 0.82rem;
+  color: var(--gris);
+  line-height: 1.45;
+  margin-bottom: 1rem;
+}
+
+.side-nl-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.side-nl-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #E8DFEE;
+  border-radius: var(--r-full);
+  font-size: 0.84rem;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.side-nl-form input:focus {
+  border-color: var(--magenta);
+}
+
+.side-nl-form button {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: var(--r-full);
+  background: var(--degrade);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: 0 4px 14px rgba(233, 30, 99, 0.3);
+}
+
+/* Data Spotlight Widget */
+.side-stat-card {
+  background: linear-gradient(135deg, var(--lavande-soft), #ffffff);
+  border: 1px solid #E8DFEE;
+  border-top: 4px solid var(--orange);
+  border-radius: 18px;
+  padding: 1.4rem;
+}
+
+.side-stat-card .stat-kicker {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orange-deep);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.side-stat-card .stat-num {
+  font-family: var(--display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--violet-deep);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.side-stat-card .stat-num span {
+  color: var(--magenta);
+}
+
+.side-stat-card p {
+  font-size: 0.82rem;
+  color: #5A4E66;
+  line-height: 1.45;
+  margin-bottom: 0.8rem;
+}
+
+.side-stat-card a {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--violet);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.2s;
+}
+
+.side-stat-card a:hover {
+  color: var(--magenta);
+}
+
+/* Magazine Page Top Hero Grid (Grande Une + 2 Piliers) */
+.magazine-top-hero {
+  display: grid;
+  gap: 1.8rem;
+  margin-bottom: 2.5rem;
+}
+@media (min-width: 980px) {
+  .magazine-top-hero {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.lead-hero-card {
+  background: #ffffff;
+  border: 1px solid #E8DFEE;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  box-shadow: 0 8px 30px rgba(75, 29, 109, 0.06);
+  transition: all 0.35s ease;
+}
+
+.lead-hero-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(75, 29, 109, 0.12);
+  border-color: rgba(233, 30, 99, 0.3);
+}
+
+.lead-hero-img {
+  position: relative;
+  aspect-ratio: 16 / 9.5;
+  overflow: hidden;
+  background: var(--violet-night);
+}
+
+.lead-hero-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.lead-hero-card:hover .lead-hero-img img {
+  transform: scale(1.05);
+}
+
+.lead-hero-body {
+  padding: 1.8rem 1.8rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.lead-hero-body h2 {
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 2.5vw, 1.95rem);
+  line-height: 1.22;
+  color: var(--violet-deep);
+  margin: 0.6rem 0 0.8rem;
+  transition: color 0.25s ease;
+}
+
+.lead-hero-card:hover .lead-hero-body h2 {
+  color: var(--magenta);
+}
+
+.lead-hero-body p {
+  font-size: 0.95rem;
+  color: #4A3E56;
+  line-height: 1.55;
+  margin-bottom: 1.2rem;
+}
+
+.magazine-side-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.magazine-mini-card {
+  background: #ffffff;
+  border: 1px solid #E8DFEE;
+  border-radius: 16px;
+  padding: 1.3rem 1.4rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(75, 29, 109, 0.04);
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.magazine-mini-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--magenta);
+  box-shadow: 0 8px 24px rgba(75, 29, 109, 0.08);
+}
+
+.magazine-mini-card h3 {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  line-height: 1.3;
+  color: var(--violet-deep);
+  margin: 0.4rem 0 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.magazine-mini-card:hover h3 {
+  color: var(--magenta);
+}
+
+.magazine-mini-card p {
+  font-size: 0.86rem;
+  color: #5A4E66;
+  line-height: 1.48;
+}
+
+/* Category Filter Bar */
+.category-filter-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding: 0.4rem 0 1.4rem;
+  margin-bottom: 1.8rem;
+  scrollbar-width: none;
+  border-bottom: 1px solid #E8DFEE;
+}
+.category-filter-nav::-webkit-scrollbar { display: none; }
 </style>
   <link rel="icon" type="image/png" href="logo/Favicon zaina.png">
 </head>
@@ -1555,22 +2326,105 @@ const cardArt=(a,pool)=>`<a class="card" href="#/${pool}/${a.slug}" data-reveal>
  <div class="img"><img src="${IMG(a.seed,600,380)}" alt="" loading="lazy"></div>
  <div class="body"><span class="tag ${a.cls}" style="align-self:flex-start">${a.cat}</span><h3>${a.title}</h3><p>${a.ex}</p>
  <div class="card-foot"><span class="meta">${a.date} · ${a.mins} min</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`;
+
 const cardFemme=f=>`<a class="portrait-card" href="#/femmes/${f.slug}">
  <div class="img"><img src="${IMG(f.seed,500,620)}" alt="Portrait de ${f.name}" loading="lazy"><span class="prov">${f.prov}</span></div>
  <div class="portrait-body"><h3>${f.name}</h3><p class="role">${f.role}</p><span class="go">Lire le portrait →</span></div></a>`;
+
 const cardInit=i=>`<a class="card" href="#/initiatives/${i.slug}" data-reveal>
  <div class="img"><img src="${IMG(i.seed,600,380)}" alt="" loading="lazy"><span class="card-loc">${i.prov}</span></div>
  <div class="body"><span class="tag ${i.cls}" style="align-self:flex-start">${i.cat}</span><h3>${i.name}</h3><p>${i.desc}</p>
  <div class="card-foot"><span class="meta">Org. : ${i.org}</span><span class="meta" style="color:var(--magenta)">Découvrir →</span></div></div></a>`;
+
 const cardDoc=d=>`<a class="doc-card" href="#/ressources/${d.slug}" data-reveal>
  <span class="tag ${d.cls}" style="align-self:flex-start">${d.type}</span><h3>${d.title}</h3><p style="font-size:.85rem;color:var(--gris);flex:1">${d.desc}</p>
  <div class="meta"><span>${d.year}</span><span>${d.pages}</span></div>
  <span class="meta" style="color:var(--magenta);font-weight:700">Consulter →</span></a>`;
+
 const uniCard=(id,u,w,dl)=>`<a class="uni-card ${w}" href="#/espaces/${id}" style="--uc:${u.g}" ${dl?`data-reveal data-delay="${dl}"`:""}>
  <span class="uni-emo">${u.emo}</span><h3><small>Espace FemCurrent</small>${id.charAt(0).toUpperCase()+id.slice(1)}</h3><p>${u.tag}</p><span class="uni-link">Découvrir →</span></a>`;
+
 const nlBlock=(dark)=>`<form class="nl-form ${dark?"":"light"} nl" novalidate>
  <input type="email" placeholder="Votre adresse e-mail" aria-label="Adresse e-mail" required>
  <button class="btn ${dark?"btn-white":"btn-primary"}" type="submit">S'inscrire</button></form>`;
+
+/* Helper Sidebar & Publicité */
+const compAdBox=()=>`
+<div class="side-ad-card" data-reveal>
+  <span class="side-ad-badge">✦ Espace Partenaire · Média</span>
+  <h4>Prix du Leadership Féminin 2026</h4>
+  <p>Appel à candidatures ouvert jusqu'au 30 avril. Soutenez les projets innovants portés par les femmes en RDC.</p>
+  <a href="#/partenariat" class="ad-btn">Découvrir l'appel →</a>
+</div>`;
+
+const compSidebar=(pool,currentCat,currentSlug)=>{
+  const popular=[...ARTICLES,...ENQUETES].filter(x=>x.slug!==currentSlug).slice(0,4);
+  const recents=ARTICLES.filter(x=>x.slug!==currentSlug).slice(0,3);
+  return `
+  <aside class="article-sidebar">
+    <div class="sticky-sidebar-inner">
+      ${compAdBox()}
+      
+      <!-- 1. Les Plus Lus -->
+      <div class="side-widget" data-reveal>
+        <div class="side-widget-head">
+          <span class="side-widget-title">Les plus lus</span>
+          <span class="meta" style="font-size:0.68rem;color:var(--magenta)">Cette semaine</span>
+        </div>
+        <div class="side-popular-list">
+          ${popular.map((p,idx)=>`
+            <a class="side-popular-item" href="#/${p.src?'enquetes':'actualites'}/${p.slug}">
+              <span class="side-popular-num">0${idx+1}</span>
+              <div class="side-popular-info">
+                <span class="tag ${p.cls}" style="font-size:0.58rem;padding:0.2rem 0.55rem;margin-bottom:0.3rem">${p.cat}</span>
+                <h5>${p.title}</h5>
+                <div class="side-meta"><span>${p.prov||'RDC'}</span><span>·</span><span>${p.mins} min</span></div>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 2. Fil continu des dernières actualités -->
+      <div class="side-widget" data-reveal>
+        <div class="side-widget-head">
+          <span class="side-widget-title">Fil continu</span>
+          <a class="see-all" href="#/actualites" style="font-size:0.65rem">Tout voir →</a>
+        </div>
+        <div class="side-recent-list">
+          ${recents.map(r=>`
+            <a class="side-recent-item" href="#/actualites/${r.slug}">
+              <div class="side-recent-thumb"><img src="${IMG(r.seed,200,150)}" alt="" loading="lazy"></div>
+              <div class="side-recent-info">
+                <h5>${r.title}</h5>
+                <span>${r.date} · ${r.mins} min</span>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 3. Chiffre Clé Observatoire -->
+      <div class="side-stat-card" data-reveal>
+        <span class="stat-kicker">✦ Observatoire FemCurrent</span>
+        <div class="stat-num">31 <span>%</span></div>
+        <p>de femmes dans les assemblées provinciales en 2025 (+14 pts en 5 ans). Données vérifiées par province.</p>
+        <a href="#/observatoire">Explorer le baromètre →</a>
+      </div>
+
+      <!-- 4. Mini Newsletter -->
+      <div class="side-nl-card" data-reveal>
+        <h4>La lettre hebdomadaire</h4>
+        <p>Recevez chaque jeudi nos enquêtes, analyses et portraits exclusifs dans votre boîte e-mail.</p>
+        <form class="side-nl-form nl" novalidate>
+          <input type="email" placeholder="Votre adresse e-mail" required aria-label="E-mail">
+          <button type="submit" class="btn btn-primary" style="margin-top:0.3rem;">S'abonner gratuitement</button>
+        </form>
+      </div>
+
+    </div>
+  </aside>`;
+};
 
 /* ================= PAGES ================= */
 function vHome(){return `
@@ -1796,440 +2650,1698 @@ function vHome(){return `
 <section class="section"><div class="container">
  <div class="section-head" data-reveal><div><span class="kicker">Suivre FemCurrent</span><h2>FemCurrent sur les réseaux</h2></div></div>
  <div class="social-grid">
-  <article class="social-card" data-reveal><div class="sc-head"><svg viewBox="0 0 24 24" fill="#E91E63"><path d="M12 4.3c2.5 0 2.8 0 3.8.1 2.5.1 3.7 1.3 3.8 3.8 0 1 .1 1.3.1 3.8s0 2.8-.1 3.8c-.1 2.5-1.3 3.7-3.8 3.8-1 0-1.3.1-3.8.1s-2.8 0-3.8-.1c-2.5-.1-3.7-1.3-3.8-3.8 0-1-.1-1.3-.1-3.8s0-2.8.1-3.8C4.5 5.7 5.7 4.5 8.2 4.4c1-.1 1.3-.1 3.8-.1zm0 4.6a4.9 4.9 0 100 9.8 4.9 4.9 0 000-9.8zm0 8.1a3.2 3.2 0 110-6.4 3.2 3.2 0 010 6.4z"/></svg><b>@femcurrent</b><a href="https://instagram.com/femcurrent" target="_blank" rel="noopener">Suivre</a></div>
-  <div class="sc-body"><div class="img"><img src="${IMG("insta-portrait-maman-germaine",500,375)}" alt="" loading="lazy"></div><p>Portrait du jour : Maman Germaine, 62 ans, fondatrice de la tontine Bibomika </p></div>
-  <div class="sc-foot"><span>1 240</span><span>86</span></div></article>
-  <article class="social-card" data-reveal data-delay="80"><div class="sc-head"><svg viewBox="0 0 24 24" fill="#241730"><path d="M16.6 3c.4 2.1 1.8 3.6 4 3.8v2.9c-1.5 0-2.9-.5-4-1.3v6.2c0 4.1-3.4 6.3-6.4 6.3-2.9 0-6-1.9-6-5.8 0-3.6 3.1-5.9 6.6-5.6v3c-.4 0-.9 0-1.3.2-1.1.4-2 1.3-2 2.5 0 1.6 1.4 2.7 3.1 2.7 2 0 3.2-1.3 3.2-3.6V3h2.8z"/></svg><b>@femcurrent</b><a href="https://tiktok.com/@femcurrent" target="_blank" rel="noopener">Suivre</a></div>
-  <div class="sc-body"><div class="img" style="background:var(--violet-night);display:grid;place-items:center"><span style="width:54px;height:54px;border-radius:50%;background:var(--degrade);display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M7 4l13 8-13 8z"/></svg></span><span class="dur">0:48</span></div><p>Dans les coulisses de notre reportage au marché de Zando. #FemCurrent</p></div>
-  <div class="sc-foot"><span>▶ 8 400 vues</span><span>940</span></div></article>
-  <article class="social-card" data-reveal data-delay="160"><div class="sc-head"><svg viewBox="0 0 24 24" fill="#E91E63"><path d="M21.6 7.2a2.8 2.8 0 00-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.4a2.8 2.8 0 00-2 2A29 29 0 002 12a29 29 0 00.4 4.8 2.8 2.8 0 002 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.4a2.8 2.8 0 002-2A29 29 0 0022 12a29 29 0 00-.4-4.8zM10 15.2V8.8l5.4 3.2-5.4 3.2z"/></svg><b>FemCurrent Voices</b><a href="https://youtube.com/@femcurrent" target="_blank" rel="noopener">S'abonner</a></div>
-  <div class="sc-body"><div class="img"><img src="${IMG("youtube-interview-tontines",500,375)}" alt="" loading="lazy"><span class="dur">22:41</span></div><p>Podcast vidéo — ÉP. 13 « Tontines : l'économie de la confiance ».</p></div>
-  <div class="sc-foot"><span>▶ 3 120 vues</span><span>402</span></div></article>
-  <article class="social-card" data-reveal data-delay="240"><div class="sc-head"><svg viewBox="0 0 24 24" fill="#4B1D6D"><path d="M6.5 8.8H3.6V21h2.9V8.8zM5 7.6a1.7 1.7 0 100-3.4 1.7 1.7 0 000 3.4zM21 14.1c0-3.1-1.7-4.6-3.9-4.6-1.8 0-2.6 1-3 1.7V8.8h-2.9V21h2.9v-6.5c0-1.4.6-2.3 1.9-2.3s1.9.9 1.9 2.3V21H21v-6.9z"/></svg><b>FemCurrent</b><a href="https://linkedin.com/company/femcurrent" target="_blank" rel="noopener">Suivre</a></div>
-  <div class="sc-body"><p style="font-size:.9rem;line-height:1.55"><b>Baromètre 2025.</b> +4 points de femmes dans les assemblées provinciales. Notre analyse en 5 graphiques.</p><div class="img" style="aspect-ratio:16/9;background:linear-gradient(120deg,#4B1D6D,#E91E63);display:grid;place-items:center;color:#fff;font-family:var(--display);font-style:italic;font-size:1.4rem">31 % en 2025</div></div>
-  <div class="sc-foot"><span>356</span><span>↻ 94 reposts</span></div></article>
+  <!-- Instagram -->
+  <article class="social-card" data-reveal>
+   <div class="sc-head">
+    <svg viewBox="0 0 24 24" fill="#E91E63"><path d="M12 4.3c2.5 0 2.8 0 3.8.1 2.5.1 3.7 1.3 3.8 3.8 0 1 .1 1.3.1 3.8s0 2.8-.1 3.8c-.1 2.5-1.3 3.7-3.8 3.8-1 0-1.3.1-3.8.1s-2.8 0-3.8-.1c-2.5-.1-3.7-1.3-3.8-3.8 0-1-.1-1.3-.1-3.8s0-2.8.1-3.8C4.5 5.7 5.7 4.5 8.2 4.4c1-.1 1.3-.1 3.8-.1zm0 4.6a4.9 4.9 0 100 9.8 4.9 4.9 0 000-9.8zm0 8.1a3.2 3.2 0 110-6.4 3.2 3.2 0 010 6.4z"/></svg>
+    <b>@femcurrent</b>
+    <a href="https://instagram.com/femcurrent" target="_blank" rel="noopener">Suivre</a>
+   </div>
+   <div class="sc-body">
+    <div class="img"><img src="${IMG("insta-portrait-maman-germaine",600,400)}" alt="Instagram FemCurrent" loading="lazy"></div>
+    <p>Portrait du jour : Maman Germaine, 62 ans, fondatrice de la tontine Bibomika au grand marché de Zando.</p>
+   </div>
+   <div class="sc-foot"><span>❤️ 1 240</span><span>💬 86</span></div>
+  </article>
+
+  <!-- TikTok -->
+  <article class="social-card" data-reveal data-delay="80">
+   <div class="sc-head">
+    <svg viewBox="0 0 24 24" fill="#241730"><path d="M16.6 3c.4 2.1 1.8 3.6 4 3.8v2.9c-1.5 0-2.9-.5-4-1.3v6.2c0 4.1-3.4 6.3-6.4 6.3-2.9 0-6-1.9-6-5.8 0-3.6 3.1-5.9 6.6-5.6v3c-.4 0-.9 0-1.3.2-1.1.4-2 1.3-2 2.5 0 1.6 1.4 2.7 3.1 2.7 2 0 3.2-1.3 3.2-3.6V3h2.8z"/></svg>
+    <b>@femcurrent</b>
+    <a href="https://tiktok.com/@femcurrent" target="_blank" rel="noopener">Suivre</a>
+   </div>
+   <div class="sc-body">
+    <div class="img" style="background:var(--violet-night);display:grid;place-items:center;">
+     <span style="width:50px;height:50px;border-radius:50%;background:var(--magenta);display:grid;place-items:center;box-shadow:0 4px 14px rgba(233,30,99,0.4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M7 4l13 8-13 8z"/></svg></span>
+     <span class="dur" style="position:absolute;bottom:0.6rem;right:0.6rem;background:rgba(0,0,0,0.75);color:#fff;font-family:var(--mono);font-size:0.68rem;padding:0.2rem 0.5rem;border-radius:4px">0:48</span>
+    </div>
+    <p>Dans les coulisses de notre grand reportage vidéo au marché de Zando à Kinshasa. #FemCurrent</p>
+   </div>
+   <div class="sc-foot"><span>▶ 8 450</span><span>❤️ 620</span></div>
+  </article>
+
+  <!-- YouTube -->
+  <article class="social-card" data-reveal data-delay="160">
+   <div class="sc-head">
+    <svg viewBox="0 0 24 24" fill="#E91E63"><path d="M21.6 7.2a2.8 2.8 0 00-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.4a2.8 2.8 0 00-2 2A29 29 0 002 12a29 29 0 00.4 4.8 2.8 2.8 0 002 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.4a2.8 2.8 0 002-2A29 29 0 0022 12a29 29 0 00-.4-4.8zM10 15.2V8.8l5.4 3.2-5.4 3.2z"/></svg>
+    <b>FemCurrent Voices</b>
+    <a href="https://youtube.com/@femcurrent" target="_blank" rel="noopener">S'abonner</a>
+   </div>
+   <div class="sc-body">
+    <div class="img">
+     <img src="${IMG("youtube-interview-tontines",600,400)}" alt="YouTube FemCurrent Voices" loading="lazy">
+     <span class="dur" style="position:absolute;bottom:0.6rem;right:0.6rem;background:rgba(0,0,0,0.75);color:#fff;font-family:var(--mono);font-size:0.68rem;padding:0.2rem 0.5rem;border-radius:4px">22:41</span>
+    </div>
+    <p>Podcast vidéo — ÉP. 13 « Tontines : l'économie de la confiance et du lien social ».</p>
+   </div>
+   <div class="sc-foot"><span>▶ 3 120</span><span>👍 402</span></div>
+  </article>
+
+  <!-- LinkedIn -->
+  <article class="social-card" data-reveal data-delay="240">
+   <div class="sc-head">
+    <svg viewBox="0 0 24 24" fill="#4B1D6D"><path d="M6.5 8.8H3.6V21h2.9V8.8zM5 7.6a1.7 1.7 0 100-3.4 1.7 1.7 0 000 3.4zM21 14.1c0-3.1-1.7-4.6-3.9-4.6-1.8 0-2.6 1-3 1.7V8.8h-2.9V21h2.9v-6.5c0-1.4.6-2.3 1.9-2.3s1.9.9 1.9 2.3V21H21v-6.9z"/></svg>
+    <b>FemCurrent</b>
+    <a href="https://linkedin.com/company/femcurrent" target="_blank" rel="noopener">Suivre</a>
+   </div>
+   <div class="sc-body">
+    <div class="img" style="background:#1E0A30;display:grid;place-items:center;color:#fff;font-family:var(--display);font-style:italic;font-size:1.4rem">
+     <span style="color:#FF8C00">31 % en 2025</span>
+    </div>
+    <p>Baromètre 2025 : +4 points de femmes dans les assemblées provinciales. Notre analyse en 5 graphiques.</p>
+   </div>
+   <div class="sc-foot"><span>👍 356</span><span>↻ 94</span></div>
+  </article>
  </div>
 </div></section>`;}
 
-function vActualites(){return heroPage("Actualités · Décryptages · Société","Toutes les <span class='accent'>actualités</span>","Le fil complet de la rédaction : actualités, décryptages, société, leadership féminin et enjeux émergents.",crumb([["Actualités"]]))+
-`<section class="section"><div class="container">
-<div class="filters">${["Tous","Société","Leadership féminin","Numérique","Santé","Gouvernance","Économie","Observatoire","Innovation","Enjeux émergents"].map((c,i)=>`<button class="f-chip ${i===0?"on":""}" data-f="${c}">${c}</button>`).join("")}</div>
-<div class="actu-list filterable">
-${ARTICLES.map((a,i)=>`<a class="actu-row" href="#/actualites/${a.slug}" data-cat="${a.cat}" data-reveal data-delay="${i*40}">
- <div><span class="tag ${a.cls}">${a.cat}</span><div class="meta" style="margin-top:.5rem">${a.date}</div></div>
- <div><h3>${a.title}</h3><p>${a.ex}</p></div>
- <div class="actu-thumb"><img src="${IMG(a.seed,300,220)}" alt="" loading="lazy"></div>
- <span class="meta">${a.mins} min</span></a>`).join("")}
-</div>
-</div></section>
-<section class="section section-alt"><div class="container"><div class="banner-cta" data-reveal>
- <h2>Une information à vérifier ? Une histoire à raconter ?</h2>
- <p class="lead" style="margin:.8rem auto 0;text-align:center">FemCurrent est aussi votre média : signalez une information, proposez un article ou rejoignez la rédaction.</p>
- <div class="btns"><a class="btn btn-primary" href="#/contact">Signaler une information</a><a class="btn btn-ghost" href="#/contribuer">Devenir contributrice</a></div></div></div></section>`;}
+function vActualites(){
+  const leadArt = ARTICLES[0];
+  const pillar1 = ARTICLES[1];
+  const pillar2 = ARTICLES[2];
+  const otherArticles = ARTICLES.slice(3);
 
-function vArticle(pool,slug){
- const a=[...ARTICLES,...ENQUETES].find(x=>x.slug===slug); if(!a) return v404();
- const related=[...ARTICLES,...ENQUETES].filter(x=>x.slug!==slug).slice(0,3);
- return `<section class="page-hero"><div class="container article-wrap">${crumb([[pool==="enquetes"?"Enquêtes & Analyses":"Actualités","#/"+pool],[a.cat]])}
- <span class="tag ${a.cls}">${a.cat}</span><h1 style="font-size:clamp(1.8rem,4.6vw,3rem);margin-top:1rem">${a.title}</h1>
- <div class="meta" style="margin-top:1.2rem">Par la Rédaction · ${a.date} · ${a.mins} min de lecture · ${a.prov}</div></div></section>
- <section class="section"><div class="article-wrap">
- <div class="article-hero" data-reveal><img src="${IMG(a.seed,1200,675)}" alt="" ></div>
- <div class="article-body">${a.body.map((p,i)=>`<p>${p}</p>${i===1?`<div class="pull">« La parole des femmes n'est pas un supplément d'âme du débat public. Elle en est le cœur. »</div>`:""}`).join("")}</div>
- ${shareBar()}
- <div class="author-box"><img src="${IMG("redaction-femcurrent",200,200)}" alt=""><div><b>La Rédaction FemCurrent</b><span>Kinshasa · Chaque contenu est vérifié par au moins deux rédactrices avant publication, conformément à notre <a href="#/legal/politique-editoriale" style="color:var(--magenta)">politique éditoriale</a>.</span></div></div>
- </div>
- <div class="container" style="margin-top:2.5rem">
-  <div class="section-head"><h3 style="font-size:1.5rem">À lire aussi</h3><a class="see-all" href="#/${pool}">Tout voir →</a></div>
-  <div class="cards-grid">${related.map(x=>cardArt(x,pool)).join("")}</div>
- </div></section>
- <section class="section section-alt"><div class="container"><div class="banner-cta" data-reveal>
- <h2>Recevez nos analyses chaque semaine</h2><p class="lead" style="margin:.8rem auto 0;text-align:center">Enquêtes, données et portraits — directement dans votre boîte mail.</p>
- ${nlBlock(false)}</div></div></section>`;}
+  return `
+  <!-- Hero Section -->
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Actualités"]])}
+      <span class="kicker">Actualités · Décryptages · Société</span>
+      <h1>Toutes les <span class="accent">actualités</span></h1>
+      <p class="lead">Le fil complet de la rédaction : enquêtes, reportages de terrain, leadership féminin, économie et gouvernance en RDC et dans les Grands Lacs.</p>
+    </div>
+  </section>
 
-function vEnquetes(){return heroPage("FemCurrent Investigates","Enquêtes &amp; <span class='accent'>Analyses</span>","Enquêter. Questionner. Révéler. Nos enquêtes longues, nos analyses, nos tribunes et notre journalisme de solutions.",crumb([["Enquêtes & Analyses"]]))+
-`<section class="section"><div class="container"><div class="cards-grid">
-${ENQUETES.map((e,i)=>`<a class="card" href="#/enquetes/${e.slug}" data-reveal data-delay="${i*90}">
- <div class="img"><img src="${IMG(e.seed,600,380)}" alt="" loading="lazy"></div>
- <div class="body"><span class="tag ${e.cls}" style="align-self:flex-start">${e.cat}</span><h3>${e.title}</h3><p>${e.ex}</p>
- <div class="src-bar" style="margin-top:.4rem"><div class="meta" style="display:flex;justify-content:space-between"><span>${e.src}</span></div><div style="height:6px;border-radius:4px;background:var(--lavande);overflow:hidden"><i style="display:block;height:100%;width:${e.w};background:var(--degrade);border-radius:4px"></i></div></div>
- <div class="card-foot"><span class="meta">${e.detail}</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`).join("")}
-</div>
-<div class="info-strip" style="margin-top:3rem">
- <div class="info-cell" data-reveal><span class="emo"></span><h3>Rigueur</h3><p>Chaque enquête est vérifiée par au moins deux rédactrices. Protection des sources et consentement éclairé sont absolus.</p></div>
- <div class="info-cell" data-reveal data-delay="80"><span class="emo"></span><h3>Solutions</h3><p>Chaque dossier documente aussi les initiatives qui font bouger les lignes — le journalisme de solutions est dans notre ADN.</p></div>
- <div class="info-cell" data-reveal data-delay="160"><span class="emo"></span><h3>Signalement</h3><p>Une piste à explorer ? Une information à vérifier ? Notre rédaction reçoit vos signalements en toute confidentialité.</p></div>
-</div>
-<div style="text-align:center;margin-top:2.2rem"><a class="btn btn-primary" href="#/contact">Signaler une information</a></div>
-</div></section>`;}
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      
+      <!-- Magazine Top Lead Story Grid -->
+      <div class="magazine-top-hero">
+        
+        <!-- Grande Une Lead Story -->
+        <a class="lead-hero-card" href="#/actualites/${leadArt.slug}" data-reveal>
+          <div class="lead-hero-img">
+            <img src="${IMG(leadArt.seed, 1000, 600)}" alt="${leadArt.title}" loading="lazy">
+            <span style="position:absolute;top:1rem;left:1rem;background:#E91E63;color:#fff;font-family:var(--mono);font-size:0.68rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:0.35rem 0.8rem;border-radius:6px;box-shadow:0 4px 10px rgba(233,30,99,0.35);">
+              À LA UNE · ${leadArt.cat}
+            </span>
+          </div>
+          <div class="lead-hero-body">
+            <div>
+              <span style="font-family:var(--mono);font-size:0.72rem;color:#FF8C00;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
+                ${leadArt.prov || 'Kinshasa'} · ${leadArt.date}
+              </span>
+              <h2>${leadArt.title}</h2>
+              <p>${leadArt.ex}</p>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid #E8DFEE;font-size:0.8rem;color:var(--gris);">
+              <span>Par ${leadArt.author || 'La Rédaction'}</span>
+              <span style="color:var(--magenta);font-weight:700;">${leadArt.mins} min · Lire l'article →</span>
+            </div>
+          </div>
+        </a>
 
-function vFemmes(){return heroPage("Portraits · Témoignages · Parcours inspirants","Femmes à la <span class='accent'>une</span>","Elles dirigent, cultivent, soignent, codent, informent et jugent. Découvrez les femmes que la communauté met en lumière.",crumb([["Femmes à la une"]]))+
-`<section class="section"><div class="container">
-<div class="filters">${["Toutes","Kinshasa","Sud-Kivu","Nord-Kivu","Haut-Katanga","Lualaba","Kasaï-Central"].map((c,i)=>`<button class="f-chip ${i===0?"on":""}" data-f="${c}">${c}</button>`).join("")}</div>
-<div class="cards-grid filterable">
-${FEMMES.map((f,i)=>`<a class="card" href="#/femmes/${f.slug}" data-cat="${f.prov}" data-reveal data-delay="${i*60}">
- <div class="img"><img src="${IMG(f.seed,600,440)}" alt="Portrait de ${f.name}" loading="lazy"><span class="card-loc">${f.prov}</span></div>
- <div class="body"><h3>${f.name}</h3><p>${f.role}</p><div class="card-foot"><span class="meta">Portrait</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`).join("")}
-</div>
-<div class="banner-cta" style="margin-top:3rem" data-reveal><span style="font-size:2.2rem"></span>
- <h2>Et si c'était elle ? Et si c'était vous ?</h2><p class="lead" style="margin:.8rem auto 0;text-align:center">Chaque portrait publié commence par une proposition de la communauté.</p>
- <div class="btns"><a class="btn btn-primary" href="#/lumiere">Proposer un profil</a></div></div>
-</div></section>`;}
+        <!-- 2 Secondary Pillars Stack -->
+        <div class="magazine-side-stack">
+          <a class="magazine-mini-card" href="#/actualites/${pillar1.slug}" style="border-top:4px solid #4B1D6D;" data-reveal data-delay="80">
+            <div>
+              <span style="font-family:var(--mono);font-size:0.68rem;color:#4B1D6D;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:0.3rem;">
+                ${pillar1.cat} · ${pillar1.prov}
+              </span>
+              <h3>${pillar1.title}</h3>
+              <p>${pillar1.ex}</p>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid #F3EEF7;font-size:0.76rem;color:var(--gris);">
+              <span>${pillar1.date}</span>
+              <span style="color:#4B1D6D;font-weight:700;">${pillar1.mins} min →</span>
+            </div>
+          </a>
 
-function vPortrait(slug){
- const f=FEMMES.find(x=>x.slug===slug); if(!f) return v404();
- const others=FEMMES.filter(x=>x.slug!==slug);
- return `<section class="page-hero"><div class="container">${crumb([["Femmes à la une","#/femmes"],[f.name]])}
- <span class="kicker">Portrait · ${f.prov}</span><h1>${f.name}</h1><p class="lead">${f.role}</p></div></section>
- <section class="section"><div class="container por-grid">
-  <div class="por-photo" data-reveal><img src="${IMG(f.seed,700,880)}" alt="Portrait de ${f.name}"></div>
-  <div><div class="pull" style="margin-top:0">${f.quote}</div>
-  <div class="article-body">${f.bio.map(p=>`<p>${p}</p>`).join("")}</div>
-  ${shareBar()}
-  <div class="btns" style="display:flex;gap:.9rem;flex-wrap:wrap">
-   <a class="btn btn-primary" href="#/lumiere">Proposer une autre femme</a>
-   <a class="btn btn-ghost" href="#/femmes">Tous les portraits</a>
-  </div></div>
- </div>
- <div class="container" style="margin-top:3rem">
-  <div class="section-head"><h3 style="font-size:1.5rem">D'autres parcours inspirants</h3><a class="see-all" href="#/femmes">Tous les portraits →</a></div>
-  <div class="rail">${others.slice(0,4).map(cardFemme).join("")}</div>
- </div></section>`;}
+          <a class="magazine-mini-card" href="#/actualites/${pillar2.slug}" style="border-top:4px solid #FF8C00;" data-reveal data-delay="160">
+            <div>
+              <span style="font-family:var(--mono);font-size:0.68rem;color:#FF8C00;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:0.3rem;">
+                ${pillar2.cat} · ${pillar2.prov}
+              </span>
+              <h3>${pillar2.title}</h3>
+              <p>${pillar2.ex}</p>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid #F3EEF7;font-size:0.76rem;color:var(--gris);">
+              <span>${pillar2.date}</span>
+              <span style="color:#FF8C00;font-weight:700;">${pillar2.mins} min →</span>
+            </div>
+          </a>
+        </div>
 
-function vInitiatives(){return heroPage("FemCurrent Matendo","Initiatives à <span class='accent'>découvrir</span>","Projets, organisations, actions communautaires et innovations sociales portés par des femmes à travers le pays.",crumb([["Initiatives"]]))+
-`<section class="section"><div class="container">
-<div class="filters">${["Toutes","Médias","Numérique","Agriculture","Éducation"].map((c,i)=>`<button class="f-chip ${i===0?"on":""}" data-f="${c}">${c}</button>`).join("")}</div>
-<div class="cards-grid c4 filterable">${INITIATIVES.map((x,i)=>cardInit(x)).join("")}</div>
-<div class="banner-cta" style="margin-top:3rem" data-reveal><span style="font-size:2.2rem"></span>
- <h2>Votre initiative mérite d'être vue</h2><p class="lead" style="margin:.8rem auto 0;text-align:center">Soumettez un projet, une organisation ou une action communautaire : après vérification, elle rejoint l'annuaire FemCurrent.</p>
- <div class="btns"><a class="btn btn-primary" href="#/lumiere/initiative">Soumettre une initiative</a><a class="btn btn-ghost" href="#/lumiere/org">Proposer une organisation</a></div></div>
-</div></section>`;}
+      </div>
 
-function vInitiative(slug){
- const i=INITIATIVES.find(x=>x.slug===slug); if(!i) return v404();
- const rel=INITIATIVES.filter(x=>x.slug!==slug).slice(0,3);
- return `<section class="page-hero"><div class="container">${crumb([["Initiatives","#/initiatives"],[i.name]])}
- <span class="tag ${i.cls}">${i.cat}</span><h1 style="margin-top:.9rem">${i.name}</h1><p class="lead">${i.desc}</p>
- <div class="meta" style="margin-top:1rem">Organisation : ${i.org} · ${i.prov}</div></div></section>
- <section class="section"><div class="container" style="display:grid;gap:3rem;grid-template-columns:1fr">
-  <div class="article-wrap" style="max-width:820px">
-  <div class="article-hero" data-reveal><img src="${IMG(i.seed,1200,675)}" alt=""></div>
-  <div class="article-body">${i.body.map(p=>`<p>${p}</p>`).join("")}</div>
-  <h3 style="margin:2rem 0 1rem">Chiffres clés</h3>
-  <div class="info-strip">${i.detail.map(d=>`<div class="info-cell"><p style="font-size:.9rem;color:var(--violet-deep);font-weight:600">✓ ${d}</p></div>`).join("")}</div>
-  ${shareBar()}
-  <div style="display:flex;gap:.9rem;flex-wrap:wrap"><a class="btn btn-primary" href="#/partenariat">Soutenir cette initiative</a><a class="btn btn-ghost" href="#/initiatives">Toutes les initiatives</a></div>
+      <!-- Category Filter Navigation -->
+      <div class="filters category-filter-nav">
+        ${["Tous", "Société", "Leadership féminin", "Numérique", "Santé", "Gouvernance", "Économie", "Observatoire", "Innovation", "Enjeux émergents"].map((c, i) => `
+          <button class="f-chip ${i === 0 ? "on" : ""}" data-f="${c}">${c}</button>
+        `).join("")}
+      </div>
+
+      <!-- 2-Column Main Feed & Sidebar -->
+      <div class="article-layout-grid">
+        
+        <!-- Left: News Feed List & Cards -->
+        <div class="article-main-col">
+          <div class="section-head" style="margin-bottom:1.5rem;">
+            <div>
+              <span class="kicker">Dépêches & Articles</span>
+              <h2>Le fil complet de l'actualité</h2>
+            </div>
+          </div>
+
+          <div class="actu-list filterable">
+            ${otherArticles.map((a, i) => `
+              <a class="actu-row" href="#/actualites/${a.slug}" data-cat="${a.cat}" data-reveal data-delay="${(i % 5) * 50}">
+                <div>
+                  <span class="tag ${a.cls}">${a.cat}</span>
+                  <div class="meta" style="margin-top:.5rem">${a.date} · ${a.prov}</div>
+                </div>
+                <div>
+                  <h3>${a.title}</h3>
+                  <p>${a.ex}</p>
+                </div>
+                <div class="actu-thumb"><img src="${IMG(a.seed, 300, 220)}" alt="" loading="lazy"></div>
+                <span class="meta" style="font-weight:700;color:var(--magenta);">${a.mins} min</span>
+              </a>
+            `).join("")}
+          </div>
+        </div>
+
+        <!-- Right: Dynamic Sidebar -->
+        ${compSidebar("actualites", "Tous", "")}
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="banner-cta" data-reveal>
+        <span class="kicker" style="justify-content:center;">Participer à la rédaction</span>
+        <h2 style="margin-top:0.8rem;">Une information à vérifier ? Une histoire à raconter ?</h2>
+        <p class="lead" style="margin:.8rem auto 0;text-align:center;">FemCurrent est votre média : signalez une information, proposez un article ou rejoignez notre réseau de correspondantes dans les 26 provinces.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#/contact">Signaler une information</a>
+          <a class="btn btn-ghost" href="#/contribuer">Devenir contributrice</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function vArticle(pool, slug) {
+  const a = [...ARTICLES, ...ENQUETES].find(x => x.slug === slug);
+  if (!a) return v404();
+
+  const authorName = a.author || "Solange Mwamba";
+  const authorRole = a.authorRole || "Journaliste d'investigation économique";
+  const authorBio = a.authorBio || "Grand reporter pour FemCurrent, spécialiste des dynamiques de transformation économique et des droits des femmes en RDC.";
+  const authorSeed = a.authorSeed || "solange-mwamba-author";
+  const subtitle = a.subtitle || a.ex;
+  const keyPoints = a.keyPoints || [
+    "Une enquête approfondie et documentée au plus près des actrices de terrain.",
+    "Un protocole de vérification des faits validé par deux membres de la rédaction.",
+    "Des solutions concrètes et des perspectives d'impact pour les communautés."
+  ];
+  const tags = a.tags || [a.cat, a.prov || "RDC", "FemCurrent", "Leadership"];
+
+  const related = [...ARTICLES, ...ENQUETES].filter(x => x.slug !== slug).slice(0, 3);
+
+  return `
+  <!-- Article Header & Breadcrumbs -->
+  <section class="page-hero" style="padding-bottom: 2rem;">
+    <div class="container">
+      ${crumb([[pool === "enquetes" ? "Enquêtes & Analyses" : "Actualités", "#/" + pool], [a.cat]])}
+      <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+        <span class="tag ${a.cls}">${a.cat}</span>
+        ${a.src ? `<span class="tag orange" style="font-size:0.64rem;">${a.src}</span>` : ''}
+        <span class="meta">${a.prov ? a.prov + ' · ' : ''}${a.date}</span>
+      </div>
+      <h1 class="article-headline" style="max-width: 960px;">${a.title}</h1>
+      <p class="article-chapeau" style="max-width: 920px;">${subtitle}</p>
+    </div>
+  </section>
+
+  <!-- 2-Column Main Article Body & Sidebar -->
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      <div class="article-layout-grid">
+        
+        <!-- Left Main Column (Lecture enrichie) -->
+        <article class="article-main-col">
+          
+          <!-- Author Byline & Meta Bar -->
+          <div class="article-meta-bar">
+            <div class="author-byline">
+              <img src="${IMG(authorSeed, 120, 120)}" alt="${authorName}">
+              <div class="author-byline-info">
+                <strong>Par ${authorName}</strong>
+                <span>${authorRole}</span>
+              </div>
+            </div>
+            <div class="article-read-meta">
+              <span class="read-time">${a.mins} min de lecture</span>
+              <span>✦ RDC</span>
+            </div>
+          </div>
+
+          <!-- Featured Hero Image with Photojournalist Caption -->
+          <div class="article-featured-img" data-reveal>
+            <img src="${IMG(a.seed, 1200, 700)}" alt="${a.title}">
+            <div class="article-img-caption">
+              <span>Reportage exclusif sur le terrain · FemCurrent Media</span>
+              <span>Crédit photo : Rédaction FemCurrent</span>
+            </div>
+          </div>
+
+          <!-- Key Points / Chiffres Clés Callout -->
+          <div class="key-facts-card" data-reveal>
+            <h4>✦ Les points clés à retenir</h4>
+            <ul>
+              ${keyPoints.map(pt => `<li>${pt}</li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Article Content Body -->
+          <div class="article-content-body">
+            ${a.body.map((p, i) => `
+              <p>${p}</p>
+              ${i === 0 ? `
+                <div class="pull" data-reveal>
+                  « La parole des femmes n'est pas un supplément d'âme du débat public. Elle en constitue le moteur et l'avenir. »
+                </div>
+              ` : ''}
+              ${i === 1 ? `
+                <h2 data-reveal>Des dynamiques de terrain concrètes et mesurables</h2>
+              ` : ''}
+            `).join('')}
+          </div>
+
+          <!-- Article Tags -->
+          <div class="article-tags-bar">
+            <span class="tag-label">Thématiques :</span>
+            ${tags.map(t => `<a href="#/actualites">#${t}</a>`).join('')}
+          </div>
+
+          <!-- Share Toolbar -->
+          ${shareBar()}
+
+          <!-- Author Bio Box -->
+          <div class="author-box" data-reveal>
+            <img src="${IMG(authorSeed, 150, 150)}" alt="${authorName}">
+            <div>
+              <b>${authorName}</b>
+              <p style="font-size:0.86rem;color:var(--gris);margin:0.25rem 0 0.5rem;">${authorBio}</p>
+              <span style="font-size:0.75rem;color:var(--magenta);font-weight:700;">
+                ✓ Contenu vérifié selon notre <a href="#/legal/politique-editoriale" style="color:var(--magenta);text-decoration:underline;">charte éditoriale</a>
+              </span>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- Right Dynamic Editorial Sidebar -->
+        ${compSidebar(pool, a.cat, a.slug)}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Section: Related Articles & Community CTA -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="kicker">Continuer la lecture</span>
+          <h2>À lire également</h2>
+        </div>
+        <a class="see-all" href="#/${pool}">Toutes les publications →</a>
+      </div>
+      <div class="cards-grid">
+        ${related.map(x => cardArt(x, pool)).join('')}
+      </div>
+
+      <div class="banner-cta" style="margin-top: 3.5rem;" data-reveal>
+        <span class="kicker" style="justify-content:center;">Ne manquez aucune publication</span>
+        <h2 style="margin-top:0.8rem;">Recevez les analyses de FemCurrent</h2>
+        <p class="lead" style="margin:0.8rem auto 0;text-align:center;">Enquêtes, données et récits de transformation chaque jeudi directement dans votre boîte mail.</p>
+        <div style="max-width:540px;margin:1.8rem auto 0;">
+          ${nlBlock(false)}
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function vEnquetes() {
+  const mainEnquete = ENQUETES[0];
+  const otherEnquetes = ENQUETES.slice(1);
+
+  return `
+  <!-- Hero Section -->
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Enquêtes & Analyses"]])}
+      <span class="kicker">FemCurrent Investigates</span>
+      <h1>Enquêtes &amp; <span class="accent">Analyses</span></h1>
+      <p class="lead">Enquêter. Questionner. Révéler. Des enquêtes au long cours, un protocole rigoureux de protection des sources et un journalisme de solutions orienté vers l'impact.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      
+      <!-- Grand Dossier d'Investigation à la Une -->
+      <a class="lead-hero-card" href="#/enquetes/${mainEnquete.slug}" style="border-top: 4px solid var(--magenta); margin-bottom: 3.5rem;" data-reveal>
+        <div class="lead-hero-img" style="min-height: 320px;">
+          <img src="${IMG(mainEnquete.seed, 1200, 650)}" alt="${mainEnquete.title}" loading="lazy">
+          <div style="position:absolute;top:1.2rem;left:1.2rem;display:flex;gap:0.6rem;flex-wrap:wrap;">
+            <span style="background:#E91E63;color:#fff;font-family:var(--mono);font-size:0.7rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:0.35rem 0.85rem;border-radius:6px;box-shadow:0 4px 10px rgba(233,30,99,0.4);">
+              LE GRAND DOSSIER INVESTIGATION
+            </span>
+            <span style="background:rgba(30,10,48,0.9);color:#FF8C00;font-family:var(--mono);font-size:0.7rem;font-weight:800;letter-spacing:0.1em;padding:0.35rem 0.85rem;border-radius:6px;">
+              ${mainEnquete.src}
+            </span>
+          </div>
+        </div>
+        <div class="lead-hero-body" style="padding: 2.2rem 2rem;">
+          <div>
+            <span style="font-family:var(--mono);font-size:0.74rem;color:#4B1D6D;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:0.5rem;">
+              TERRAIN : ${mainEnquete.prov} · ENQUÊTE APPROFONDIE
+            </span>
+            <h2 style="font-size:clamp(1.6rem, 3.2vw, 2.3rem);margin-bottom:0.8rem;">${mainEnquete.title}</h2>
+            <p style="font-size:1.02rem;line-height:1.6;">${mainEnquete.ex}</p>
+            
+            <!-- Gauge de vérification des sources -->
+            <div style="margin:1.4rem 0 0.8rem;background:#FAF7FC;padding:1rem 1.2rem;border-radius:12px;border:1px solid #E8DFEE;">
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.72rem;color:var(--violet-deep);font-weight:700;margin-bottom:0.4rem;">
+                <span>Protocole de vérification des faits</span>
+                <span style="color:var(--magenta)">${mainEnquete.w} vérifié</span>
+              </div>
+              <div style="height:8px;border-radius:4px;background:#E8DFEE;overflow:hidden;">
+                <div style="height:100%;width:${mainEnquete.w};background:#E91E63;border-radius:4px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:0.4rem;font-family:var(--mono);font-size:0.66rem;color:var(--gris);">
+                <span>${mainEnquete.detail}</span>
+                <span>Double validation éditoriale</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;margin-top:1.2rem;font-size:0.84rem;">
+            <span style="color:var(--gris);">Par l'équipe FemCurrent Investigates</span>
+            <span style="color:var(--magenta);font-weight:800;">Consulter l'enquête intégrale (${mainEnquete.mins} min) →</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 2-Column Grid: Other Investigations & Sidebar -->
+      <div class="article-layout-grid">
+        
+        <div class="article-main-col">
+          <div class="section-head" style="margin-bottom: 1.8rem;">
+            <div>
+              <span class="kicker">Dossiers récents</span>
+              <h2>Toutes nos enquêtes</h2>
+            </div>
+          </div>
+
+          <div class="cards-grid" style="grid-template-columns: 1fr;">
+            ${otherEnquetes.map((e, i) => `
+              <a class="card" href="#/enquetes/${e.slug}" style="display:grid;grid-template-columns:1fr;border-radius:18px;" data-reveal data-delay="${i * 90}">
+                <div class="img" style="aspect-ratio:16/9;"><img src="${IMG(e.seed, 700, 420)}" alt="${e.title}" loading="lazy"></div>
+                <div class="body" style="padding:1.6rem;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+                    <span class="tag ${e.cls}">${e.cat}</span>
+                    <span class="meta">${e.date}</span>
+                  </div>
+                  <h3 style="font-size:1.3rem;margin:0.4rem 0;">${e.title}</h3>
+                  <p style="font-size:0.92rem;line-height:1.55;">${e.ex}</p>
+                  
+                  <div style="margin-top:1rem;padding-top:0.8rem;border-top:1px dashed #E8DFEE;">
+                    <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.68rem;color:var(--gris);margin-bottom:0.3rem;">
+                      <span>${e.src}</span>
+                      <span>${e.detail}</span>
+                    </div>
+                    <div style="height:6px;border-radius:3px;background:var(--lavande);overflow:hidden;">
+                      <div style="height:100%;width:${e.w};background:#E91E63;"></div>
+                    </div>
+                  </div>
+
+                  <div class="card-foot" style="margin-top:1rem;">
+                    <span class="meta">Investigation locale · ${e.prov}</span>
+                    <span class="meta" style="color:var(--magenta);font-weight:700;">Lire le dossier →</span>
+                  </div>
+                </div>
+              </a>
+            `).join("")}
+          </div>
+
+          <!-- Piliers Démarche Investigation Standardisés en Cartes Numérotées -->
+          <div class="section-head" style="margin-top:3.5rem;">
+            <div><span class="kicker">Méthodologie</span><h2>Notre exigence d'investigation</h2></div>
+          </div>
+          <div class="editorial-step-grid c3">
+            <div class="editorial-step-card" data-reveal>
+              <span class="step-num-badge">01</span>
+              <h3 class="step-card-title">Rigueur & Recoupement</h3>
+              <p class="step-card-text">Chaque information est vérifiée par au moins deux rédactrices et recoupée avec des sources documentaires et de terrain.</p>
+            </div>
+            <div class="editorial-step-card" data-reveal data-delay="80">
+              <span class="step-num-badge">02</span>
+              <h3 class="step-card-title">Protection des Sources</h3>
+              <p class="step-card-text">Anonymat garanti et canaux sécurisés pour préserver l'intégrité et la dignité de toutes celles qui témoignent.</p>
+            </div>
+            <div class="editorial-step-card" data-reveal data-delay="160">
+              <span class="step-num-badge">03</span>
+              <h3 class="step-card-title">Solutions & Impact</h3>
+              <p class="step-card-text">Nos enquêtes ne s'arrêtent pas au constat : elles documentent les solutions, les réformes et les leviers d'action.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        ${compSidebar("enquetes", "Enquête", "")}
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Signalement / Whistleblower Callout -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="banner-cta" data-reveal>
+        <span class="kicker" style="justify-content:center;">Canal Confidentiel</span>
+        <h2 style="margin-top:0.8rem;">Vous détenez une information d'intérêt public ?</h2>
+        <p class="lead" style="margin:0.8rem auto 0;text-align:center;">Transmettez vos documents ou signalez une situation en toute sécurité. Notre rédaction traite chaque signalement sous le sceau de la confidentialité absolue.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#/contact">Transmettre un signalement confidentiel</a>
+          <a class="btn btn-ghost" href="#/legal/politique-editoriale">Consulter notre charte éditoriale</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function vFemmes() {
+  const leadFemme = FEMMES[0];
+  const listFemmes = FEMMES.slice(1);
+
+  return `
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Femmes à la une"]])}
+      <span class="kicker">Portraits · Témoignages · Parcours inspirants</span>
+      <h1>Femmes à la <span class="accent">une</span></h1>
+      <p class="lead">Elles dirigent, cultivent, soignent, codent, informent, jugent et transforment leurs communautés. Découvrez les parcours remarquables mis en lumière par FemCurrent.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      
+      <!-- Portrait Vedette du Mois -->
+      <a class="lead-hero-card" href="#/femmes/${leadFemme.slug}" style="display:grid;grid-template-columns:1fr;margin-bottom:3rem;" data-reveal>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="lead-hero-img" style="aspect-ratio:4/3;min-height:350px;">
+            <img src="${IMG(leadFemme.seed, 800, 600)}" alt="Portrait de ${leadFemme.name}" loading="lazy">
+            <span style="position:absolute;top:1rem;left:1rem;background:var(--magenta);color:#fff;font-family:var(--mono);font-size:0.68rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:0.35rem 0.8rem;border-radius:6px;">
+              PORTRAIT DU MOIS · ${leadFemme.prov}
+            </span>
+          </div>
+          <div class="lead-hero-body" style="padding:2.2rem;">
+            <div>
+              <span class="tag violet" style="margin-bottom:0.6rem;">${leadFemme.role.split('·')[0]}</span>
+              <h2 style="font-size:clamp(1.7rem,3vw,2.4rem);">${leadFemme.name}</h2>
+              <p style="font-family:var(--display);font-style:italic;font-size:1.15rem;color:var(--violet-deep);margin:0.8rem 0 1.2rem;line-height:1.4;">
+                « ${leadFemme.quote} »
+              </p>
+              <p style="font-size:0.92rem;color:var(--gris);">${leadFemme.bio[0]}</p>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;margin-top:1.2rem;">
+              <span class="meta">Province : <b>${leadFemme.prov}</b></span>
+              <span style="color:var(--magenta);font-weight:700;">Découvrir son parcours complet →</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Filtres par Province -->
+      <div class="filters category-filter-nav">
+        ${["Toutes", "Kinshasa", "Sud-Kivu", "Nord-Kivu", "Haut-Katanga", "Lualaba", "Kasaï-Central"].map((c, i) => `
+          <button class="f-chip ${i === 0 ? "on" : ""}" data-f="${c}">${c}</button>
+        `).join("")}
+      </div>
+
+      <!-- Grille des Portraits -->
+      <div class="cards-grid filterable" style="margin-top:1.5rem;">
+        ${listFemmes.map((f, i) => `
+          <a class="card" href="#/femmes/${f.slug}" data-cat="${f.prov}" data-reveal data-delay="${i * 70}">
+            <div class="img" style="aspect-ratio:3/3.8;">
+              <img src="${IMG(f.seed, 600, 750)}" alt="Portrait de ${f.name}" loading="lazy">
+              <span class="card-loc">${f.prov}</span>
+            </div>
+            <div class="body">
+              <span class="tag violet" style="align-self:flex-start;font-size:0.62rem;">${f.role.split('·')[0]}</span>
+              <h3 style="font-size:1.24rem;margin:0.2rem 0;">${f.name}</h3>
+              <p style="font-size:0.85rem;line-height:1.48;font-style:italic;color:#4A3E56;">« ${f.quote.slice(0, 85)}… »</p>
+              <div class="card-foot" style="margin-top:0.8rem;">
+                <span class="meta">${f.role.split('·')[1] || f.prov}</span>
+                <span class="meta" style="color:var(--magenta);font-weight:700;">Lire le portrait →</span>
+              </div>
+            </div>
+          </a>
+        `).join("")}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Proposer un profil -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="banner-cta" data-reveal>
+        <span class="kicker" style="justify-content:center;">Fonctionnalité Participative</span>
+        <h2 style="margin-top:0.8rem;">Et si c'était elle ? Et si c'était vous ?</h2>
+        <p class="lead" style="margin:.8rem auto 0;text-align:center;">Chaque portrait publié sur FemCurrent commence par une proposition de la communauté. Faites connaître une femme dont l'action transforme votre entourage.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#/lumiere">Proposer une femme en lumière</a>
+          <a class="btn btn-ghost" href="#/lumiere">Découvrir le circuit éditorial</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function vPortrait(slug) {
+  const f = FEMMES.find(x => x.slug === slug);
+  if (!f) return v404();
+  const others = FEMMES.filter(x => x.slug !== slug);
+
+  return `
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Femmes à la une", "#/femmes"], [f.name]])}
+      <span class="kicker">Portrait Inspirant · ${f.prov}</span>
+      <h1 class="article-headline">${f.name}</h1>
+      <p class="lead" style="color:var(--violet-deep);font-weight:600;">${f.role}</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      <div class="article-layout-grid">
+        
+        <!-- Left: Grand Format Portrait -->
+        <article class="article-main-col">
+          
+          <div class="por-photo" style="border-radius:20px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:2rem;" data-reveal>
+            <img src="${IMG(f.seed, 1000, 800)}" alt="Portrait de ${f.name}" style="width:100%;height:auto;object-fit:cover;">
+            <div class="article-img-caption">
+              <span>Photo de reportage : ${f.name} à ${f.prov}</span>
+              <span>FemCurrent Matendo</span>
+            </div>
+          </div>
+
+          <!-- Citation signature -->
+          <div class="pull" style="margin:2rem 0;font-size:clamp(1.3rem,2.8vw,1.75rem);" data-reveal>
+            « ${f.quote} »
+          </div>
+
+          <!-- Bio Récit -->
+          <div class="article-content-body" data-reveal>
+            ${f.bio.map(p => `<p>${p}</p>`).join("")}
+          </div>
+
+          <!-- Share & Actions -->
+          ${shareBar()}
+
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:2rem 0;">
+            <a class="btn btn-primary" href="#/lumiere">Proposer une autre femme</a>
+            <a class="btn btn-ghost" href="#/femmes">Tous les portraits</a>
+          </div>
+
+        </article>
+
+        <!-- Right: Sidebar -->
+        ${compSidebar("femmes", "Portrait", f.slug)}
+
+      </div>
+
+      <!-- D'autres parcours inspirants -->
+      <div style="margin-top: 4rem;">
+        <div class="section-head">
+          <div>
+            <span class="kicker">Dans d'autres territoires</span>
+            <h2>D'autres femmes d'impact</h2>
+          </div>
+          <a class="see-all" href="#/femmes">Voir tout l'annuaire →</a>
+        </div>
+        <div class="rail">
+          ${others.slice(0, 4).map(cardFemme).join("")}
+        </div>
+      </div>
+
+    </div>
+  </section>`;
+}
+
+function vInitiatives() {
+  const leadInit = INITIATIVES[0];
+  const otherInits = INITIATIVES.slice(1);
+
+  return `
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Initiatives"]])}
+      <span class="kicker">FemCurrent Matendo</span>
+      <h1>Initiatives à <span class="accent">découvrir</span></h1>
+      <p class="lead">Projets de terrain, organisations communautaires, coopératives agricoles et innovations sociales portés par des femmes à travers toute la République démocratique du Congo.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      
+      <!-- Initiative Coup de Cœur -->
+      <a class="lead-hero-card" href="#/initiatives/${leadInit.slug}" style="border-top:4px solid var(--magenta);margin-bottom:3rem;" data-reveal>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="lead-hero-img" style="min-height:340px;">
+            <img src="${IMG(leadInit.seed, 900, 600)}" alt="${leadInit.name}" loading="lazy">
+            <span style="position:absolute;top:1rem;left:1rem;background:var(--magenta);color:#fff;font-family:var(--mono);font-size:0.68rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:0.35rem 0.8rem;border-radius:6px;">
+              INITIATIVE DU MOIS · ${leadInit.cat}
+            </span>
+          </div>
+          <div class="lead-hero-body" style="padding:2.2rem;">
+            <div>
+              <span style="font-family:var(--mono);font-size:0.72rem;color:var(--orange);font-weight:800;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
+                ORGANISATION : ${leadInit.org} · ${leadInit.prov}
+              </span>
+              <h2 style="font-size:clamp(1.6rem,2.8vw,2.2rem);">${leadInit.name}</h2>
+              <p style="font-size:0.95rem;line-height:1.55;color:#4A3E56;margin:0.8rem 0 1.2rem;">${leadInit.desc}</p>
+              
+              <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-radius:12px;padding:1rem 1.2rem;">
+                <span style="font-family:var(--mono);font-size:0.7rem;font-weight:800;color:var(--violet-deep);text-transform:uppercase;display:block;margin-bottom:0.4rem;">Impact mesuré :</span>
+                <p style="font-size:0.84rem;color:#5A4E66;margin:0;">✓ ${leadInit.detail[0]}</p>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;margin-top:1.2rem;">
+              <span class="meta">Territoire : <b>${leadInit.prov}</b></span>
+              <span style="color:var(--magenta);font-weight:700;">Découvrir l'initiative →</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Filtres par Domaine -->
+      <div class="filters category-filter-nav">
+        ${["Toutes", "Médias", "Numérique", "Agriculture", "Éducation", "Santé"].map((c, i) => `
+          <button class="f-chip ${i === 0 ? "on" : ""}" data-f="${c}">${c}</button>
+        `).join("")}
+      </div>
+
+      <!-- Grille d'initiatives -->
+      <div class="cards-grid c4 filterable" style="margin-top:1.5rem;">
+        ${otherInits.map((x, i) => `
+          <a class="card" href="#/initiatives/${x.slug}" data-cat="${x.cat}" data-reveal data-delay="${i * 70}">
+            <div class="img" style="aspect-ratio:16/10;">
+              <img src="${IMG(x.seed, 600, 400)}" alt="${x.name}" loading="lazy">
+              <span class="card-loc">${x.prov}</span>
+            </div>
+            <div class="body">
+              <span class="tag ${x.cls}" style="align-self:flex-start;font-size:0.62rem;">${x.cat}</span>
+              <h3 style="font-size:1.15rem;margin:0.2rem 0;">${x.name}</h3>
+              <p style="font-size:0.84rem;line-height:1.5;color:var(--gris);">${x.desc}</p>
+              <div class="card-foot" style="margin-top:0.6rem;">
+                <span class="meta">Org. : ${x.org}</span>
+                <span class="meta" style="color:var(--magenta);font-weight:700;">Voir →</span>
+              </div>
+            </div>
+          </a>
+        `).join("")}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Soumettre une initiative -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="banner-cta" data-reveal>
+        <span class="kicker" style="justify-content:center;">Valoriser le terrain</span>
+        <h2 style="margin-top:0.8rem;">Votre initiative mérite d'être vue et soutenue</h2>
+        <p class="lead" style="margin:.8rem auto 0;text-align:center;">Soumettez un projet, une organisation ou une action communautaire : après vérification par notre rédaction, elle rejoint l'annuaire national FemCurrent Matendo.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#/lumiere/initiative">Soumettre une initiative</a>
+          <a class="btn btn-ghost" href="#/lumiere/org">Proposer une organisation</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function vInitiative(slug) {
+  const i = INITIATIVES.find(x => x.slug === slug);
+  if (!i) return v404();
+  const rel = INITIATIVES.filter(x => x.slug !== slug).slice(0, 3);
+
+  return `
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Initiatives", "#/initiatives"], [i.name]])}
+      <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+        <span class="tag ${i.cls}">${i.cat}</span>
+        <span class="meta">Organisation : <b>${i.org}</b> · ${i.prov}</span>
+      </div>
+      <h1 class="article-headline">${i.name}</h1>
+      <p class="lead" style="color:var(--violet-deep);">${i.desc}</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      <div class="article-layout-grid">
+        
+        <article class="article-main-col">
+          <div class="article-featured-img" data-reveal>
+            <img src="${IMG(i.seed, 1100, 650)}" alt="${i.name}">
+            <div class="article-img-caption">
+              <span>Initiative documentée par FemCurrent Matendo</span>
+              <span>Province : ${i.prov}</span>
+            </div>
+          </div>
+
+          <div class="article-content-body" data-reveal>
+            ${i.body.map(p => `<p>${p}</p>`).join("")}
+          </div>
+
+          <!-- Chiffres clés de l'initiative -->
+          <div class="key-facts-card" data-reveal>
+            <h4>✦ Indicateurs & Chiffres Clés</h4>
+            <ul>
+              ${i.detail.map(d => `<li><strong>${d}</strong></li>`).join("")}
+            </ul>
+          </div>
+
+          ${shareBar()}
+
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:2rem 0;">
+            <a class="btn btn-primary" href="#/partenariat">Soutenir cette initiative</a>
+            <a class="btn btn-ghost" href="#/initiatives">Toutes les initiatives</a>
+          </div>
+
+        </article>
+
+        <!-- Sidebar -->
+        ${compSidebar("initiatives", i.cat, i.slug)}
+
+      </div>
+
+      <!-- Initiatives Similaires -->
+      <div style="margin-top: 4rem;">
+        <div class="section-head">
+          <div>
+            <span class="kicker">Dans le même secteur</span>
+            <h2>Initiatives associées</h2>
+          </div>
+          <a class="see-all" href="#/initiatives">Tout voir →</a>
+        </div>
+        <div class="cards-grid">
+          ${rel.map(x => cardInit(x)).join("")}
+        </div>
+      </div>
+
+    </div>
+  </section>`;
+}
+
+function vObs() {
+  return `
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Observatoire"]])}
+      <span class="kicker">FemCurrent Data</span>
+      <h1>L'<span class="accent">Observatoire</span> du leadership féminin</h1>
+      <p class="lead">Données quantitatives, baromètres provinciaux, indicateurs de parité et cartographies d'impact pour éclairer le débat public et guider les politiques de transformation.</p>
+    </div>
+  </section>
+
+  <section class="section obs">
+    <div class="container" style="display:grid;gap:3.5rem">
+      <div data-reveal>
+        <span class="kicker on-dark">Tableau de bord national</span>
+        <h2 style="font-size:clamp(1.8rem,3.4vw,2.5rem);margin-top:0.8rem;">Les indicateurs clés de la parité en RDC</h2>
+        <div class="counters">
+          <div class="counter"><b><span data-count="128">0</span>+</b><span>Femmes leaders documentées</span></div>
+          <div class="counter"><b><span data-count="76">0</span></b><span>Initiatives recensées</span></div>
+          <div class="counter"><b><span data-count="23">0</span></b><span>Études &amp; rapports publiés</span></div>
+          <div class="counter"><b><span data-count="14">0</span></b><span>Provinces couvertes</span></div>
+        </div>
+      </div>
+
+      <!-- Graphique d'évolution -->
+      <div class="chart-panel" data-reveal data-delay="120">
+        <h4>Part des femmes dans les instances décisionnelles provinciales (%)</h4>
+        <div class="chart">
+          <div class="bar"><em>17%</em><i style="--h:48%"></i><span>2020</span></div>
+          <div class="bar"><em>19%</em><i style="--h:54%"></i><span>2021</span></div>
+          <div class="bar"><em>22%</em><i style="--h:62%"></i><span>2022</span></div>
+          <div class="bar"><em>24%</em><i style="--h:68%"></i><span>2023</span></div>
+          <div class="bar"><em>27%</em><i style="--h:77%"></i><span>2024</span></div>
+          <div class="bar"><em>31%</em><i style="--h:88%"></i><span>2025</span></div>
+        </div>
+        <p class="chart-src">Source : Observatoire FemCurrent · Baromètre 2025 · 14 provinces documentées</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="kicker">Indicateurs Détaillés</span>
+          <h2>Tableau de bord 2020 → 2025</h2>
+        </div>
+        <a class="see-all" href="#/ressources">Télécharger les jeux de données →</a>
+      </div>
+
+      <div class="tbl-scroll" data-reveal>
+        <table class="data-table">
+          <tr><th>Indicateur</th><th>2020</th><th>2025</th><th>Tendance</th></tr>
+          <tr><td>Femmes dans les assemblées provinciales</td><td>17 %</td><td>31 %</td><td class="up">▲ +14 pts</td></tr>
+          <tr><td>Femmes à la tête d'organisations communautaires</td><td>24 %</td><td>38 %</td><td class="up">▲ +14 pts</td></tr>
+          <tr><td>Initiatives féminines recensées</td><td>18</td><td>76</td><td class="up">▲ ×4,2</td></tr>
+          <tr><td>Femmes formées au numérique (programme Academy)</td><td>—</td><td>1 900</td><td class="up">▲ depuis 2022</td></tr>
+          <tr><td>Écart d'accès au foncier (hommes / femmes)</td><td>6,8</td><td>5,9</td><td class="down">▼ encore trop élevé</td></tr>
+        </table>
+      </div>
+
+      <!-- Publications phares de l'observatoire -->
+      <div class="section-head" style="margin-top:4rem;" data-reveal>
+        <div>
+          <span class="kicker">Publications phares</span>
+          <h2>Études &amp; Baromètres disponibles</h2>
+        </div>
+        <a class="see-all" href="#/ressources">Toutes les ressources →</a>
+      </div>
+      <div class="cards-grid">
+        ${DOCS.slice(0, 3).map(d => cardDoc(d)).join("")}
+      </div>
+
+      <div class="banner-cta" style="margin-top:3.5rem;" data-reveal>
+        <span class="kicker" style="justify-content:center;">Contribuer aux données</span>
+        <h2 style="margin-top:0.8rem;">Une donnée manque ? Un territoire à documenter ?</h2>
+        <p class="lead" style="margin:.8rem auto 0;text-align:center;">L'Observatoire se construit avec les chercheurs, les universités et les organisations de la société civile.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#/contact">Proposer une donnée</a>
+          <a class="btn btn-ghost" href="#/partenariat">Partenariat universitaire</a>
+        </div>
+      </div>
+
+    </div>
+  </section>`;
+}
+
+function vRessources() {
+  const leadDoc = DOCS[0];
+
+  return `
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Ressources"]])}
+      <span class="kicker">Publications · Rapports · Guides · Kits</span>
+      <h1><span class="accent">Ressources</span> en libre accès</h1>
+      <p class="lead">Toutes les publications de FemCurrent en accès ouvert : études de l'Observatoire, rapports d'enquêtes, guides pratiques et kits de plaidoyer.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      
+      <!-- Document Phare à la Une -->
+      <a class="lead-hero-card" href="#/ressources/${leadDoc.slug}" style="border-top:4px solid var(--orange);margin-bottom:3rem;" data-reveal>
+        <div class="lead-hero-body" style="padding:2.4rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
+            <span class="tag orange">${leadDoc.type} · PUBLICATION PHARE</span>
+            <span class="meta">${leadDoc.year} · ${leadDoc.pages}</span>
+          </div>
+          <h2 style="font-size:clamp(1.5rem,2.8vw,2.1rem);">${leadDoc.title}</h2>
+          <p style="font-size:0.95rem;line-height:1.6;color:#4A3E56;margin:0.8rem 0 1.2rem;">${leadDoc.desc}</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;">
+            <span class="meta">Publication officielle · FemCurrent Data</span>
+            <span style="color:var(--magenta);font-weight:800;">Consulter &amp; Télécharger le rapport →</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Filtres Document -->
+      <div class="filters category-filter-nav">
+        ${["Tous", "Étude", "Rapport", "Guide", "Kit", "Note de plaidoyer", "Cartographie"].map((c, i) => `
+          <button class="f-chip ${i === 0 ? "on" : ""}" data-f="${c}">${c}</button>
+        `).join("")}
+      </div>
+
+      <!-- Grille des documents -->
+      <div class="cards-grid filterable" style="margin-top:1.5rem;">
+        ${DOCS.map(d => `
+          <div data-cat="${d.type}" style="display:flex">
+            ${cardDoc(d)}
+          </div>
+        `).join("")}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Licence & Usage -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="banner-cta" data-reveal>
+        <span class="kicker" style="justify-content:center;">Accès Libre & Partage</span>
+        <h2 style="margin-top:0.8rem;">Utilisez ces ressources, citez-les, faites-les circuler</h2>
+        <p class="lead" style="margin:.8rem auto 0;text-align:center;">Toutes nos publications sont sous licence ouverte. Pour un usage institutionnel, académique ou pédagogique, contactez notre équipe.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#/contact">Demander un usage spécifique</a>
+          <a class="btn btn-ghost" href="#/partenariat">Devenir partenaire de diffusion</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function vDoc(slug) {
+  const d = DOCS.find(x => x.slug === slug);
+  if (!d) return v404();
+  const rel = DOCS.filter(x => x.slug !== slug).slice(0, 3);
+
+  return `
+  <section class="page-hero">
+    <div class="container">
+      ${crumb([["Ressources", "#/ressources"], [d.type]])}
+      <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+        <span class="tag ${d.cls}">${d.type}</span>
+        <span class="meta">${d.year} · ${d.pages} · FemCurrent Media</span>
+      </div>
+      <h1 class="article-headline" style="max-width:960px;">${d.title}</h1>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      <div class="article-layout-grid">
+        
+        <article class="article-main-col">
+          <p class="article-chapeau" style="border-left-color:var(--orange);">${d.desc}</p>
+
+          <h3 style="font-family:var(--display);font-size:1.4rem;color:var(--violet-deep);margin:2.5rem 0 1.2rem;">Sommaire et chapitres inclus</h3>
+          <div class="acc-list">
+            ${d.chap.map((c, i) => `
+              <div class="acc">
+                <button type="button"><span>Chapitre ${i + 1} — ${c}</span></button>
+                <div class="acc-body">Ce chapitre est intégralement inclus dans le document PDF officiel téléchargeable (${d.pages}). Données, graphiques et analyses détaillées.</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <!-- Citation académique -->
+          <div class="key-facts-card" style="margin-top:2.5rem;" data-reveal>
+            <h4>✦ Citation recommandée</h4>
+            <p style="font-size:0.86rem;font-family:var(--mono);color:#4A3E56;margin:0;line-height:1.5;">
+              Observatoire FemCurrent (${d.year}). « ${d.title} ». Plateforme FemCurrent RDC. Kinshasa, ${d.pages}.
+            </p>
+          </div>
+
+          <!-- Téléchargement & Partage -->
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:2.2rem 0;">
+            <button class="btn btn-primary" id="dlBtn" style="padding:1rem 2rem;">⬇ Télécharger le document PDF (${d.pages})</button>
+            <a class="btn btn-ghost" href="#/ressources">Toutes les ressources</a>
+          </div>
+
+          ${shareBar()}
+
+        </article>
+
+        <!-- Sidebar -->
+        ${compSidebar("ressources", d.type, d.slug)}
+
+      </div>
+
+      <!-- Autres publications -->
+      <div style="margin-top: 4rem;">
+        <div class="section-head">
+          <div>
+            <span class="kicker">À consulter également</span>
+            <h2>Autres publications de l'Observatoire</h2>
+          </div>
+          <a class="see-all" href="#/ressources">Tout voir →</a>
+        </div>
+        <div class="cards-grid">
+          ${rel.map(x => cardDoc(x)).join("")}
+        </div>
+      </div>
+
+    </div>
+  </section>`;
+}
+
+function vAPropos(){
+  return heroPage("Plateforme de connaissances · Médias · Innovation sociale","À propos de <span class='accent'>FemCurrent</span>","FemCurrent informe, documente et met en lumière les femmes, leurs initiatives et les transformations qu'elles portent en République démocratique du Congo et dans les Grands Lacs.",crumb([["À propos"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container">
+  
+  <!-- Manifeste Éditorial -->
+  <div style="max-width:960px;margin:0 auto 4rem;" data-reveal>
+    <div class="section-head" style="margin-bottom:1.4rem;">
+      <div><span class="kicker">Manifeste Média</span><h2>Pourquoi FemCurrent existe</h2></div>
+    </div>
+    <div class="article-body" style="font-size:1.15rem;line-height:1.85;">
+      <p>FemCurrent est une plateforme indépendante de connaissances, de journalisme et d'innovation sociale qui valorise le leadership des femmes et soutient le changement social. Nous nous situons à la croisée de trois univers complémentaires : <strong>les médias</strong>, pour raconter les réalités avec rigueur ; <strong>la connaissance</strong>, pour produire des données fiables ; <strong>l'innovation sociale</strong>, pour encourager et connecter les initiatives de terrain.</p>
+      
+      <div class="pull" style="margin:2.4rem 0;font-size:clamp(1.25rem,2.6vw,1.6rem);">
+        « La parole et l'action des femmes ne sont pas un supplément d'âme du débat public. Elles en constituent le moteur essentiel et l'avenir. »
+      </div>
+
+      <p>Notre action commence au cœur de la République démocratique du Congo dans les 26 provinces, avec pour ambition d'ouvrir nos enquêtes et nos données à l'ensemble de la région des Grands Lacs et du continent africain.</p>
+    </div>
   </div>
- </div>
- <div class="container" style="margin-top:3rem">
-  <div class="section-head"><h3 style="font-size:1.5rem">Initiatives similaires</h3><a class="see-all" href="#/initiatives">Tout voir →</a></div>
-  <div class="cards-grid">${rel.map(x=>cardInit(x)).join("")}</div>
- </div></section>`;}
 
-function vObs(){return `<section class="page-hero"><div class="container">${crumb([["Observatoire"]])}
-<span class="kicker">FemCurrent Data</span><h1>L'<span class="accent">Observatoire</span> du leadership féminin</h1>
-<p class="lead">Données, études, rapports, baromètres, indicateurs et cartographies pour comprendre les dynamiques du leadership des femmes — et agir.</p></div></section>
-<section class="section obs"><div class="container" style="display:grid;gap:3rem">
-<div data-reveal><h2 style="font-size:1.7rem">Les chiffres qui comptent</h2>
-<div class="counters">
- <div class="counter"><b><span data-count="128">0</span>+</b><span>Femmes leaders documentées</span></div>
- <div class="counter"><b><span data-count="76">0</span></b><span>Initiatives recensées</span></div>
- <div class="counter"><b><span data-count="23">0</span></b><span>Études &amp; rapports publiés</span></div>
- <div class="counter"><b><span data-count="14">0</span></b><span>Provinces couvertes</span></div>
- </div></div>
-<div class="chart-panel" data-reveal data-delay="120">
- <h4>Part des femmes dans les instances décisionnelles provinciales (%)</h4>
- <div class="chart">
-  <div class="bar"><em>17%</em><i style="--h:48%"></i><span>2020</span></div><div class="bar"><em>19%</em><i style="--h:54%"></i><span>2021</span></div>
-  <div class="bar"><em>22%</em><i style="--h:62%"></i><span>2022</span></div><div class="bar"><em>24%</em><i style="--h:68%"></i><span>2023</span></div>
-  <div class="bar"><em>27%</em><i style="--h:77%"></i><span>2024</span></div><div class="bar"><em>31%</em><i style="--h:88%"></i><span>2025</span></div>
- </div><p class="chart-src">Source : Observatoire FemCurrent · Collecte 2025 · Données illustratives</p></div>
-</div></section>
-<section class="section"><div class="container">
-<div class="section-head" data-reveal><div><span class="kicker">Indicateurs</span><h2>Tableau de bord 2020 → 2025</h2></div><a class="see-all" href="#/ressources">Télécharger les données →</a></div>
-<div class="tbl-scroll" data-reveal><table class="data-table">
-<tr><th>Indicateur</th><th>2020</th><th>2025</th><th>Tendance</th></tr>
-<tr><td>Femmes dans les assemblées provinciales</td><td>17 %</td><td>31 %</td><td class="up">▲ +14 pts</td></tr>
-<tr><td>Femmes à la tête d'organisations communautaires</td><td>24 %</td><td>38 %</td><td class="up">▲ +14 pts</td></tr>
-<tr><td>Initiatives féminines recensées</td><td>18</td><td>76</td><td class="up">▲ ×4,2</td></tr>
-<tr><td>Femmes formées au numérique (programme Academy)</td><td>—</td><td>1 900</td><td class="up">▲ depuis 2022</td></tr>
-<tr><td>Écart d'accès au foncier (hommes / femmes)</td><td>6,8</td><td>5,9</td><td class="down">▼ encore trop élevé</td></tr>
-</table></div>
-<div class="section-head" style="margin-top:3.4rem" data-reveal><div><span class="kicker">Publications phares</span><h2>Études &amp; baromètres</h2></div><a class="see-all" href="#/ressources">Toutes les ressources →</a></div>
-<div class="cards-grid">${DOCS.slice(0,3).map(d=>cardDoc(d)).join("")}</div>
-<div class="banner-cta" style="margin-top:3rem" data-reveal><h2>Une donnée manque ? Un territoire à documenter ?</h2>
-<p class="lead" style="margin:.8rem auto 0;text-align:center">L'Observatoire se construit aussi grâce aux signalements de la communauté et des chercheurs.</p>
-<div class="btns"><a class="btn btn-primary" href="#/contact">Proposer une donnée</a><a class="btn btn-ghost" href="#/espaces/data">Découvrir FemCurrent Data</a></div></div>
-</div></section>`;}
+  <!-- 3 Piliers d'Action (Cartes Numérotées Standardisées) -->
+  <div style="margin-bottom:4.5rem;" data-reveal>
+    <div class="section-head" style="margin-bottom:1.8rem;">
+      <div><span class="kicker">Nos 3 Piliers Fondateurs</span><h2>Une approche intégrée unique</h2></div>
+    </div>
+    <div class="editorial-step-grid c3">
+      <div class="editorial-step-card" data-reveal>
+        <span class="step-num-badge">01</span>
+        <h3 class="step-card-title">Le Média d'Impact</h3>
+        <p class="step-card-text">Journalisme d'investigation, reportages de proximité, décryptages sans complaisance et portraits grand format pour porter la voix des femmes.</p>
+      </div>
+      <div class="editorial-step-card" data-reveal data-delay="80">
+        <span class="step-num-badge">02</span>
+        <h3 class="step-card-title">La Connaissance &amp; Data</h3>
+        <p class="step-card-text">L'Observatoire du leadership féminin produit des baromètres provinciaux, cartographies et indicateurs rigoureux pour guider l'action publique.</p>
+      </div>
+      <div class="editorial-step-card" data-reveal data-delay="160">
+        <span class="step-num-badge">03</span>
+        <h3 class="step-card-title">L'Action &amp; Innovation</h3>
+        <p class="step-card-text">FemCurrent Matendo, Academy et Lab accompagnent concrètement les projets communautaires et soutiennent leur passage à l'échelle.</p>
+      </div>
+    </div>
+  </div>
 
-function vRessources(){return heroPage("Publications · Rapports · Guides · Kits","<span class='accent'>Ressources</span>","Toutes les publications de FemCurrent en accès libre : études, rapports, guides, kits de plaidoyer, notes et documents institutionnels.",crumb([["Ressources"]]))+
-`<section class="section"><div class="container">
-<div class="filters">${["Tous","Étude","Rapport","Guide","Kit","Note de plaidoyer","Cartographie"].map((c,i)=>`<button class="f-chip ${i===0?"on":""}" data-f="${c}">${c}</button>`).join("")}</div>
-<div class="cards-grid filterable">${DOCS.map(d=>`<div data-cat="${d.type}" style="display:flex">${cardDoc(d)}</div>`).join("").replace(/<div data-cat="([^"]*)" style="display:flex">|<\/div>(?=<div data-cat|<\/div>$)/g,m=>m)}</div>
-<div class="banner-cta" style="margin-top:3rem" data-reveal><h2>Utilisez ces ressources, citez-les, faites-les circuler</h2>
-<p class="lead" style="margin:.8rem auto 0;text-align:center">Nos publications sont gratuites. Pour un usage institutionnel ou pédagogique, contactez-nous.</p>
-<div class="btns"><a class="btn btn-primary" href="#/contact">Demander un usage spécifique</a></div></div>
-</div></section>`;}
+  <!-- Principes Éditoriaux & Éthiques -->
+  <div style="margin-bottom:4.5rem;" data-reveal>
+    <div class="section-head" style="margin-bottom:1.8rem;">
+      <div><span class="kicker">Déontologie</span><h2>Nos principes éditoriaux</h2></div>
+      <a class="see-all" href="#/legal/politique-editoriale">Lire la charte complète →</a>
+    </div>
+    <div class="cards-grid" style="grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:1.3rem;">
+      <div class="info-cell" style="padding:1.6rem;background:#FFFFFF;border:1px solid #E8DFEE;border-radius:16px;">
+        <span class="emo" style="color:var(--magenta);font-size:1.4rem;">✦</span>
+        <h3 style="font-size:1.1rem;margin:0.5rem 0 0.3rem;">Double Vérification</h3>
+        <p style="font-size:0.88rem;color:#5A4E66;margin:0;">Chaque fait est vérifié par au moins deux membres de la rédaction avant parution.</p>
+      </div>
+      <div class="info-cell" style="padding:1.6rem;background:#FFFFFF;border:1px solid #E8DFEE;border-radius:16px;">
+        <span class="emo" style="color:var(--magenta);font-size:1.4rem;">✦</span>
+        <h3 style="font-size:1.1rem;margin:0.5rem 0 0.3rem;">Protection des Sources</h3>
+        <p style="font-size:0.88rem;color:#5A4E66;margin:0;">Anonymat et canaux sécurisés pour préserver la sécurité de toutes les témoins.</p>
+      </div>
+      <div class="info-cell" style="padding:1.6rem;background:#FFFFFF;border:1px solid #E8DFEE;border-radius:16px;">
+        <span class="emo" style="color:var(--magenta);font-size:1.4rem;">✦</span>
+        <h3 style="font-size:1.1rem;margin:0.5rem 0 0.3rem;">Consentement Éclairé</h3>
+        <p style="font-size:0.88rem;color:#5A4E66;margin:0;">Respect scrupuleux de la dignité et recueil explicite de l'accord des personnes citées.</p>
+      </div>
+      <div class="info-cell" style="padding:1.6rem;background:#FFFFFF;border:1px solid #E8DFEE;border-radius:16px;">
+        <span class="emo" style="color:var(--magenta);font-size:1.4rem;">✦</span>
+        <h3 style="font-size:1.1rem;margin:0.5rem 0 0.3rem;">Ne Pas Nuire</h3>
+        <p style="font-size:0.88rem;color:#5A4E66;margin:0;">Évaluation préalable des risques éthiques et refus de toute forme de sensationnalisme.</p>
+      </div>
+    </div>
+  </div>
 
-function vDoc(slug){
- const d=DOCS.find(x=>x.slug===slug); if(!d) return v404();
- const rel=DOCS.filter(x=>x.slug!==slug).slice(0,3);
- return `<section class="page-hero"><div class="container article-wrap">${crumb([["Ressources","#/ressources"],[d.type]])}
- <span class="tag ${d.cls}">${d.type}</span><h1 style="font-size:clamp(1.7rem,4.4vw,2.7rem);margin-top:1rem">${d.title}</h1>
- <div class="meta" style="margin-top:1rem">${d.year} · ${d.pages} · Publication FemCurrent</div></div></section>
- <section class="section"><div class="article-wrap">
- <p class="lead" style="max-width:none">${d.desc}</p>
- <h3 style="margin:2rem 0 1rem">Contenu du document</h3>
- <div class="acc-list">${d.chap.map((c,i)=>`<div class="acc"><button type="button"><span>Chapitre ${i+1} — ${c}</span></button><div class="acc-body">Ce chapitre est inclus dans le document téléchargeable (${d.pages}).</div></div>`).join("")}</div>
- <div style="display:flex;gap:.9rem;flex-wrap:wrap;margin-top:2rem">
-  <button class="btn btn-primary" id="dlBtn">⬇ Télécharger le PDF (${d.pages})</button>
-  <a class="btn btn-ghost" href="#/ressources">Toutes les ressources</a></div>
- ${shareBar()}
- </div>
- <div class="container" style="margin-top:3rem">
-  <div class="section-head"><h3 style="font-size:1.5rem">Autres publications</h3><a class="see-all" href="#/ressources">Tout voir →</a></div>
-  <div class="cards-grid">${rel.map(x=>cardDoc(x)).join("")}</div>
- </div></section>`;}
+  <!-- Trajectoire & Feuille de Route (Listes Numérotées en Blocs) -->
+  <div style="margin-bottom:4.5rem;" data-reveal>
+    <div class="section-head" style="margin-bottom:1.8rem;">
+      <div><span class="kicker">Feuille de Route</span><h2>Notre trajectoire de développement</h2></div>
+    </div>
+    <div class="editorial-num-list">
+      <div class="editorial-num-item">
+        <div class="num-badge-box">01</div>
+        <div class="num-item-content">
+          <h4>Phase 1 — Fondations &amp; Média d'Investigation</h4>
+          <p>Lancement des actualités, enquêtes FemCurrent Investigates, annuaire des femmes à la une, initiatives de terrain, médiathèque et formulaires participatifs.</p>
+        </div>
+      </div>
+      <div class="editorial-num-item">
+        <div class="num-badge-box">02</div>
+        <div class="num-item-content">
+          <h4>Phase 2 — Montée en puissance &amp; Observatoire</h4>
+          <p>Déploiement du baromètre de la parité dans les 26 provinces, masterclass FemCurrent Academy et structuration du réseau de correspondantes locales.</p>
+        </div>
+      </div>
+      <div class="editorial-num-item">
+        <div class="num-badge-box">03</div>
+        <div class="num-item-content">
+          <h4>Phase 3 — Écosystème Panafricain &amp; Données Ouvertes</h4>
+          <p>Ouverture de l'API FemCurrent Data, partenariats avec les universités africaines, plaidoyer institutionnel et accélération de l'impact social.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-function vAPropos(){return heroPage("Plateforme de connaissances · Médias · Innovation sociale","À propos de <span class='accent'>FemCurrent</span>","FemCurrent informe, documente et met en lumière les femmes, leurs initiatives et les transformations qu'elles portent, en commençant par la République démocratique du Congo.",crumb([["À propos"]]))+
-`<section class="section"><div class="container" style="display:grid;gap:3rem;grid-template-columns:1fr">
-<div style="max-width:820px;margin-inline:auto" data-reveal>
- <h2>Notre <span class="accent">mission</span></h2>
- <div class="article-body" style="margin-top:1rem">
- <p>FemCurrent est une plateforme de connaissances, de médias et d'innovation sociale qui valorise le leadership des femmes et soutient le changement social. Nous nous situons à la croisée de trois univers : les médias, pour informer et raconter ; la connaissance, pour produire et diffuser des données ; l'innovation sociale, pour encourager les solutions.</p>
- <p>Notre action commence en République démocratique du Congo, avec une ambition d'ouverture progressive à la région des Grands Lacs, puis à d'autres espaces francophones et anglophones.</p></div>
-</div>
-<div class="info-strip" data-reveal>
- <div class="info-cell"><span class="emo"></span><h3>La femme</h3><p>Les femmes sont au cœur de la plateforme : leurs voix, leurs actions, leurs réalités.</p></div>
- <div class="info-cell"><span class="emo"></span><h3>Le microphone</h3><p>La voix, la parole, le témoignage, l'information et les médias comme outils d'émancipation.</p></div>
- <div class="info-cell"><span class="emo">⭕</span><h3>Le cercle</h3><p>La communauté, la circulation de l'information, le mouvement et la transformation.</p></div>
-</div>
-<div style="max-width:820px;margin:2.5rem auto 0">
- <h2 data-reveal>Nos principes <span class="accent">éditoriaux</span></h2>
- <div class="article-body" data-reveal style="margin-top:1rem"><p>Vérification des informations, protection des sources, consentement éclairé, protection des données personnelles, dignité des personnes, principe de « ne pas nuire », équilibre des points de vue et indépendance éditoriale guident chacune de nos publications.</p></div>
- <a class="btn btn-dark" href="#/legal/politique-editoriale" style="margin-top:1.4rem">Lire la politique éditoriale complète</a>
-</div>
-<div style="max-width:820px;margin:2.5rem auto 0">
- <h2 data-reveal>Notre <span class="accent">trajectoire</span></h2>
- <div class="timeline" data-reveal>
-  <div class="tl-item"><b>Phase 1 — Lancement</b><h4>Les fondations</h4><p>Actualités, enquêtes, femmes à la une, initiatives, ressources, médiathèque, agenda, formulaires participatifs, Matendo &amp; Voices.</p></div>
-  <div class="tl-item"><b>Phase 2 — Développement</b><h4>Monter en puissance</h4><p>Academy, Data, observatoire interactif, annuaire national, carte des initiatives, espace contributrices.</p></div>
-  <div class="tl-item"><b>Phase 3 — Innovation</b><h4>Ouvrir l'écosystème</h4><p>Lab, Impact, application mobile, base de données ouverte, API et outils d'analyse avancés.</p></div>
- </div>
-</div>
-<div class="banner-cta" style="margin-top:3rem" data-reveal><h2>Faire partie de l'histoire</h2>
-<p class="lead" style="margin:.8rem auto 0;text-align:center">Contribuez, proposez, partenariez : FemCurrent se construit avec sa communauté.</p>
-<div class="btns"><a class="btn btn-primary" href="#/lumiere">Mettre une femme en lumière</a><a class="btn btn-ghost" href="#/partenariat">Devenir partenaire</a><a class="btn btn-ghost" href="#/contribuer">Contribuer</a></div></div>
-</div></section>`;}
+  <!-- CTA Communautaire Pleine Largeur -->
+  <div class="banner-cta" data-reveal>
+    <span class="kicker" style="justify-content:center;">Participer au média</span>
+    <h2 style="margin-top:0.8rem;">Faire partie de l'histoire de FemCurrent</h2>
+    <p class="lead" style="margin:.8rem auto 0;text-align:center">Proposez un profil, soumettez une initiative ou rejoignez notre réseau de partenaires.</p>
+    <div class="btns">
+      <a class="btn btn-primary" href="#/lumiere">Mettre une femme en lumière</a>
+      <a class="btn btn-ghost" href="#/partenariat">Devenir partenaire</a>
+      <a class="btn btn-ghost" href="#/contribuer">Rejoindre la rédaction</a>
+    </div>
+  </div>
 
-function vContact(){return heroPage("Support · Signalement · Partenariat","Nous <span class='accent'>contacter</span>","Une question, un signalement, une demande de partenariat ou simplement une histoire à nous raconter : la rédaction vous lit.",crumb([["Contact"]]))+
-`<section class="section"><div class="container" style="display:grid;gap:3rem">
-<div class="info-strip" data-reveal>
- <div class="info-cell"><span class="emo"></span><h3>E-mail</h3><p>contact@femcurrent.media<br>Réponse sous 48 h ouvrées.</p></div>
- <div class="info-cell"><span class="emo"></span><h3>WhatsApp</h3><p>Le canal le plus rapide pour joindre la rédaction et recevoir nos alertes.</p></div>
- <div class="info-cell"><span class="emo"></span><h3>Bureau</h3><p>Kinshasa, Gombe<br>Sur rendez-vous uniquement.</p></div>
-</div>
-<div style="display:grid;gap:2.5rem" class="contact-grid" data-reveal>
-<div class="form-card" style="max-width:720px">
- <h3 style="margin-bottom:1.3rem">Écrivez-nous</h3>
- <form id="contactForm" novalidate><div class="form-grid g2">
-  <div class="field"><label>Nom complet *</label><input type="text" required placeholder="Votre nom"></div>
-  <div class="field"><label>E-mail ou téléphone *</label><input type="text" required placeholder="Pour vous répondre"></div>
-  <div class="field full"><label>Sujet *</label><select required>
-   <option value="">Choisir un sujet…</option><option>Question générale</option><option>Signaler une information à vérifier</option><option>Demande de partenariat</option><option>Presse &amp; médias</option><option>Support technique</option><option>Autre</option></select></div>
-  <div class="field full"><label>Message *</label><textarea required placeholder="Votre message…"></textarea></div>
- </div><label class="consent" style="margin:.8rem 0"><input type="checkbox" required><span>J'accepte que mes données soient utilisées uniquement pour traiter ma demande (voir la <a href="#/legal/confidentialite" style="color:var(--magenta)">politique de confidentialité</a>). *</span></label>
- <button class="btn btn-primary" type="submit" style="width:100%">Envoyer le message</button></form>
- <div class="success-box" id="contactOk"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
- <h3>Message envoyé !</h3><p>Merci. Notre équipe vous répondra sous 48 h ouvrées.</p></div>
-</div>
-<div style="display:flex;flex-direction:column;gap:1rem;max-width:720px">
- <a class="event" href="#/lumiere" style="margin:0"><div class="event-date"><b></b><span>Lumière</span></div><div><h3>Mettre une femme en lumière</h3><div class="meta">Proposer un profil, une initiative, une organisation, un témoignage.</div></div></a>
- <a class="event" href="#/partenariat" style="margin:0"><div class="event-date"><b></b><span>Partenariat</span></div><div><h3>Devenir partenaire</h3><div class="meta">Organisations, médias, institutions, chercheurs.</div></div></a>
- <a class="event" href="#/contribuer" style="margin:0"><div class="event-date"><b>️</b><span>Contribuer</span></div><div><h3>Devenir contributrice / contributeur</h3><div class="meta">Rejoindre la rédaction et le réseau de correspondantes.</div></div></a>
- <a class="event" href="#/faq" style="margin:0"><div class="event-date"><b></b><span>Aide</span></div><div><h3>Questions fréquentes</h3><div class="meta">Les réponses aux questions les plus posées.</div></div></a>
-</div>
-</div>
-</div></section>`;}
+  </div></section>`;
+}
+
+function vContact(){
+  return heroPage("Support · Signalement · Partenariat","Nous <span class='accent'>contacter</span>","Une question, un signalement confidentiel, une demande de partenariat ou une histoire à nous raconter : la rédaction de FemCurrent vous lit et vous répond.",crumb([["Contact"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container">
+  
+  <!-- 3 Coordonnées Cartes -->
+  <div class="editorial-step-grid c3" style="margin-top:0;margin-bottom:3rem;" data-reveal>
+    <div class="editorial-step-card">
+      <span class="step-num-badge" style="font-size:1.6rem;color:var(--violet-deep);">✉</span>
+      <h3 class="step-card-title">Courrier Électronique</h3>
+      <p class="step-card-text"><b>contact@femcurrent.media</b><br>Notre équipe vous répond sous 48 h ouvrées.</p>
+    </div>
+    <div class="editorial-step-card">
+      <span class="step-num-badge" style="font-size:1.6rem;color:#25D366;">💬</span>
+      <h3 class="step-card-title">Canal WhatsApp</h3>
+      <p class="step-card-text">Le canal le plus direct pour joindre la rédaction et transmettre un signalement urgent.</p>
+    </div>
+    <div class="editorial-step-card">
+      <span class="step-num-badge" style="font-size:1.6rem;color:var(--orange);">📍</span>
+      <h3 class="step-card-title">Bureau de Rédaction</h3>
+      <p class="step-card-text">Kinshasa, Gombe (RDC)<br>Accueil et rencontres sur rendez-vous uniquement.</p>
+    </div>
+  </div>
+
+  <!-- Formulaire Pleine Largeur -->
+  <div class="full-form-wrapper" data-reveal>
+    <div class="form-card full-width">
+      <div class="section-head" style="margin-bottom:1.6rem;">
+        <div><span class="kicker">Formulaire Direct</span><h2 style="font-size:1.6rem;">Écrivez à la rédaction</h2></div>
+      </div>
+      <form id="contactForm" novalidate>
+        <div class="form-grid g2">
+          <div class="field"><label>Nom complet *</label><input type="text" required placeholder="Votre nom et prénom"></div>
+          <div class="field"><label>E-mail ou numéro de téléphone *</label><input type="text" required placeholder="Ex. : contact@exemple.org ou +243..."></div>
+          <div class="field full"><label>Sujet de votre message *</label>
+            <select required>
+              <option value="">Sélectionnez un sujet…</option>
+              <option>Question générale</option>
+              <option>Signaler une information à vérifier</option>
+              <option>Demande de partenariat / Sponsoring</option>
+              <option>Presse &amp; Médias</option>
+              <option>Support technique</option>
+              <option>Autre demande</option>
+            </select>
+          </div>
+          <div class="field full"><label>Votre message détaillé *</label><textarea required placeholder="Expliquez-nous en détail votre demande ou votre signalement…"></textarea></div>
+        </div>
+        <label class="consent" style="margin:1.2rem 0;">
+          <input type="checkbox" required>
+          <span>J'accepte que mes données soient traitées exclusivement par la rédaction de FemCurrent conformément à notre <a href="#/legal/confidentialite" style="color:var(--magenta);text-decoration:underline;">politique de confidentialité</a>. *</span>
+        </label>
+        <button class="btn btn-primary" type="submit" style="width:100%;padding:1.1rem;font-size:1rem;">Envoyer le message à la rédaction ✦</button>
+      </form>
+      <div class="success-box" id="contactOk">
+        <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
+        <h3>Message bien reçu !</h3>
+        <p>Merci. Notre rédaction examinera votre message et vous répondra sous 48 h ouvrées.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cartes d'Actions Rapides -->
+  <div style="margin-top:4rem;" data-reveal>
+    <div class="section-head" style="margin-bottom:1.5rem;">
+      <div><span class="kicker">Accès Rapide</span><h2>D'autres façons d'interagir</h2></div>
+    </div>
+    <div class="cards-grid" style="grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));">
+      <a class="event" href="#/lumiere" style="margin:0;"><div class="event-date"><b>✦</b><span>Lumière</span></div><div><h3>Mettre une femme en lumière</h3><div class="meta">Proposer un profil remarquable.</div></div></a>
+      <a class="event" href="#/partenariat" style="margin:0;"><div class="event-date"><b>✦</b><span>Partenariat</span></div><div><h3>Devenir partenaire</h3><div class="meta">Collaborations et mécénat.</div></div></a>
+      <a class="event" href="#/contribuer" style="margin:0;"><div class="event-date"><b>✦</b><span>Écrire</span></div><div><h3>Devenir contributrice</h3><div class="meta">Rejoindre les correspondantes.</div></div></a>
+      <a class="event" href="#/faq" style="margin:0;"><div class="event-date"><b>✦</b><span>Aide</span></div><div><h3>Questions fréquentes</h3><div class="meta">Les réponses aux questions.</div></div></a>
+    </div>
+  </div>
+
+  </div></section>`;
+}
 
 function vLumiere(tab){
  const sel={femme:"p-femme",initiative:"p-init",org:"p-org",temoignage:"p-temoin"};
  const active=sel[tab]||"p-femme";
- return heroPage("Fonctionnalité signature","Mettre une femme <span class='accent'>en lumière</span>","Vous connaissez une femme dont l'action mérite d'être racontée ? Proposez-la. Après vérification et consentement, son histoire est publiée puis adaptée pour chaque réseau social.",crumb([["Participer"],["Mettre en lumière"]]))+
-`<section class="section"><div class="container" style="display:grid;gap:3rem">
-<div class="circuit" data-reveal>
- <div class="step"><b>1</b><h4>Proposition</h4><p>Vous envoyez votre proposition en 2 minutes.</p></div>
- <div class="step"><b>2</b><h4>Vérification</h4><p>Notre équipe vérifie les faits et recueille le consentement.</p></div>
- <div class="step"><b>3</b><h4>Publication</h4><p>L'histoire est publiée sur FemCurrent.</p></div>
- <div class="step"><b>4</b><h4>Réseaux sociaux</h4><p>Visuel Instagram/Facebook, vidéo TikTok, extrait LinkedIn, relais WhatsApp.</p></div>
- <div class="step"><b>5</b><h4>Retour au site</h4><p>Tous les canaux ramènent l'audience vers la plateforme.</p></div>
-</div>
-<div style="display:grid;gap:2.5rem" class="lum-grid2">
-<div class="form-card" style="max-width:720px">
- <h3 style="margin-bottom:1.3rem">Votre proposition</h3>
- <div class="lum-tabs" role="tablist">
-  <button class="lum-tab" role="tab" aria-selected="${active==="p-femme"}" data-panel="p-femme">Femme leader<small>Proposer un profil</small></button>
-  <button class="lum-tab" role="tab" aria-selected="${active==="p-init"}" data-panel="p-init">Initiative<small>Proposer un projet</small></button>
-  <button class="lum-tab" role="tab" aria-selected="${active==="p-org"}" data-panel="p-org">Organisation<small>Proposer une structure</small></button>
-  <button class="lum-tab" role="tab" aria-selected="${active==="p-temoin"}" data-panel="p-temoin">Témoignage<small>Raconter une histoire</small></button>
+ return heroPage("Fonctionnalité signature","Mettre une femme <span class='accent'>en lumière</span>","Vous connaissez une femme dont l'action mérite d'être racontée ? Proposez-la. Après vérification et consentement, son histoire est publiée sur le site puis relayée sur tous nos canaux.",crumb([["Participer"],["Mettre en lumière"]]))+
+ `<section class="section" style="padding-top:2.5rem;"><div class="container">
+ 
+ <!-- Circuit en 5 Étapes Standardisé en Cartes Numérotées -->
+ <div class="section-head" style="margin-bottom:1.8rem;" data-reveal>
+   <div><span class="kicker">Processus Éditorial</span><h2>Le circuit en 5 étapes</h2></div>
  </div>
- <form id="lumForm" novalidate>
-  <div class="lum-panel ${active==="p-femme"?"on":""}" id="p-femme">
-   <div class="field"><label>Nom complet de la femme *</label><input type="text" required placeholder="Ex. : Espérance Kalunga"></div>
-   <div class="field"><label>Province</label><select><option>Kinshasa</option><option>Nord-Kivu</option><option>Sud-Kivu</option><option>Haut-Katanga</option><option>Lualaba</option><option>Kasaï-Central</option><option>Autre…</option></select></div>
-   <div class="field"><label>Son rôle / son domaine *</label><input type="text" required placeholder="Ex. : Agronome, coopérative agricole"></div></div>
-  <div class="lum-panel ${active==="p-init"?"on":""}" id="p-init">
-   <div class="field"><label>Nom de l'initiative *</label><input type="text" required placeholder="Ex. : Code Elongo"></div>
-   <div class="field"><label>Domaine</label><select><option>Éducation</option><option>Santé</option><option>Numérique</option><option>Agriculture</option><option>Économie</option><option>Médias</option></select></div>
-   <div class="field"><label>Ville / Territoire *</label><input type="text" required placeholder="Ex. : Kinshasa, commune de Kalamu"></div></div>
-  <div class="lum-panel ${active==="p-org"?"on":""}" id="p-org">
-   <div class="field"><label>Nom de l'organisation *</label><input type="text" required placeholder="Ex. : Collectif Sauti"></div>
-   <div class="field"><label>Type</label><select><option>Association</option><option>ONG</option><option>Coopérative</option><option>Collectif informel</option><option>Institution</option></select></div>
-   <div class="field"><label>Ville / Territoire *</label><input type="text" required placeholder="Ex. : Kindu, Maniema"></div></div>
-  <div class="lum-panel ${active==="p-temoin"?"on":""}" id="p-temoin">
-   <div class="field"><label>Votre nom (ou « Anonyme ») *</label><input type="text" required placeholder="Ex. : Anonyme"></div>
-   <div class="field"><label>Votre histoire en quelques lignes *</label><textarea required placeholder="Racontez-nous ce que vous avez vécu ou observé…"></textarea></div></div>
-  <div class="field"><label>Votre téléphone ou e-mail *</label><input type="text" required placeholder="Pour vous recontacter"></div>
-  <label class="consent"><input type="checkbox" id="lumConsent"><span>Je confirme le consentement de la personne concernée et j'accepte que FemCurrent vérifie ces informations avant toute publication. *</span></label>
-  <button class="btn btn-primary" type="submit" style="width:100%;margin-top:.5rem">Envoyer ma proposition ✦</button>
-  <p class="meta" style="text-align:center;margin-top:.8rem">Chaque proposition est traitée avec confidentialité et bienveillance.</p>
- </form>
- <div class="success-box" id="lumOk"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
- <h3>Merci ! Votre proposition est envoyée.</h3><p>Notre équipe vérifie les informations et recueille le consentement. Si tout est conforme, publication sous 7 jours puis diffusion sur nos réseaux.</p>
- <a class="btn btn-ghost" href="#/lumiere" style="margin-top:1.2rem">Envoyer une autre proposition</a></div>
-</div>
-<div style="max-width:720px">
- <div class="info-strip" style="grid-template-columns:1fr">
-  <div class="info-cell"><span class="emo"></span><h3>Vérification systématique</h3><p>Aucune publication sans vérification des faits et consentement explicite. C'est le cœur de notre <a href="#/legal/politique-editoriale" style="color:var(--magenta)">politique éditoriale</a>.</p></div>
-  <div class="info-cell"><span class="emo"></span><h3>Diffusion multi-canaux</h3><p>Site, Instagram, Facebook, TikTok, LinkedIn, WhatsApp : chaque histoire validée est adaptée à chaque plateforme.</p></div>
-  <div class="info-cell"><span class="emo"></span><h3>Ne pas nuire</h3><p>Si une publication peut exposer quelqu'un, elle est reformulée, anonymisée ou renoncée. Toujours.</p></div>
+ <div class="editorial-step-grid c5" data-reveal>
+  <div class="editorial-step-card">
+    <span class="step-num-badge">01</span>
+    <h3 class="step-card-title">Proposition</h3>
+    <p class="step-card-text">Vous transmettez votre fiche en 2 minutes via le formulaire ci-dessous.</p>
+  </div>
+  <div class="editorial-step-card" data-delay="60">
+    <span class="step-num-badge">02</span>
+    <h3 class="step-card-title">Vérification</h3>
+    <p class="step-card-text">Notre rédaction recoupe les faits et recueille le consentement explicite.</p>
+  </div>
+  <div class="editorial-step-card" data-delay="120">
+    <span class="step-num-badge">03</span>
+    <h3 class="step-card-title">Publication</h3>
+    <p class="step-card-text">L'article ou portrait grand format est publié sur FemCurrent.</p>
+  </div>
+  <div class="editorial-step-card" data-delay="180">
+    <span class="step-num-badge">04</span>
+    <h3 class="step-card-title">Diffusion</h3>
+    <p class="step-card-text">Visuels Instagram, vidéos courtes, extraits LinkedIn et canal WhatsApp.</p>
+  </div>
+  <div class="editorial-step-card" data-delay="240">
+    <span class="step-num-badge">05</span>
+    <h3 class="step-card-title">Impact</h3>
+    <p class="step-card-text">Mise en réseau, partenariats et opportunités concrètes pour la personne.</p>
+  </div>
  </div>
-</div>
-</div>
-</div></section>`;}
 
-function vContribuer(){return heroPage("Rejoindre la rédaction","Devenir <span class='accent'>contributrice</span> / contributeur","Journalistes, rédactrices, traductrices, vérificatrices, ambassadrices locales : FemCurrent se construit avec celles et ceux qui écrivent, vérifient et relaient.",crumb([["Participer"],["Contribuer"]]))+
-`<section class="section"><div class="container" style="display:grid;gap:3rem">
-<div class="cards-grid" data-reveal>
- <div class="card"><div class="body"><span style="font-size:1.8rem">️</span><h3>Journaliste / Rédactrice</h3><p>Écrire des articles, portraits et reportages depuis votre province, avec l'accompagnement de la rédaction.</p></div></div>
- <div class="card"><div class="body"><span style="font-size:1.8rem"></span><h3>Vérificatrice</h3><p>Rejoindre le réseau de fact-checking : recouper les sources, vérifier les chiffres, documenter les signalements.</p></div></div>
- <div class="card"><div class="body"><span style="font-size:1.8rem"></span><h3>Traductrice</h3><p>Traduire nos contenus en swahili, lingala, tshiluba et en anglais pour élargir l'accès à l'information.</p></div></div>
- <div class="card"><div class="body"><span style="font-size:1.8rem"></span><h3>Ambassadrice locale</h3><p>Repérer les initiatives et les femmes leaders de votre territoire et les proposer à la plateforme.</p></div></div>
-</div>
-<div class="form-card" style="max-width:720px" data-reveal>
- <h3 style="margin-bottom:1.3rem">Proposer ma candidature</h3>
- <form id="contribForm" novalidate><div class="form-grid g2">
-  <div class="field"><label>Nom complet *</label><input type="text" required></div>
-  <div class="field"><label>E-mail *</label><input type="email" required></div>
-  <div class="field full"><label>Rôle souhaité *</label><select required><option value="">Choisir…</option><option>Journaliste / Rédactrice</option><option>Vérificatrice</option><option>Traductrice</option><option>Ambassadrice locale</option></select></div>
-  <div class="field full"><label>Province *</label><input type="text" required placeholder="Ex. : Sud-Kivu"></div>
-  <div class="field full"><label>Quelques mots sur vous *</label><textarea required placeholder="Votre parcours, vos motivations…"></textarea></div>
- </div><button class="btn btn-primary" type="submit" style="width:100%;margin-top:.8rem">Envoyer ma candidature</button></form>
- <div class="success-box" id="contribOk"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
- <h3>Candidature reçue !</h3><p>Notre équipe vous recontactera pour un entretien de découverte.</p></div>
-</div>
-</div></section>`;}
+ <!-- Formulaire Pleine Largeur -->
+ <div class="full-form-wrapper" style="margin-top:3.5rem;" data-reveal>
+  <div class="form-card full-width">
+    <div class="section-head" style="margin-bottom:1.5rem;">
+      <div><span class="kicker">Formulaire de Soumission</span><h2 style="font-size:1.6rem;">Votre proposition à la rédaction</h2></div>
+    </div>
+    
+    <div class="lum-tabs" role="tablist">
+      <button class="lum-tab" role="tab" aria-selected="${active==="p-femme"}" data-panel="p-femme">Femme leader<small>Proposer un profil individuel</small></button>
+      <button class="lum-tab" role="tab" aria-selected="${active==="p-init"}" data-panel="p-init">Initiative<small>Proposer un projet de terrain</small></button>
+      <button class="lum-tab" role="tab" aria-selected="${active==="p-org"}" data-panel="p-org">Organisation<small>Proposer une association / ONG</small></button>
+      <button class="lum-tab" role="tab" aria-selected="${active==="p-temoin"}" data-panel="p-temoin">Témoignage<small>Raconter une histoire vécue</small></button>
+    </div>
 
-function vPartenariat(){return heroPage("Collaborer · Soutenir · Sponsoriser","Devenir <span class='accent'>partenaire</span>","Organisations, médias, institutions, universités, entreprises : construisons ensemble l'écosystème qui rend visibles les voix et les actions des femmes.",crumb([["Participer"],["Devenir partenaire"]]))+
-`<section class="section"><div class="container" style="display:grid;gap:3rem">
-<div class="info-strip" data-reveal>
- <div class="info-cell"><span class="emo"></span><h3>Partenaires médias</h3><p>Codiffusion de contenus, échanges de productions, co-enquêtes avec FemCurrent Investigates.</p></div>
- <div class="info-cell"><span class="emo"></span><h3>Institutions &amp; ONG</h3><p>Co-production de données pour l'Observatoire, campagnes de plaidoyer avec FemCurrent Impact.</p></div>
- <div class="info-cell"><span class="emo"></span><h3>Entreprises &amp; fondations</h3><p>Sponsoring éditorial identifié, soutien aux programmes Academy et Lab, mécénat.</p></div>
-</div>
-<div class="cards-grid" data-reveal>
- <div class="card"><div class="body"><span class="tag magenta" style="align-self:flex-start">Visibilité</span><h3>Sponsoriser un espace</h3><p>Associez votre marque à un univers FemCurrent (Voices, Data, Academy…) avec un contenu clairement identifié.</p></div></div>
- <div class="card"><div class="body"><span class="tag orange" style="align-self:flex-start">Connaissance</span><h3>Financer une étude</h3><p>Commanditez une étude ou un baromètre de l'Observatoire sur une thématique qui vous engage.</p></div></div>
- <div class="card"><div class="body"><span class="tag violet" style="align-self:flex-start">Terrain</span><h3>Soutenir une initiative</h3><p>Accompagnez directement une initiative documentée sur la plateforme : formation, équipement, passage à l'échelle.</p></div></div>
-</div>
-<div class="form-card" style="max-width:720px" data-reveal>
- <h3 style="margin-bottom:1.3rem">Parlons-en</h3>
- <form id="partForm" novalidate><div class="form-grid g2">
-  <div class="field"><label>Organisation *</label><input type="text" required></div>
-  <div class="field"><label>E-mail *</label><input type="email" required></div>
-  <div class="field full"><label>Type de partenariat *</label><select required><option value="">Choisir…</option><option>Médias</option><option>Institution / ONG</option><option>Sponsoring</option><option>Financement d'étude</option><option>Autre</option></select></div>
-  <div class="field full"><label>Votre projet *</label><textarea required placeholder="Décrivez votre idée de collaboration…"></textarea></div>
- </div><button class="btn btn-primary" type="submit" style="width:100%;margin-top:.8rem">Envoyer la demande</button></form>
- <div class="success-box" id="partOk"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
- <h3>Demande envoyée !</h3><p>Notre équipe partenariats revient vers vous sous 5 jours ouvrés.</p></div>
-</div>
-</div></section>`;}
+    <form id="lumForm" novalidate>
+      <div class="lum-panel ${active==="p-femme"?"on":""}" id="p-femme">
+        <div class="form-grid g2">
+          <div class="field"><label>Nom complet de la femme *</label><input type="text" required placeholder="Ex. : Espérance Kalunga"></div>
+          <div class="field"><label>Province *</label>
+            <select required>
+              <option>Kinshasa</option><option>Nord-Kivu</option><option>Sud-Kivu</option>
+              <option>Haut-Katanga</option><option>Lualaba</option><option>Kasaï-Central</option><option>Autre province…</option>
+            </select>
+          </div>
+          <div class="field full"><label>Son rôle / son domaine d'action *</label><input type="text" required placeholder="Ex. : Agronome, fondatrice de coopérative bio"></div>
+        </div>
+      </div>
 
-function vFaq(){return heroPage("Aide","Questions <span class='accent'>fréquentes</span>","Tout ce qu'il faut savoir pour proposer, publier, télécharger et contribuer sur FemCurrent.",crumb([["Informations"],["FAQ"]]))+
-`<section class="section"><div class="container" style="max-width:820px">
-${FAQ.map(q=>`<div class="acc" data-reveal><button type="button"><span>${q[0]}</span></button><div class="acc-body">${q[1]}</div></div>`).join("")}
-<div class="banner-cta" style="margin-top:2.5rem" data-reveal><h2>Une autre question ?</h2>
-<div class="btns"><a class="btn btn-primary" href="#/contact">Nous contacter</a></div></div>
-</div></section>`;}
+      <div class="lum-panel ${active==="p-init"?"on":""}" id="p-init">
+        <div class="form-grid g2">
+          <div class="field"><label>Nom de l'initiative *</label><input type="text" required placeholder="Ex. : Code Elongo"></div>
+          <div class="field"><label>Domaine sectoriel *</label>
+            <select required>
+              <option>Éducation &amp; Formation</option><option>Santé &amp; Bien-être</option>
+              <option>Numérique &amp; Tech</option><option>Agriculture &amp; Écologie</option>
+              <option>Économie &amp; Microfinance</option><option>Médias &amp; Culture</option>
+            </select>
+          </div>
+          <div class="field full"><label>Ville ou Territoire d'impact *</label><input type="text" required placeholder="Ex. : Kinshasa, commune de Kalamu"></div>
+        </div>
+      </div>
 
-function vAgenda(){return heroPage("Formations · Forums · Webinaires","<span class='accent'>Agenda</span>","Masterclass FemCurrent Academy, forums Matendo, webinaires Data, cercles d'écoute Voices : retrouvez tous les événements à venir.",crumb([["Agenda"]]))+
-`<section class="section"><div class="container" style="max-width:860px">
-${EVENTS.map((e,i)=>`<article class="event" data-reveal data-delay="${i*70}">
- <div class="event-date"><b>${e.d}</b><span>${e.m}</span></div>
- <div><h3>${e.title}</h3><div class="meta">${e.meta}</div></div>
- <div class="event-cta"><a class="btn btn-ghost" href="#/contact">S'inscrire</a></div></article>`).join("")}
-<div class="banner-cta" style="margin-top:2.5rem" data-reveal><h2>Organiser un événement avec FemCurrent ?</h2>
-<div class="btns"><a class="btn btn-primary" href="#/partenariat">Proposer une collaboration</a></div></div>
-</div></section>`;}
+      <div class="lum-panel ${active==="p-org"?"on":""}" id="p-org">
+        <div class="form-grid g2">
+          <div class="field"><label>Nom de l'organisation *</label><input type="text" required placeholder="Ex. : Collectif Sauti"></div>
+          <div class="field"><label>Type de structure *</label>
+            <select required>
+              <option>Association déclarée</option><option>ONG locale ou internationale</option>
+              <option>Coopérative agricole ou artisanale</option><option>Collectif informel / Communauté</option><option>Autre structure</option>
+            </select>
+          </div>
+          <div class="field full"><label>Ville / Territoire du siège *</label><input type="text" required placeholder="Ex. : Kindu, Maniema"></div>
+        </div>
+      </div>
 
-function vMediatheque(){return heroPage("Photos · Vidéos · Podcasts","<span class='accent'>Médiathèque</span>","Les images, les sons et les vidéos produits par FemCurrent : galeries de reportages, interviews filmées et épisodes du podcast Voices.",crumb([["Médiathèque"]]))+
-`<section class="section"><div class="container">
-<div class="section-head" data-reveal><div><span class="kicker">Écouter FemCurrent</span><h2>Derniers épisodes</h2></div></div>
-${PODS.map((p,i)=>`<div class="pod-row" data-reveal data-delay="${i*60}">
- <img src="${IMG(p.seed,200,200)}" alt="" loading="lazy">
- <div><span class="meta">FEMCURRENT VOICES</span><h4>${p.n}</h4><span class="meta">${p.meta}</span></div>
- <button class="playb" aria-label="Écouter ${p.n}" onclick="toast('▶ <b>Lecture</b> — ${p.n.replace(/'/g,"\\'")}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg></button></div>`).join("")}
-<div class="section-head" style="margin-top:3.4rem" data-reveal><div><span class="kicker">Galeries</span><h2>Reportages en images</h2></div></div>
-<div class="photo-grid" data-reveal>
- ${["mediatheque-marche-zando","mediatheque-clinique-mobile","mediatheque-ecole-code","mediatheque-radio-maniema","mediatheque-ferme-sudkivu","mediatheque-forum-femmes"].map(s=>`<a href="#/actualites" aria-label="Voir la galerie"><img src="${IMG(s,600,450)}" alt="" loading="lazy"></a>`).join("")}
-</div>
-<div class="banner-cta" style="margin-top:3rem" data-reveal><h2>Une vidéo ou un podcast à proposer ?</h2>
-<div class="btns"><a class="btn btn-primary" href="#/lumiere/temoignage">Envoyer un témoignage</a><a class="btn btn-ghost" href="#/contribuer">Rejoindre la rédaction</a></div></div>
-</div></section>`;}
+      <div class="lum-panel ${active==="p-temoin"?"on":""}" id="p-temoin">
+        <div class="form-grid g2">
+          <div class="field full"><label>Votre nom (ou mentionner « Anonyme ») *</label><input type="text" required placeholder="Ex. : Anonyme ou votre nom"></div>
+          <div class="field full"><label>Votre histoire ou témoignage de terrain *</label><textarea required placeholder="Racontez-nous ce que vous avez observé ou vécu…"></textarea></div>
+        </div>
+      </div>
 
-function vEspaces(){return heroPage("Nos espaces","Les univers <span class='accent'>FemCurrent</span>","Une plateforme. Plusieurs espaces. Une même ambition : rendre visibles les voix, les actions et les connaissances qui transforment la société.",crumb([["Nos espaces"]]))+
-`<section class="section"><div class="container"><div class="uni-grid" style="grid-template-columns:1fr">
-${Object.entries(UNIV).map(([id,u],i)=>`<a class="uni-card" href="#/espaces/${id}" style="--uc:${u.g};flex-direction:row;align-items:center;gap:1.4rem" data-reveal data-delay="${i*60}">
- <span class="uni-emo" style="width:64px;height:64px;font-size:1.9rem;flex-shrink:0">${u.emo}</span>
- <div style="flex:1"><h3 style="font-size:1.3rem">FemCurrent ${id.charAt(0).toUpperCase()+id.slice(1)}</h3><p style="margin-top:.2rem">${u.tag} ${u.d.slice(0,90)}…</p></div>
- <span class="uni-link" style="flex-shrink:0">Découvrir →</span></a>`).join("")}
-</div></div></section>`;}
+      <div class="field" style="margin-top:1.4rem;">
+        <label>Votre e-mail ou téléphone de contact (restera strictement confidentiel) *</label>
+        <input type="text" required placeholder="Pour que la rédaction puisse vous joindre lors de la vérification">
+      </div>
+
+      <label class="consent" style="margin:1.2rem 0;">
+        <input type="checkbox" id="lumConsent" required>
+        <span>Je confirme le consentement de la personne concernée et j'accepte que FemCurrent vérifie ces informations conformément à sa <a href="#/legal/politique-editoriale" style="color:var(--magenta);text-decoration:underline;">charte éditoriale</a>. *</span>
+      </label>
+      
+      <button class="btn btn-primary" type="submit" style="width:100%;padding:1.1rem;font-size:1rem;">Envoyer ma proposition à la rédaction ✦</button>
+      <p class="meta" style="text-align:center;margin-top:0.8rem;">Chaque proposition est traitée dans le respect absolu de la confidentialité et de la dignité.</p>
+    </form>
+
+    <div class="success-box" id="lumOk">
+      <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
+      <h3>Proposition bien transmise !</h3>
+      <p>Merci. Notre équipe éditoriale vérifie les éléments et contacte la personne. Si tout est conforme, parution sous 7 jours.</p>
+      <a class="btn btn-ghost" href="#/lumiere" style="margin-top:1.2rem;">Envoyer une autre proposition</a>
+    </div>
+  </div>
+ </div>
+
+ <!-- 3 Garanties Déontologiques Standardisées en Cartes -->
+ <div class="editorial-step-grid c3" style="margin-top:3.5rem;" data-reveal>
+   <div class="editorial-step-card">
+     <span class="step-num-badge" style="font-size:1.6rem;">✓</span>
+     <h3 class="step-card-title">Vérification Systématique</h3>
+     <p class="step-card-text">Aucune publication sans recoupement des faits et recueil explicite du consentement.</p>
+   </div>
+   <div class="editorial-step-card">
+     <span class="step-num-badge" style="font-size:1.6rem;">✓</span>
+     <h3 class="step-card-title">Diffusion Multi-Canaux</h3>
+     <p class="step-card-text">Chaque récit est adapté pour maximiser son écho : web, réseaux sociaux et relais WhatsApp.</p>
+   </div>
+   <div class="editorial-step-card">
+     <span class="step-num-badge" style="font-size:1.6rem;">✓</span>
+     <h3 class="step-card-title">Principe de Protection</h3>
+     <p class="step-card-text">Si une diffusion risque d'exposer une personne, elle est reformulée ou renoncée. Toujours.</p>
+   </div>
+ </div>
+
+ </div></section>`;
+}
+
+function vContribuer(){
+  return heroPage("Rejoindre la rédaction","Devenir <span class='accent'>contributrice</span> / contributeur","Journalistes, rédactrices, traductrices en langues nationales, vérificatrices, ambassadrices locales : FemCurrent se construit avec celles et ceux qui documentent et transforment la société.",crumb([["Participer"],["Contribuer"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container">
+  
+  <!-- 4 Rôles Standardisés en Cartes Numérotées -->
+  <div class="section-head" style="margin-bottom:1.8rem;" data-reveal>
+    <div><span class="kicker">Rôles Ouverts</span><h2>Comment contribuer à la rédaction</h2></div>
+  </div>
+  <div class="editorial-step-grid c4" data-reveal>
+   <div class="editorial-step-card">
+     <span class="step-num-badge">01</span>
+     <h3 class="step-card-title">Journaliste / Rédactrice</h3>
+     <p class="step-card-text">Rédiger des articles, enquêtes, portraits et reportages de terrain depuis votre province avec le soutien éditorial de la rédaction.</p>
+   </div>
+   <div class="editorial-step-card" data-delay="80">
+     <span class="step-num-badge">02</span>
+     <h3 class="step-card-title">Fact-checker / Vérificatrice</h3>
+     <p class="step-card-text">Rejoindre notre pôle de vérification : auditer les sources, vérifier les chiffres et documenter les signalements.</p>
+   </div>
+   <div class="editorial-step-card" data-delay="160">
+     <span class="step-num-badge">03</span>
+     <h3 class="step-card-title">Traductrice</h3>
+     <p class="step-card-text">Traduire nos contenus en swahili, lingala, tshiluba, kikongo et anglais pour rendre l'information accessible à tous.</p>
+   </div>
+   <div class="editorial-step-card" data-delay="240">
+     <span class="step-num-badge">04</span>
+     <h3 class="step-card-title">Ambassadrice Locale</h3>
+     <p class="step-card-text">Repérer les initiatives et les femmes remarquables de votre communauté et les transmettre à la plateforme.</p>
+   </div>
+  </div>
+
+  <!-- Formulaire de Candidature Pleine Largeur -->
+  <div class="full-form-wrapper" style="margin-top:3.5rem;" data-reveal>
+   <div class="form-card full-width">
+    <div class="section-head" style="margin-bottom:1.5rem;">
+      <div><span class="kicker">Candidature</span><h2 style="font-size:1.6rem;">Déposer ma candidature</h2></div>
+    </div>
+    <form id="contribForm" novalidate>
+      <div class="form-grid g2">
+        <div class="field"><label>Nom complet *</label><input type="text" required placeholder="Votre nom et prénom"></div>
+        <div class="field"><label>Adresse e-mail *</label><input type="email" required placeholder="votre.email@domaine.com"></div>
+        <div class="field full"><label>Rôle souhaité *</label>
+          <select required>
+            <option value="">Sélectionnez un rôle…</option>
+            <option>Journaliste / Rédactrice de reportages</option>
+            <option>Fact-checker / Vérificatrice</option>
+            <option>Traductrice en langues nationales</option>
+            <option>Ambassadrice locale de territoire</option>
+          </select>
+        </div>
+        <div class="field full"><label>Province et ville de résidence *</label><input type="text" required placeholder="Ex. : Sud-Kivu, Bukavu"></div>
+        <div class="field full"><label>Votre parcours et motivations *</label><textarea required placeholder="Présentez votre parcours, vos liens avec le terrain et les sujets qui vous passionnent…"></textarea></div>
+      </div>
+      <button class="btn btn-primary" type="submit" style="width:100%;margin-top:1rem;padding:1.1rem;font-size:1rem;">Envoyer ma candidature ✦</button>
+    </form>
+    <div class="success-box" id="contribOk">
+      <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
+      <h3>Candidature bien reçue !</h3>
+      <p>Notre équipe éditoriale examinera votre profil et vous recontactera rapidement pour un échange.</p>
+    </div>
+   </div>
+  </div>
+
+  </div></section>`;
+}
+
+function vPartenariat(){
+  return heroPage("Collaborer · Soutenir · Sponsoriser","Devenir <span class='accent'>partenaire</span>","Organisations, médias, institutions, universités, entreprises : construisons ensemble l'écosystème qui valorise les voix et l'impact des femmes en RDC.",crumb([["Participer"],["Devenir partenaire"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container">
+  
+  <!-- 3 Formats Partenaires Standardisés en Cartes -->
+  <div class="section-head" style="margin-bottom:1.8rem;" data-reveal>
+    <div><span class="kicker">Typologies</span><h2>Modes de collaboration</h2></div>
+  </div>
+  <div class="editorial-step-grid c3" data-reveal>
+   <div class="editorial-step-card">
+     <span class="step-num-badge">01</span>
+     <h3 class="step-card-title">Partenaires Médias</h3>
+     <p class="step-card-text">Co-diffusion de contenus, échanges éditoriaux et enquêtes conjointes avec l'équipe FemCurrent Investigates.</p>
+   </div>
+   <div class="editorial-step-card" data-delay="80">
+     <span class="step-num-badge">02</span>
+     <h3 class="step-card-title">Institutions &amp; ONG</h3>
+     <p class="step-card-text">Co-production de données statistiques pour l'Observatoire et campagnes d'impact citoyen.</p>
+   </div>
+   <div class="editorial-step-card" data-delay="160">
+     <span class="step-num-badge">03</span>
+     <h3 class="step-card-title">Entreprises &amp; Fondations</h3>
+     <p class="step-card-text">Sponsoring éditorial identifié, mécénat et soutien aux programmes de formation Academy et Lab.</p>
+   </div>
+  </div>
+
+  <!-- Offres de Sponsoring & Soutien -->
+  <div class="cards-grid" style="margin-top:2rem;margin-bottom:3.5rem;" data-reveal>
+   <div class="card" style="padding:1.6rem;"><div class="body"><span class="tag magenta" style="align-self:flex-start;">Visibilité</span><h3>Sponsoriser un espace média</h3><p>Associez votre marque à un univers FemCurrent (Voices, Data, Academy…) avec un encart d'annonceur transparent.</p></div></div>
+   <div class="card" style="padding:1.6rem;"><div class="body"><span class="tag orange" style="align-self:flex-start;">Connaissance</span><h3>Financer une étude</h3><p>Commanditez une étude thématique ou un baromètre provincial auprès de l'Observatoire FemCurrent Data.</p></div></div>
+   <div class="card" style="padding:1.6rem;"><div class="body"><span class="tag violet" style="align-self:flex-start;">Terrain</span><h3>Soutenir une initiative</h3><p>Accompagnez directement une initiative documentée sur la plateforme : équipement, formation, mise à l'échelle.</p></div></div>
+  </div>
+
+  <!-- Formulaire de Partenariat Pleine Largeur -->
+  <div class="full-form-wrapper" data-reveal>
+   <div class="form-card full-width">
+    <div class="section-head" style="margin-bottom:1.5rem;">
+      <div><span class="kicker">Proposition</span><h2 style="font-size:1.6rem;">Proposer une collaboration</h2></div>
+    </div>
+    <form id="partForm" novalidate>
+      <div class="form-grid g2">
+        <div class="field"><label>Organisation / Institution *</label><input type="text" required placeholder="Nom de votre structure"></div>
+        <div class="field"><label>E-mail professionnel *</label><input type="email" required placeholder="contact@organisation.org"></div>
+        <div class="field full"><label>Type de partenariat envisagé *</label>
+          <select required>
+            <option value="">Sélectionnez un format…</option>
+            <option>Partenariat Médias / Codiffusion</option>
+            <option>Institution / ONG</option>
+            <option>Sponsoring d'espace éditorial</option>
+            <option>Financement d'étude ou baromètre</option>
+            <option>Autre collaboration</option>
+          </select>
+        </div>
+        <div class="field full"><label>Présentation de votre projet *</label><textarea required placeholder="Décrivez votre idée de partenariat, vos objectifs et le calendrier envisagé…"></textarea></div>
+      </div>
+      <button class="btn btn-primary" type="submit" style="width:100%;margin-top:1rem;padding:1.1rem;font-size:1rem;">Envoyer la demande de partenariat ✦</button>
+    </form>
+    <div class="success-box" id="partOk">
+      <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M25 41l10 10 20-22"/></svg>
+      <h3>Demande bien transmise !</h3>
+      <p>Notre équipe des partenariats examinera votre projet et reviendra vers vous sous 5 jours ouvrés.</p>
+    </div>
+   </div>
+  </div>
+
+  </div></section>`;
+}
+
+function vFaq(){
+  return heroPage("Aide & Informations","Questions <span class='accent'>fréquentes</span>","Tout ce qu'il faut savoir pour proposer un profil, consulter nos enquêtes, télécharger les études et collaborer avec FemCurrent.",crumb([["Informations"],["FAQ"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container" style="max-width:880px;">
+  ${FAQ.map(q=>`<div class="acc" data-reveal><button type="button"><span>${q[0]}</span></button><div class="acc-body">${q[1]}</div></div>`).join("")}
+  <div class="banner-cta" style="margin-top:3.5rem;" data-reveal>
+    <h2>Vous avez une question spécifique ?</h2>
+    <p class="lead" style="margin:.8rem auto 0;text-align:center">Notre équipe de rédaction et d'assistance est à votre entière disposition pour vous répondre.</p>
+    <div class="btns"><a class="btn btn-primary" href="#/contact">Nous contacter directement</a></div>
+  </div>
+  </div></section>`;
+}
+
+function vAgenda(){
+  return heroPage("Formations · Forums · Webinaires","<span class='accent'>Agenda</span> des événements","Masterclass FemCurrent Academy, forums régionaux Matendo, webinaires Data et cercles d'écoute Voices : retrouvez tous les rendez-vous à venir.",crumb([["Agenda"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container" style="max-width:920px;">
+  ${EVENTS.map((e,i)=>`<article class="event" data-reveal data-delay="${i*70}">
+   <div class="event-date"><b>${e.d}</b><span>${e.m}</span></div>
+   <div><h3>${e.title}</h3><div class="meta">${e.meta}</div></div>
+   <div class="event-cta"><a class="btn btn-ghost" href="#/contact">S'inscrire</a></div></article>`).join("")}
+  <div class="banner-cta" style="margin-top:3.5rem;" data-reveal>
+    <h2>Organiser un événement en partenariat avec FemCurrent ?</h2>
+    <p class="lead" style="margin:.8rem auto 0;text-align:center">Co-animez des ateliers, masterclass ou tables rondes sur le leadership des femmes et l'innovation sociale.</p>
+    <div class="btns"><a class="btn btn-primary" href="#/partenariat">Proposer une collaboration</a></div>
+  </div>
+  </div></section>`;
+}
+
+function vMediatheque(){
+  return heroPage("Photos · Vidéos · Podcasts","<span class='accent'>Médiathèque</span> FemCurrent","Les productions audiovisuelles de la plateforme : reportages photographiques exclusifs, interviews filmées et épisodes du podcast FemCurrent Voices.",crumb([["Médiathèque"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container">
+  <div class="section-head" data-reveal><div><span class="kicker">Écouter FemCurrent Voices</span><h2>Derniers épisodes du podcast</h2></div></div>
+  ${PODS.map((p,i)=>`<div class="pod-row" data-reveal data-delay="${i*60}">
+   <img src="${IMG(p.seed,200,200)}" alt="" loading="lazy">
+   <div><span class="meta">FEMCURRENT VOICES · PODCAST</span><h4>${p.n}</h4><span class="meta">${p.meta}</span></div>
+   <button class="playb" aria-label="Écouter ${p.n}" onclick="toast('▶ <b>Lecture</b> — ${p.n.replace(/'/g,"\\'")}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg></button></div>`).join("")}
+  
+  <div class="section-head" style="margin-top:4rem;" data-reveal><div><span class="kicker">Galeries de Photojournalisme</span><h2>Reportages en images</h2></div></div>
+  <div class="photo-grid" data-reveal>
+   ${["mediatheque-marche-zando","mediatheque-clinique-mobile","mediatheque-ecole-code","mediatheque-radio-maniema","mediatheque-ferme-sudkivu","mediatheque-forum-femmes"].map(s=>`<a href="#/actualites" aria-label="Voir la galerie"><img src="${IMG(s,600,450)}" alt="" loading="lazy"></a>`).join("")}
+  </div>
+  <div class="banner-cta" style="margin-top:3.5rem;" data-reveal>
+    <h2>Une production audio ou vidéo à proposer ?</h2>
+    <p class="lead" style="margin:.8rem auto 0;text-align:center">Partagez vos enregistrements ou vos reportages pour diffusion sur nos canaux.</p>
+    <div class="btns"><a class="btn btn-primary" href="#/lumiere/temoignage">Envoyer un témoignage</a><a class="btn btn-ghost" href="#/contribuer">Rejoindre la rédaction</a></div>
+  </div>
+  </div></section>`;
+}
+
+function vEspaces(){
+  return heroPage("Nos espaces","Les univers <span class='accent'>FemCurrent</span>","Une plateforme média intégrée. 7 univers complémentaires pour informer, analyser, former et propulser les transformations portées par les femmes.",crumb([["Nos espaces"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container"><div class="uni-grid" style="grid-template-columns:1fr;gap:1.5rem;">
+  ${Object.entries(UNIV).map(([id,u],i)=>`<a class="uni-card" href="#/espaces/${id}" style="--uc:${u.g};display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.6rem;padding:2rem;" data-reveal data-delay="${i*50}">
+   <span class="uni-emo" style="width:68px;height:68px;font-size:2rem;flex-shrink:0;">${u.emo}</span>
+   <div>
+     <span style="font-family:var(--mono);font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gris);display:block;margin-bottom:0.25rem;">Espace FemCurrent</span>
+     <h3 style="font-size:1.45rem;margin:0 0 0.4rem;">FemCurrent ${id.charAt(0).toUpperCase()+id.slice(1)}</h3>
+     <p style="font-size:0.92rem;line-height:1.5;color:#5A4E66;margin:0;">${u.tag} ${u.d.slice(0,110)}…</p>
+   </div>
+   <span class="uni-link" style="flex-shrink:0;font-size:0.82rem;">Explorer →</span></a>`).join("")}
+  </div></div></section>`;
+}
 
 function vUniv(id){
  const u=UNIV[id]; if(!u) return v404();
  const name=id.charAt(0).toUpperCase()+id.slice(1);
- return `<section class="page-hero" style="background:radial-gradient(55% 60% at 88% 0,rgba(233,30,99,.15),transparent 60%),radial-gradient(40% 55% at 4% 100%,rgba(255,140,0,.14),transparent 60%),linear-gradient(180deg,var(--lavande),#fff)"><div class="container">
+ return `<section class="page-hero"><div class="container">
  ${crumb([["Nos espaces","#/espaces"],["FemCurrent "+name]])}
- <div style="display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;margin:.6rem 0">
-  <span style="width:74px;height:74px;border-radius:22px;background:#fff;display:grid;place-items:center;font-size:2.2rem;box-shadow:var(--shadow)">${u.emo}</span>
-  <div><h1 style="margin:0">FemCurrent ${name}</h1><p style="font-family:var(--display);font-style:italic;color:var(--magenta);font-size:1.15rem">${u.tag}</p></div>
+ <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin:1rem 0;">
+  <span style="width:80px;height:80px;border-radius:24px;background:#fff;display:grid;place-items:center;font-size:2.4rem;box-shadow:var(--shadow);border:2px solid #E8DFEE;">${u.emo}</span>
+  <div>
+    <span class="kicker">Espace Spécialisé</span>
+    <h1 style="margin:0 0 0.4rem;">FemCurrent ${name}</h1>
+    <p style="font-family:var(--display);font-style:italic;color:var(--magenta);font-size:1.25rem;">${u.tag}</p>
+  </div>
  </div></div></section>
- <section class="section"><div class="container" style="display:grid;gap:3rem">
- <div style="max-width:820px" data-reveal><div class="article-body"><p>${u.d}</p>
- <p>Cet espace fait partie de l'écosystème FemCurrent : les contenus qui y sont produits alimentent le site, les réseaux sociaux et les programmes de plaidoyer de la plateforme.</p></div></div>
- <div class="cards-grid c4" data-reveal>${u.pts.map(p=>`<div class="info-cell"><span class="emo" style="color:var(--magenta)">✦</span><h3 style="font-size:1rem">${p}</h3></div>`).join("")}</div>
- <div style="display:flex;gap:.9rem;flex-wrap:wrap" data-reveal>${u.links.map((l,i)=>`<a class="btn ${i===0?"btn-primary":"btn-ghost"}" href="${l[1]}">${l[0]}</a>`).join("")}</div>
- </div></section>
- <section class="section section-alt"><div class="container"><div class="banner-cta" data-reveal>
- <h2>Explorer tout l'écosystème</h2>
- <div class="btns"><a class="btn btn-primary" href="#/espaces">Tous les espaces</a><a class="btn btn-ghost" href="#/">Retour à l'accueil</a></div></div></div></section>`;}
+ <section class="section" style="padding-top:2rem;"><div class="container">
+ <div class="article-layout-grid">
+  <div class="article-main-col">
+    <div class="article-content-body" style="font-size:1.15rem;margin-bottom:2.5rem;" data-reveal>
+      <p>${u.d}</p>
+      <p>Cet espace est un pilier fondamental de l'écosystème FemCurrent : les contenus et programmes qui y sont développés alimentent l'ensemble de notre plateforme média, nos réseaux sociaux et nos initiatives de plaidoyer auprès des institutions.</p>
+    </div>
+    
+    <div class="section-head" style="margin-bottom:1.5rem;" data-reveal>
+      <div><span class="kicker">Missions &amp; Activités</span><h2>Les axes d'intervention</h2></div>
+    </div>
+    <div class="editorial-step-grid c2" style="margin-bottom:2.5rem;" data-reveal>
+      ${u.pts.map((p, idx)=>`
+        <div class="editorial-step-card">
+          <span class="step-num-badge">0${idx+1}</span>
+          <h3 class="step-card-title">${p}</h3>
+          <p class="step-card-text">Action et accompagnement menés dans le cadre de FemCurrent ${name} pour renforcer l'impact sur le terrain.</p>
+        </div>
+      `).join("")}
+    </div>
+    
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;" data-reveal>
+      ${u.links.map((l,i)=>`<a class="btn ${i===0?"btn-primary":"btn-ghost"}" href="${l[1]}">${l[0]}</a>`).join("")}
+    </div>
+  </div>
+  ${compSidebar("espaces", name, "")}
+ </div>
+ </div></section>`;
+}
 
 function vLegal(name){
  const l=LEGAL[name]; if(!l) return v404();
- return heroPage("Informations",l.t,"",crumb([["Informations"],[l.t]]))+
- `<section class="section"><div class="container legal-body" style="max-width:780px">
- <p class="meta">Dernière mise à jour : mars 2025</p>
- ${l.sec.map(s=>`<h3>${s[0]}</h3><p>${s[1]}</p>`).join("")}
- <div class="banner-cta" style="margin-top:2.5rem" data-reveal><h2>Une question sur ces dispositions ?</h2>
- <div class="btns"><a class="btn btn-primary" href="#/contact">Nous contacter</a></div></div>
- </div></section>`;}
+ const legalDocs=[
+   {slug:"mentions-legales",title:"Mentions légales"},
+   {slug:"politique-editoriale",title:"Charte éditoriale"},
+   {slug:"confidentialite",title:"Confidentialité"},
+   {slug:"conditions",title:"Conditions d'utilisation"}
+ ];
 
-function v404(){return heroPage("Erreur 404","Cette page n'existe <span class='accent'>pas</span>","Le lien est peut-être ancien, ou l'adresse a changé. Pas d'inquiétude : tout FemCurrent est à portée de clic.",crumb([["Page introuvable"]]))+
-`<section class="section"><div class="container" style="text-align:center">
-<div style="font-family:var(--display);font-size:clamp(4rem,12vw,7rem);font-style:italic;background:var(--degrade);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1">404</div>
-<div style="display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem">
-<a class="btn btn-primary" href="#/">Retour à l'accueil</a><a class="btn btn-ghost" href="#/actualites">Lire les actualités</a><a class="btn btn-ghost" href="#/contact">Signaler un lien cassé</a></div>
-</div></section>`;}
+ return heroPage("Informations & Déontologie",l.t,"",crumb([["Informations"],[l.t]]))+
+ `<section class="section" style="padding-top:2.5rem;"><div class="container" style="max-width:940px;">
+ 
+ <!-- Onglets de Navigation Légale -->
+ <div class="filters" style="margin-bottom:2.5rem;justify-content:flex-start;">
+   ${legalDocs.map(d=>`<a class="f-chip ${d.slug===name?"on":""}" href="#/legal/${d.slug}" style="text-decoration:none;">${d.title}</a>`).join("")}
+ </div>
+
+ <p class="meta" style="margin-bottom:2rem;display:block;">Dernière mise à jour officielle : mars 2025 · Direction de la publication FemCurrent</p>
+ 
+ <div class="editorial-num-list">
+   ${l.sec.map((s, idx)=>`
+     <div class="editorial-step-card" style="margin-bottom:1.25rem;" data-reveal>
+       <span class="step-num-badge" style="font-size:1.4rem;">Article 0${idx+1}</span>
+       <h3 class="step-card-title" style="font-size:1.25rem;margin-bottom:0.6rem;">${s[0]}</h3>
+       <p class="step-card-text" style="font-size:0.96rem;line-height:1.7;color:#33263F;">${s[1]}</p>
+     </div>
+   `).join("")}
+ </div>
+
+ <div class="banner-cta" style="margin-top:3.5rem;" data-reveal>
+   <h2>Une question relative à nos mentions ou à notre charte ?</h2>
+   <p class="lead" style="margin:.8rem auto 0;text-align:center">Notre équipe éthique et juridique est joignable pour toute précision ou demande d'exercice de droits.</p>
+   <div class="btns"><a class="btn btn-primary" href="#/contact">Contacter l'équipe FemCurrent</a></div>
+ </div>
+ 
+ </div></section>`;
+}
+
+function v404(){
+  return heroPage("Erreur 404","Cette page n'existe <span class='accent'>pas</span>","Le lien est peut-être ancien, ou l'adresse a changé. Pas d'inquiétude : l'ensemble des contenus de FemCurrent est à portée de clic.",crumb([["Page introuvable"]]))+
+  `<section class="section" style="padding-top:2.5rem;"><div class="container" style="text-align:center;max-width:700px;">
+  <div style="font-family:var(--display);font-size:clamp(4.5rem,14vw,8rem);font-style:italic;color:var(--violet-deep);line-height:1;margin-bottom:1rem;">404</div>
+  <p class="lead" style="margin:1rem auto 0;text-align:center;">La page ou l'article que vous recherchez n'a pas été trouvé ou a été déplacé.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2.2rem;">
+    <a class="btn btn-primary" href="#/">Retour à l'accueil</a>
+    <a class="btn btn-ghost" href="#/actualites">Lire les actualités</a>
+    <a class="btn btn-ghost" href="#/contact">Signaler un lien rompu</a>
+  </div>
+  </div></section>`;
+}
 
 /* ================= ROUTEUR ================= */
 function render(html,title){
