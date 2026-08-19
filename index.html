@@ -1275,51 +1275,54 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 /* Community & Partners */
-.commu { background: var(--violet-night); color: #ffffff; position: relative; overflow: hidden; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+.commu { background: var(--violet-night); color: #ffffff; position: relative; overflow: hidden; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: clamp(2.8rem, 5vw, 4.5rem) 0; }
 @keyframes gradShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-.commu .container { position: relative; display: grid; gap: 2.8rem; }
-@media (min-width: 980px) { .commu .container { grid-template-columns: 1.2fr 0.8fr; align-items: center; } }
-.commu h2 { color: #ffffff; }
-.commu .lead { color: rgba(255, 255, 255, 0.92); }
-.nl-form { display: flex; gap: 0.65rem; margin-top: 1.8rem; flex-wrap: wrap; }
-.nl-form input { flex: 1 1 200px; min-width: min(100%, 200px); padding: 1rem 1.4rem; border-radius: var(--r-full); border: 2px solid rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.16); color: #ffffff; font-size: 0.95rem; }
-.nl-form input::placeholder { color: rgba(255, 255, 255, 0.8); }
-.nl-form input:focus { outline: none; border-color: #ffffff; background: rgba(255, 255, 255, 0.25); }
+.commu .container { position: relative; display: grid; gap: 2.2rem; }
+@media (min-width: 980px) { .commu .container { grid-template-columns: 1.2fr 0.8fr; align-items: center; gap: 3rem; } }
+.commu h2 { color: #ffffff; font-size: clamp(1.4rem, 3.2vw, 2.1rem); line-height: 1.25; }
+.commu .lead { color: rgba(255, 255, 255, 0.88); font-size: 0.94rem; line-height: 1.55; max-width: 520px; }
+.nl-form { display: flex; gap: 0.6rem; margin-top: 1.4rem; max-width: 480px; width: 100%; flex-wrap: wrap; }
+.nl-form input { flex: 1 1 200px; min-width: 0; padding: 0.8rem 1.15rem; border-radius: var(--r-full); border: 1.5px solid rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.12); color: #ffffff; font-size: 1rem; }
+.nl-form input::placeholder { color: rgba(255, 255, 255, 0.75); }
+.nl-form input:focus { outline: none; border-color: #ffffff; background: rgba(255, 255, 255, 0.22); }
+.nl-form .btn { padding: 0.8rem 1.35rem; font-size: 0.88rem; font-weight: 700; border-radius: var(--r-full); white-space: nowrap; }
 .nl-form.light input { border-color: rgba(75, 29, 109, 0.25); background: #ffffff; color: var(--encre); }
 .nl-form.light input::placeholder { color: var(--gris); }
 
 @media (max-width: 540px) {
   .nl-form {
     flex-direction: column;
+    gap: 0.65rem;
   }
   .nl-form input, .nl-form button {
     width: 100%;
     min-width: 0;
   }
 }
-.wa-card { background: rgba(255, 255, 255, 0.15); border: 1.5px solid rgba(255, 255, 255, 0.35); border-radius: var(--r-lg); padding: 1.8rem; backdrop-filter: blur(8px); transition: all 0.3s; }
-.wa-card:hover { background: rgba(255, 255, 255, 0.22); transform: translateY(-5px); }
-.wa-card h3 { color: #ffffff; font-size: 1.3rem; margin: 0.9rem 0 0.55rem; }
-.wa-card p { font-size: 0.88rem; color: rgba(255, 255, 255, 0.92); margin-bottom: 1.3rem; line-height: 1.5; }
-.wa-ic { width: 50px; height: 50px; border-radius: var(--r); background: #ffffff; display: grid; place-items: center; }
-.wa-ic svg { width: 26px; height: 26px; fill: #25D366; }
+.wa-card { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 18px; padding: 1.4rem 1.5rem; backdrop-filter: blur(8px); transition: all 0.3s; max-width: 460px; }
+.wa-card:hover { background: rgba(255, 255, 255, 0.14); transform: translateY(-4px); }
+.wa-card h3 { color: #ffffff; font-size: 1.18rem; margin: 0.75rem 0 0.4rem; font-family: var(--display); }
+.wa-card p { font-size: 0.86rem; color: rgba(255, 255, 255, 0.88); margin-bottom: 1.1rem; line-height: 1.5; }
+.wa-ic { width: 44px; height: 44px; border-radius: 12px; background: #ffffff; display: grid; place-items: center; }
+.wa-ic svg { width: 22px; height: 22px; fill: #25D366; }
+.wa-card .btn { padding: 0.75rem 1.2rem; font-size: 0.88rem; }
 
 /* Social Grid & Partners */
-.social-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+.social-grid { display: grid; gap: 1.2rem; grid-template-columns: 1fr; }
 @media (min-width: 600px) { .social-grid { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1024px) { .social-grid { grid-template-columns: repeat(4, 1fr); } }
-.social-card { background: #ffffff; border: 1px solid #E8DFEE; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: all 0.35s ease; box-shadow: 0 4px 18px rgba(75, 29, 109, 0.04); }
-.social-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(75, 29, 109, 0.09); border-color: var(--magenta); }
-.sc-head { display: flex; align-items: center; gap: 0.75rem; padding: 0.95rem 1.25rem; border-bottom: 1px solid #E8DFEE; background: #FAF7FC; }
-.sc-head svg { width: 20px; height: 20px; flex-shrink: 0; }
-.sc-head b { font-size: 0.88rem; font-weight: 700; color: var(--violet-deep); }
-.sc-head a { margin-left: auto; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--magenta); font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E8DFEE; transition: all 0.2s; text-decoration: none; }
+.social-card { background: #ffffff; border: 1px solid #E8DFEE; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(75, 29, 109, 0.04); }
+.social-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(75, 29, 109, 0.08); border-color: var(--magenta); }
+.sc-head { display: flex; align-items: center; gap: 0.7rem; padding: 0.75rem 1rem; border-bottom: 1px solid #E8DFEE; background: #FAF7FC; }
+.sc-head svg { width: 18px; height: 18px; flex-shrink: 0; }
+.sc-head b { font-size: 0.84rem; font-weight: 700; color: var(--violet-deep); }
+.sc-head a { margin-left: auto; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--magenta); font-weight: 700; padding: 0.22rem 0.65rem; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E8DFEE; transition: all 0.2s; text-decoration: none; }
 .sc-head a:hover { background: var(--magenta); color: #FFFFFF; border-color: var(--magenta); }
-.sc-body { padding: 1.25rem; font-size: 0.9rem; flex: 1; display: flex; flex-direction: column; gap: 0.9rem; }
-.sc-body .img { border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 10; position: relative; background: #FAF7FC; width: 100%; }
+.sc-body { padding: 1rem 1rem 0.8rem; font-size: 0.86rem; flex: 1; display: flex; flex-direction: column; gap: 0.7rem; }
+.sc-body .img { border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; max-height: 170px; position: relative; background: #FAF7FC; width: 100%; }
 .sc-body img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.sc-body p { font-size: 0.88rem; line-height: 1.55; color: #33263F; margin: 0; flex: 1; }
-.sc-foot { padding: 0.85rem 1.25rem; border-top: 1px dashed #E8DFEE; font-family: var(--mono); font-size: 0.72rem; color: var(--gris); display: flex; justify-content: space-between; align-items: center; background: #FAF7FC; margin-top: auto; }
+.sc-body p { font-size: 0.85rem; line-height: 1.45; color: #33263F; margin: 0; flex: 1; }
+.sc-foot { padding: 0.65rem 1rem; border-top: 1px dashed #E8DFEE; font-family: var(--mono); font-size: 0.7rem; color: var(--gris); display: flex; justify-content: space-between; align-items: center; background: #FAF7FC; margin-top: auto; }
 .partners { padding: 3.2rem 0; border-top: 1px solid rgba(75, 29, 109, 0.08); border-bottom: 1px solid rgba(75, 29, 109, 0.08); overflow: hidden; background: #ffffff; }
 .partners p { text-align: center; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gris); margin-bottom: 1.6rem; }
 .partners-track { display: flex; gap: 4.5rem; width: max-content; animation: marquee 34s linear infinite; }
@@ -2732,18 +2735,6 @@ footer {
 
   <div class="drawer-body">
     
-    <!-- Quick Action CTA Buttons -->
-    <div class="drawer-quick-actions">
-      <a href="#/lumiere" class="d-action-pill d-action-lumiere">
-        <span>✦ Mettre une femme en lumière</span>
-        <span>→</span>
-      </a>
-      <a href="https://whatsapp.com/channel/femcurrent" target="_blank" rel="noopener" class="d-action-pill d-action-wa">
-        <span>💬 Canal WhatsApp Officiel</span>
-        <span>Rejoindre</span>
-      </a>
-    </div>
-
     <!-- Navigation Principale avec Accordéons -->
     <nav class="drawer-nav" aria-label="Navigation principale mobile">
       
@@ -2751,7 +2742,7 @@ footer {
       <div class="d-nav-item">
         <a href="#/" class="d-nav-link">
           <span><strong class="d-nav-num">01</strong>Accueil</span>
-          <span style="color:#E91E63;font-size:1.1rem;">🏠</span>
+          <span style="color:var(--orange)">→</span>
         </a>
       </div>
 
@@ -3427,10 +3418,10 @@ function vHome(){return `
     
     <!-- Rubriques / Switcher Pills (Visible & scrollable sur mobile) -->
     <div class="hero-tabs-header">
-      <a href="#/actualites" class="hero-tab-pill active">🔥 HOT ACTU</a>
-      <a href="#/enquetes" class="hero-tab-pill subtle">⚡ TOP ENQUÊTES</a>
-      <a href="#/initiatives" class="hero-tab-pill subtle">💡 INITIATIVES</a>
-      <a href="#/observatoire" class="hero-tab-pill subtle">📊 OBSERVATOIRE</a>
+      <a href="#/actualites" class="hero-tab-pill active">HOT ACTU</a>
+      <a href="#/enquetes" class="hero-tab-pill subtle">TOP ENQUÊTES</a>
+      <a href="#/initiatives" class="hero-tab-pill subtle">INITIATIVES</a>
+      <a href="#/observatoire" class="hero-tab-pill subtle">OBSERVATOIRE</a>
     </div>
 
     <!-- TOP LEAD STORY (Grande Une Horizontale Responsive) -->
@@ -3638,14 +3629,14 @@ function vHome(){return `
 </section>
 <section class="section commu"><div class="container">
  <div data-reveal><span class="kicker" style="color:#fff">Rejoindre la communauté</span>
- <h2 style="margin-top:1rem">Ne manquez plus aucune voix.</h2>
- <p class="lead" style="margin-top:1rem">Recevez chaque semaine nos analyses approfondies, nos enquêtes et les nouvelles publications de FemCurrent.</p>
+ <h2 style="margin-top:0.8rem">Ne manquez plus aucune voix.</h2>
+ <p class="lead" style="margin-top:0.8rem">Recevez chaque semaine nos analyses approfondies, nos enquêtes et les nouvelles publications de FemCurrent.</p>
  ${nlBlock(true)}
  <span class="nl-ok" style="display:none"></span></div>
  <div class="wa-card" data-reveal data-delay="120">
   <span class="wa-ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm4.6 14.1c-.2.6-1.2 1.1-1.7 1.2-.4.1-.9.1-1.5-.1-.4-.1-.8-.2-1.4-.5a11 11 0 01-4.2-3.7c-.2-.2-1.1-1.4-1.1-2.7s.7-2 1-2.2a1 1 0 01.7-.3h.5c.2 0 .4-.1.6.4l.8 1.9c0 .2 0 .3-.1.5l-.5.6c-.1.2-.3.3 0 .7a6.7 6.7 0 003.3 2.9c.3.1.5 0 .6-.1s.6-.8.8-1 .4-.2.6-.1.4.1 1.7.8c.2.1.5.2.5.3 0 .1.1.6-.1 1.1z"/></svg></span>
-  <h3>FemCurrent, directement sur WhatsApp</h3>
-  <p>Actualités, enquêtes, opportunités et nouvelles publications, directement sur votre téléphone.</p>
+  <h3>FemCurrent sur WhatsApp</h3>
+  <p>Actualités, enquêtes, opportunités et alertes éditoriales directement sur votre smartphone.</p>
   <a class="btn btn-white" href="https://whatsapp.com/channel/femcurrent" target="_blank" rel="noopener">Rejoindre le canal WhatsApp</a>
  </div>
 </div></section>
@@ -3663,7 +3654,7 @@ function vHome(){return `
     <div class="img"><img src="${IMG("insta-portrait-maman-germaine",600,400)}" alt="Instagram FemCurrent" loading="lazy"></div>
     <p>Portrait du jour : Maman Germaine, 62 ans, fondatrice de la tontine Bibomika au grand marché de Zando.</p>
    </div>
-   <div class="sc-foot"><span>❤️ 1 240</span><span>💬 86</span></div>
+   <div class="sc-foot"><span>1 240 mentions</span><span>86 commentaires</span></div>
   </article>
 
   <!-- TikTok -->
@@ -3680,7 +3671,7 @@ function vHome(){return `
     </div>
     <p>Dans les coulisses de notre grand reportage vidéo au marché de Zando à Kinshasa. #FemCurrent</p>
    </div>
-   <div class="sc-foot"><span>▶ 8 450</span><span>❤️ 620</span></div>
+   <div class="sc-foot"><span>8.4k vues</span><span>620 partages</span></div>
   </article>
 
   <!-- YouTube -->
@@ -3697,7 +3688,7 @@ function vHome(){return `
     </div>
     <p>Podcast vidéo — ÉP. 13 « Tontines : l'économie de la confiance et du lien social ».</p>
    </div>
-   <div class="sc-foot"><span>▶ 3 120</span><span>👍 402</span></div>
+   <div class="sc-foot"><span>3.1k vues</span><span>402 mentions</span></div>
   </article>
 
   <!-- LinkedIn -->
@@ -3713,7 +3704,7 @@ function vHome(){return `
     </div>
     <p>Baromètre 2025 : +4 points de femmes dans les assemblées provinciales. Notre analyse en 5 graphiques.</p>
    </div>
-   <div class="sc-foot"><span>👍 356</span><span>↻ 94</span></div>
+   <div class="sc-foot"><span>356 partages</span><span>94 réactions</span></div>
   </article>
  </div>
 </div></section>`;}
