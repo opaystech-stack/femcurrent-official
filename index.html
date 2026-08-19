@@ -5394,7 +5394,7 @@ function v404(){
   </div></section>`;
 }
 
-/* ================= ROUTEUR ================= */
+/* ================= ROUTEUR (URLs Propres Sans # & Support Hash) ================= */
 function render(html,title){
  APP.innerHTML=html;
  document.title=title+" — FemCurrent";
@@ -5403,11 +5403,38 @@ function render(html,title){
  bindCommon(APP); setActiveNav();
 }
 function setActiveNav(){
- const seg=(location.hash.replace(/^#\/?/,"")||"").split("/")[0];
- $$("nav.main [data-nav]").forEach(a=>a.classList.toggle("current",a.dataset.nav===seg));
+ const p = getRouteSegments()[0] || "";
+ $$("nav.main [data-nav]").forEach(a=>a.classList.toggle("current",a.dataset.nav===p));
+}
+function getRouteSegments() {
+ if (location.hash && location.hash.length > 1) {
+   return location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+ }
+ const pathname = location.pathname.replace(/^\/+|\/+$/g, "");
+ if (!pathname || pathname === "index.html") return [];
+ return pathname.split("/").filter(Boolean);
+}
+function navigateTo(url, e) {
+ if (e) e.preventDefault();
+ if (url.startsWith("#")) {
+   const cleanPath = url.replace(/^#/, "") || "/";
+   if (history.pushState) {
+     history.pushState(null, "", cleanPath);
+     router();
+   } else {
+     location.hash = url;
+   }
+ } else {
+   if (history.pushState) {
+     history.pushState(null, "", url);
+     router();
+   } else {
+     location.href = url;
+   }
+ }
 }
 function router(){
- const seg=(location.hash.replace(/^#\/?/,"")).split("/").filter(Boolean);
+ const seg = getRouteSegments();
  const dr=$("#drawer"); if(dr && dr.classList) dr.classList.remove("open");
  if(document.body && document.body.classList) document.body.classList.remove("lock");
  try { closeSearch(); } catch(e) {}
@@ -5434,6 +5461,8 @@ function router(){
  }
 }
 addEventListener("hashchange",router);
+addEventListener("popstate",router);
+
 
 /* ================= BINDINGS COMMUNS ================= */
 const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in-view");io.unobserve(en.target);}});},{threshold:.14,rootMargin:"0px 0px -40px"});
@@ -5581,7 +5610,7 @@ if(typeof addEventListener === "function"){
 
 
 
-/* ================= WORDPRESS LIVE SYNC ENGINE ================= */
+/* ================= WORDPRESS REAL-TIME FAST ENGINE ================= */
 const WP_API_BASE = "https://admin.femcurrent.com/wp-json/wp/v2";
 
 function decodeEntities(str) {
@@ -5599,171 +5628,178 @@ function getFeatImg(p) {
   return "";
 }
 
-async function syncAllWithWordPress() {
-  try {
-    // 1. Articles & Actualités (Tri antichronologique)
-    const resPosts = await fetch(`${WP_API_BASE}/posts?_embed&per_page=30&orderby=date&order=desc`, { cache: 'no-cache' });
-    if (resPosts.ok) {
-      const posts = await resPosts.json();
+// 1. Fetch live articles immediately and re-render without waiting
+function fetchLivePosts() {
+  fetch(`${WP_API_BASE}/posts?_embed&per_page=30&orderby=date&order=desc`, { cache: 'no-cache' })
+    .then(r => r.json())
+    .then(posts => {
+      if (!Array.isArray(posts)) return;
       const filtered = posts.filter(p => p.slug !== 'hello-world');
-      if (filtered.length > 0) {
-        const liveArticles = filtered.map(p => {
-          const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
-          const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
-          const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
-            ? decodeEntities(p._embedded['wp:term'][0][0].name) : "Société";
+      if (filtered.length === 0) return;
 
-          return {
-            slug: p.slug,
-            cat: catName,
-            cls: "magenta",
-            prov: (p.meta && p.meta.province) ? p.meta.province : "National",
-            date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
-            mins: Math.max(3, Math.round(plainText.length / 450)),
-            seed: p.slug,
-            customImg: getFeatImg(p),
-            title: decodeEntities(p.title.rendered),
-            ex: plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Lire l'article complet sur FemCurrent.",
-            body: [rawContent || plainText]
-          };
-        });
+      const liveArticles = filtered.map(p => {
+        const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+        const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+        const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
+          ? decodeEntities(p._embedded['wp:term'][0][0].name) : "Société";
 
-        // Insert new articles in front
-        liveArticles.reverse().forEach(la => {
-          const idx = ARTICLES.findIndex(a => a.slug === la.slug);
-          if (idx >= 0) ARTICLES[idx] = la;
-          else ARTICLES.unshift(la);
-        });
-      }
-    }
+        return {
+          slug: p.slug,
+          cat: catName,
+          cls: "magenta",
+          prov: (p.meta && p.meta.province) ? p.meta.province : "National",
+          date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+          mins: Math.max(3, Math.round(plainText.length / 450)),
+          seed: p.slug,
+          customImg: getFeatImg(p),
+          title: decodeEntities(p.title.rendered),
+          ex: plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Lire l'article complet sur FemCurrent.",
+          body: [rawContent || plainText]
+        };
+      });
 
-    // 2. Enquêtes & Analyses (FemCurrent Investigates)
-    const resEnq = await fetch(`${WP_API_BASE}/enquetes?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' });
-    if (resEnq.ok) {
-      const enqs = await resEnq.json();
-      if (enqs.length > 0) {
-        const liveEnqs = enqs.map(p => {
-          const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
-          const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
-          return {
-            slug: p.slug,
-            cat: "Enquête",
-            cls: "violet",
-            prov: (p.meta && p.meta.province) ? p.meta.province : "RDC",
-            date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
-            mins: Math.max(5, Math.round(plainText.length / 400)),
-            seed: p.slug,
-            customImg: getFeatImg(p),
-            title: decodeEntities(p.title.rendered),
-            ex: plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Enquête exclusive FemCurrent Investigates.",
-            src: "Vérification des sources : 5/5",
-            w: "100%",
-            detail: "Enquête vérifiée · Publication officielle",
-            body: [rawContent || plainText]
-          };
-        });
-        liveEnqs.reverse().forEach(le => {
-          const idx = ENQUETES.findIndex(e => e.slug === le.slug);
-          if (idx >= 0) ENQUETES[idx] = le;
-          else ENQUETES.unshift(le);
-        });
-      }
-    }
+      // Place live articles in front
+      liveArticles.reverse().forEach(la => {
+        const idx = ARTICLES.findIndex(a => a.slug === la.slug);
+        if (idx >= 0) ARTICLES[idx] = la;
+        else ARTICLES.unshift(la);
+      });
 
-    // 3. Femmes à la une (Portraits)
-    const resFemmes = await fetch(`${WP_API_BASE}/femmes?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' });
-    if (resFemmes.ok) {
-      const femmes = await resFemmes.json();
-      if (femmes.length > 0) {
-        const liveFemmes = femmes.map(p => {
-          const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
-          const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
-          return {
-            slug: p.slug,
-            name: decodeEntities(p.title.rendered),
-            role: (p.meta && p.meta.role) ? p.meta.role : "Femme Leader & Inspirante",
-            prov: (p.meta && p.meta.province) ? p.meta.province : "RDC",
-            seed: p.slug,
-            customImg: getFeatImg(p),
-            quote: (p.meta && p.meta.quote) ? p.meta.quote : "Chaque action compte pour transformer notre société.",
-            bio: [rawContent || plainText]
-          };
-        });
-        liveFemmes.reverse().forEach(lf => {
-          const idx = FEMMES.findIndex(f => f.slug === lf.slug);
-          if (idx >= 0) FEMMES[idx] = lf;
-          else FEMMES.unshift(lf);
-        });
-      }
-    }
-
-    // 4. Initiatives de terrain (FemCurrent Matendo)
-    const resInit = await fetch(`${WP_API_BASE}/initiatives?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' });
-    if (resInit.ok) {
-      const inits = await resInit.json();
-      if (inits.length > 0) {
-        const liveInits = inits.map(p => {
-          const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
-          const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
-          return {
-            slug: p.slug,
-            name: decodeEntities(p.title.rendered),
-            org: (p.meta && p.meta.org) ? p.meta.org : "Organisation locale",
-            prov: (p.meta && p.meta.province) ? p.meta.province : "RDC",
-            cat: "Terrain",
-            cls: "orange",
-            seed: p.slug,
-            customImg: getFeatImg(p),
-            desc: plainText.length > 0 ? (plainText.slice(0, 170) + "…") : "Initiative de terrain documentée par FemCurrent.",
-            detail: ["Initiative vérifiée sur le terrain"],
-            body: [rawContent || plainText]
-          };
-        });
-        liveInits.reverse().forEach(li => {
-          const idx = INITIATIVES.findIndex(i => i.slug === li.slug);
-          if (idx >= 0) INITIATIVES[idx] = li;
-          else INITIATIVES.unshift(li);
-        });
-      }
-    }
-
-    // 5. Observatoire & Ressources (FemCurrent Data)
-    const resDocs = await fetch(`${WP_API_BASE}/ressources?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' });
-    if (resDocs.ok) {
-      const docs = await resDocs.json();
-      if (docs.length > 0) {
-        const liveDocs = docs.map(p => {
-          const plainText = p.content && p.content.rendered ? p.content.rendered.replace(/<[^>]+>/g, '').trim() : "";
-          return {
-            slug: p.slug,
-            type: "Étude",
-            cls: "orange",
-            year: new Date(p.date).getFullYear().toString(),
-            pages: "Rapport complet",
-            title: decodeEntities(p.title.rendered),
-            desc: plainText || "Publication de l'Observatoire FemCurrent Data.",
-            chap: ["Synthèse", "Méthodologie", "Données provinciales", "Recommandations"]
-          };
-        });
-        liveDocs.reverse().forEach(ld => {
-          const idx = DOCS.findIndex(d => d.slug === ld.slug);
-          if (idx >= 0) DOCS[idx] = ld;
-          else DOCS.unshift(ld);
-        });
-      }
-    }
-
-    // Re-render current route with live updated data
-    router();
-  } catch (err) {
-    console.log("WordPress API offline, fallback to built-in cache.", err);
-  }
+      // Update view instantly
+      router();
+    })
+    .catch(err => console.log("Live posts fetch error:", err));
 }
 
-// Update cardFemme to use customImg
-const origCardFemme = cardFemme;
+// 2. Fetch live CPTs in parallel
+function fetchLiveCPTs() {
+  // Enquetes
+  fetch(`${WP_API_BASE}/enquetes?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' })
+    .then(r => r.json())
+    .then(enqs => {
+      if (!Array.isArray(enqs) || enqs.length === 0) return;
+      const liveEnqs = enqs.map(p => {
+        const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+        const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+        return {
+          slug: p.slug,
+          cat: "Enquête",
+          cls: "violet",
+          prov: (p.meta && p.meta.province) ? p.meta.province : "RDC",
+          date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+          mins: Math.max(5, Math.round(plainText.length / 400)),
+          seed: p.slug,
+          customImg: getFeatImg(p),
+          title: decodeEntities(p.title.rendered),
+          ex: plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Enquête exclusive FemCurrent Investigates.",
+          src: "Vérification des sources : 5/5",
+          w: "100%",
+          detail: "Enquête vérifiée · Publication officielle",
+          body: [rawContent || plainText]
+        };
+      });
+      liveEnqs.reverse().forEach(le => {
+        const idx = ENQUETES.findIndex(e => e.slug === le.slug);
+        if (idx >= 0) ENQUETES[idx] = le;
+        else ENQUETES.unshift(le);
+      });
+      router();
+    })
+    .catch(() => {});
 
-if (typeof window !== "undefined") { syncAllWithWordPress(); }
+  // Femmes leaders
+  fetch(`${WP_API_BASE}/femmes?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' })
+    .then(r => r.json())
+    .then(femmes => {
+      if (!Array.isArray(femmes) || femmes.length === 0) return;
+      const liveFemmes = femmes.map(p => {
+        const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+        const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+        return {
+          slug: p.slug,
+          name: decodeEntities(p.title.rendered),
+          role: (p.meta && p.meta.role) ? p.meta.role : "Femme Leader",
+          prov: (p.meta && p.meta.province) ? p.meta.province : "RDC",
+          seed: p.slug,
+          customImg: getFeatImg(p),
+          quote: (p.meta && p.meta.quote) ? p.meta.quote : "Chaque action compte pour transformer notre société.",
+          bio: [rawContent || plainText]
+        };
+      });
+      liveFemmes.reverse().forEach(lf => {
+        const idx = FEMMES.findIndex(f => f.slug === lf.slug);
+        if (idx >= 0) FEMMES[idx] = lf;
+        else FEMMES.unshift(lf);
+      });
+      router();
+    })
+    .catch(() => {});
+
+  // Initiatives
+  fetch(`${WP_API_BASE}/initiatives?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' })
+    .then(r => r.json())
+    .then(inits => {
+      if (!Array.isArray(inits) || inits.length === 0) return;
+      const liveInits = inits.map(p => {
+        const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+        const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+        return {
+          slug: p.slug,
+          name: decodeEntities(p.title.rendered),
+          org: (p.meta && p.meta.org) ? p.meta.org : "Organisation",
+          prov: (p.meta && p.meta.province) ? p.meta.province : "RDC",
+          cat: "Terrain",
+          cls: "orange",
+          seed: p.slug,
+          customImg: getFeatImg(p),
+          desc: plainText.length > 0 ? (plainText.slice(0, 170) + "…") : "Initiative de terrain.",
+          detail: ["Initiative vérifiée sur le terrain"],
+          body: [rawContent || plainText]
+        };
+      });
+      liveInits.reverse().forEach(li => {
+        const idx = INITIATIVES.findIndex(i => i.slug === li.slug);
+        if (idx >= 0) INITIATIVES[idx] = li;
+        else INITIATIVES.unshift(li);
+      });
+      router();
+    })
+    .catch(() => {});
+
+  // Ressources
+  fetch(`${WP_API_BASE}/ressources?_embed&per_page=20&orderby=date&order=desc`, { cache: 'no-cache' })
+    .then(r => r.json())
+    .then(docs => {
+      if (!Array.isArray(docs) || docs.length === 0) return;
+      const liveDocs = docs.map(p => {
+        const plainText = p.content && p.content.rendered ? p.content.rendered.replace(/<[^>]+>/g, '').trim() : "";
+        return {
+          slug: p.slug,
+          type: "Étude",
+          cls: "orange",
+          year: new Date(p.date).getFullYear().toString(),
+          pages: "Rapport complet",
+          title: decodeEntities(p.title.rendered),
+          desc: plainText || "Publication de l'Observatoire FemCurrent Data.",
+          chap: ["Synthèse", "Méthodologie", "Données", "Recommandations"]
+        };
+      });
+      liveDocs.reverse().forEach(ld => {
+        const idx = DOCS.findIndex(d => d.slug === ld.slug);
+        if (idx >= 0) DOCS[idx] = ld;
+        else DOCS.unshift(ld);
+      });
+      router();
+    })
+    .catch(() => {});
+}
+
+// Run fast parallel sync
+if (typeof window !== "undefined") {
+  fetchLivePosts();
+  fetchLiveCPTs();
+}
+
 
 
 /* ================= DÉMARRAGE ================= */
