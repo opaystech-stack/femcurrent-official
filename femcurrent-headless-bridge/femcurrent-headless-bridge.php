@@ -2,8 +2,8 @@
 /**
  * Plugin Name: FemCurrent Headless Bridge
  * Plugin URI: https://femcurrent.com
- * Description: Moteur Headless officiel pour FemCurrent Média : CORS, Custom Post Types complets (Enquêtes, Femmes leaders, Initiatives, Ressources, Événements, Podcasts, Soumissions), redirection et API REST temps réel.
- * Version: 2.0.0
+ * Description: Moteur Headless officiel pour FemCurrent Média : CORS, Custom Post Types complets, redirection frontend propre sans # et API REST temps réel.
+ * Version: 2.1.0
  * Author: Équipe FemCurrent & OPAYSTECH
  * Author URI: https://femcurrent.com
  * License: GPL-2.0+
@@ -68,7 +68,7 @@ add_action('init', function () {
 });
 
 /* ==========================================================================
-   3. REDIRECTION FRONTEND AUTOMATIQUE VERS LE SITE PUBLIC
+   3. REDIRECTION FRONTEND AUTOMATIQUE VERS LE SITE PUBLIC (URLS PROPRES SANS #)
    ========================================================================== */
 add_action('template_redirect', function () {
     if (is_admin() || wp_doing_ajax() || wp_is_json_request() || (defined('REST_REQUEST') && REST_REQUEST)) {
@@ -83,26 +83,26 @@ add_action('template_redirect', function () {
             $type = $post->post_type;
             $slug = $post->post_name;
             if ($type === 'enquete') {
-                wp_redirect($frontend_url . '/#/enquetes/' . $slug, 302);
+                wp_redirect($frontend_url . '/enquetes/' . $slug, 302);
                 exit;
             } elseif ($type === 'femme_leader') {
-                wp_redirect($frontend_url . '/#/femmes/' . $slug, 302);
+                wp_redirect($frontend_url . '/femmes/' . $slug, 302);
                 exit;
             } elseif ($type === 'initiative') {
-                wp_redirect($frontend_url . '/#/initiatives/' . $slug, 302);
+                wp_redirect($frontend_url . '/initiatives/' . $slug, 302);
                 exit;
             } elseif ($type === 'ressource') {
-                wp_redirect($frontend_url . '/#/ressources/' . $slug, 302);
+                wp_redirect($frontend_url . '/ressources/' . $slug, 302);
                 exit;
             } else {
-                wp_redirect($frontend_url . '/#/actualites/' . $slug, 302);
+                wp_redirect($frontend_url . '/actualites/' . $slug, 302);
                 exit;
             }
         }
     }
 
     if (is_front_page() || is_home()) {
-        wp_redirect($frontend_url . '/#/', 302);
+        wp_redirect($frontend_url . '/', 302);
         exit;
     }
 });
@@ -112,121 +112,51 @@ add_action('template_redirect', function () {
    ========================================================================== */
 add_action('init', function () {
 
-    // 1. Enquêtes (FemCurrent Investigates)
     register_post_type('enquete', [
-        'labels' => [
-            'name' => 'Enquêtes',
-            'singular_name' => 'Enquête',
-            'add_new_item' => 'Ajouter une nouvelle enquête',
-            'edit_item' => 'Modifier l’enquête'
-        ],
-        'public' => true,
-        'has_archive' => true,
-        'show_in_rest' => true,
-        'rest_base' => 'enquetes',
-        'menu_icon' => 'dashicons-search',
+        'labels' => ['name' => 'Enquêtes', 'singular_name' => 'Enquête', 'add_new_item' => 'Ajouter une nouvelle enquête', 'edit_item' => 'Modifier l’enquête'],
+        'public' => true, 'has_archive' => true, 'show_in_rest' => true, 'rest_base' => 'enquetes', 'menu_icon' => 'dashicons-search',
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 2. Femmes à la une (Portraits)
     register_post_type('femme_leader', [
-        'labels' => [
-            'name' => 'Femmes à la une',
-            'singular_name' => 'Femme leader',
-            'add_new_item' => 'Ajouter un portrait',
-            'edit_item' => 'Modifier le portrait'
-        ],
-        'public' => true,
-        'has_archive' => true,
-        'show_in_rest' => true,
-        'rest_base' => 'femmes',
-        'menu_icon' => 'dashicons-star-filled',
+        'labels' => ['name' => 'Femmes à la une', 'singular_name' => 'Femme leader', 'add_new_item' => 'Ajouter un portrait', 'edit_item' => 'Modifier le portrait'],
+        'public' => true, 'has_archive' => true, 'show_in_rest' => true, 'rest_base' => 'femmes', 'menu_icon' => 'dashicons-star-filled',
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 3. Initiatives (FemCurrent Matendo)
     register_post_type('initiative', [
-        'labels' => [
-            'name' => 'Initiatives',
-            'singular_name' => 'Initiative',
-            'add_new_item' => 'Ajouter une initiative',
-            'edit_item' => 'Modifier l’initiative'
-        ],
-        'public' => true,
-        'has_archive' => true,
-        'show_in_rest' => true,
-        'rest_base' => 'initiatives',
-        'menu_icon' => 'dashicons-networking',
+        'labels' => ['name' => 'Initiatives', 'singular_name' => 'Initiative', 'add_new_item' => 'Ajouter une initiative', 'edit_item' => 'Modifier l’initiative'],
+        'public' => true, 'has_archive' => true, 'show_in_rest' => true, 'rest_base' => 'initiatives', 'menu_icon' => 'dashicons-networking',
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 4. Observatoire & Ressources (FemCurrent Data)
     register_post_type('ressource', [
-        'labels' => [
-            'name' => 'Ressources & Études',
-            'singular_name' => 'Ressource',
-            'add_new_item' => 'Ajouter une ressource',
-            'edit_item' => 'Modifier la ressource'
-        ],
-        'public' => true,
-        'has_archive' => true,
-        'show_in_rest' => true,
-        'rest_base' => 'ressources',
-        'menu_icon' => 'dashicons-chart-bar',
+        'labels' => ['name' => 'Ressources & Études', 'singular_name' => 'Ressource', 'add_new_item' => 'Ajouter une ressource', 'edit_item' => 'Modifier la ressource'],
+        'public' => true, 'has_archive' => true, 'show_in_rest' => true, 'rest_base' => 'ressources', 'menu_icon' => 'dashicons-chart-bar',
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 5. Agenda & Événements
     register_post_type('evenement', [
-        'labels' => [
-            'name' => 'Agenda & Événements',
-            'singular_name' => 'Événement',
-            'add_new_item' => 'Ajouter un événement',
-            'edit_item' => 'Modifier l’événement'
-        ],
-        'public' => true,
-        'has_archive' => true,
-        'show_in_rest' => true,
-        'rest_base' => 'evenements',
-        'menu_icon' => 'dashicons-calendar-alt',
+        'labels' => ['name' => 'Agenda & Événements', 'singular_name' => 'Événement', 'add_new_item' => 'Ajouter un événement', 'edit_item' => 'Modifier l’événement'],
+        'public' => true, 'has_archive' => true, 'show_in_rest' => true, 'rest_base' => 'evenements', 'menu_icon' => 'dashicons-calendar-alt',
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 6. Médiathèque & Podcasts (FemCurrent Voices)
     register_post_type('podcast', [
-        'labels' => [
-            'name' => 'Podcasts & Médias',
-            'singular_name' => 'Podcast',
-            'add_new_item' => 'Ajouter un podcast / vidéo',
-            'edit_item' => 'Modifier le podcast'
-        ],
-        'public' => true,
-        'has_archive' => true,
-        'show_in_rest' => true,
-        'rest_base' => 'podcasts',
-        'menu_icon' => 'dashicons-format-audio',
+        'labels' => ['name' => 'Podcasts & Médias', 'singular_name' => 'Podcast', 'add_new_item' => 'Ajouter un podcast / vidéo', 'edit_item' => 'Modifier le podcast'],
+        'public' => true, 'has_archive' => true, 'show_in_rest' => true, 'rest_base' => 'podcasts', 'menu_icon' => 'dashicons-format-audio',
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 7. Soumissions du public (Mettre en lumière & Contact)
     register_post_type('soumission', [
-        'labels' => [
-            'name' => 'Soumissions & Alertes',
-            'singular_name' => 'Soumission',
-            'add_new_item' => 'Ajouter une soumission',
-            'edit_item' => 'Consulter la soumission'
-        ],
-        'public' => false,
-        'show_ui' => true,
-        'show_in_rest' => true,
-        'rest_base' => 'soumissions',
-        'menu_icon' => 'dashicons-email-alt',
+        'labels' => ['name' => 'Soumissions & Alertes', 'singular_name' => 'Soumission', 'add_new_item' => 'Ajouter une soumission', 'edit_item' => 'Consulter la soumission'],
+        'public' => false, 'show_ui' => true, 'show_in_rest' => true, 'rest_base' => 'soumissions', 'menu_icon' => 'dashicons-email-alt',
         'supports' => ['title', 'editor', 'custom-fields'],
     ]);
 });
 
 /* ==========================================================================
-   5. EXPOSITION DES CHAMPS DANS L'API REST
+   5. EXPOSITION DES IMAGES MISES EN AVANT DANS L'API REST
    ========================================================================== */
 add_action('rest_api_init', function () {
     register_rest_field(['post', 'enquete', 'femme_leader', 'initiative', 'ressource', 'evenement', 'podcast'], 'featured_image_url', [
