@@ -3446,7 +3446,7 @@ function vHome(){
     customImg: "public/images/hero-cinematic-leaders.jpg"
   };
 
-  const leadImg = lead.customImg || (lead.seed ? IMG(lead.seed, 1200, 750) : "public/images/hero-cinematic-leaders.jpg");
+  const leadImg = lead.customImg || "public/images/hero-cinematic-leaders.jpg";
 
   const enq = ENQUETES[0] || {
     title: "Foncier coutumier : le combat des femmes du Kasaï pour leurs terres",
@@ -3603,11 +3603,11 @@ function vHome(){
 <section class="section" id="alaune"><div class="container">
  <div class="section-head" data-reveal><div><span class="kicker">À la une</span><h2>Ce qui fait l'actualité</h2></div><a class="see-all" href="#/actualites">Toutes les actualités →</a></div>
  <div class="une-grid">
-  <a class="une-feature" href="#/actualites/${ARTICLES[0].slug}" data-reveal>
-   <div class="img"><img src="${ARTICLES[0].customImg || IMG(ARTICLES[0].seed,1200,750)}" alt="" loading="lazy"></div>
-   <div class="body"><span class="tag ${ARTICLES[0].cls}">${ARTICLES[0].cat} · Décryptage</span><h3>${ARTICLES[0].title}</h3><p>${ARTICLES[0].ex} Récit d'une révolution silencieuse, au cœur du plus grand marché de la capitale.</p><div class="meta" style="margin-top:.9rem">Par la Rédaction · ${ARTICLES[0].mins} min de lecture · ${ARTICLES[0].date}</div></div></a>
+  <a class="une-feature" href="#/actualites/${(ARTICLES[1] || ARTICLES[0]).slug}" data-reveal>
+   <div class="img"><img src="${(ARTICLES[1] && ARTICLES[1].customImg) || (ARTICLES[0] && ARTICLES[0].customImg) || 'public/images/hero-cinematic-leaders.jpg'}" alt="" loading="lazy"></div>
+   <div class="body"><span class="tag ${(ARTICLES[1] || ARTICLES[0]).cls}">${(ARTICLES[1] || ARTICLES[0]).cat} · Décryptage</span><h3>${(ARTICLES[1] || ARTICLES[0]).title}</h3><p>${(ARTICLES[1] || ARTICLES[0]).ex}</p><div class="meta" style="margin-top:.9rem">Par la Rédaction · ${(ARTICLES[1] || ARTICLES[0]).mins} min de lecture · ${(ARTICLES[1] || ARTICLES[0]).date}</div></div></a>
   <div class="une-list">
-   ${ARTICLES.slice(1,5).map((a,i)=>`<a class="une-item" href="#/actualites/${a.slug}" data-reveal data-delay="${i*70}">
+   ${(ARTICLES.length > 2 ? ARTICLES.slice(2, 6) : ARTICLES.slice(1, 5)).map((a,i)=>`<a class="une-item" href="#/actualites/${a.slug}" data-reveal data-delay="${i*70}">
     <span class="num">0${i+1}</span><div><span class="tag ${a.cls}">${a.cat}</span><h4>${a.title}</h4><span class="meta">${a.date} · ${a.prov}</span></div></a>`).join("")}
   </div>
  </div>
