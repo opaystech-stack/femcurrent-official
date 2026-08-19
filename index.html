@@ -3436,39 +3436,72 @@ const compSidebar=(pool,currentCat,currentSlug)=>{
 /* ================= PAGES ================= */
 function vHome(){
   const lead = ARTICLES[0] || {
-    title: "Au Lualaba, les coopératives féminines redéfinissent la chaîne de valeur minière responsable",
-    ex: "À Kolwezi et dans les territoires miniers, des femmes s'organisent en coopératives d'épargne et de transformation pour sortir de l'informel et peser dans les décisions économiques.",
-    cat: "LE GRAND DOSSIER · INVESTIGATION",
-    prov: "RDC & GRANDS LACS",
-    date: "24 MAI 2026",
-    mins: 7,
-    slug: "cooperatives-zando-kinshasa",
+    title: "Entrepreneuriat féminin en RDC : du commerce informel aux entreprises à fort impact",
+    ex: "Longtemps cantonnées à une économie de subsistance, les femmes entrepreneures congolaises redéfinissent aujourd'hui le paysage économique.",
+    cat: "Leadership féminin",
+    cls: "magenta",
+    prov: "National",
+    date: "19 août 2026",
+    mins: 5,
+    slug: "entrepreneuriat-feminin-en-rdc-du-commerce-informel-aux-entreprises-a-fort-impact",
     customImg: "public/images/hero-cinematic-leaders.jpg"
   };
 
   const leadImg = lead.customImg || "public/images/hero-cinematic-leaders.jpg";
 
-  const enq = ENQUETES[0] || {
-    title: "Foncier coutumier : le combat des femmes du Kasaï pour leurs terres",
-    ex: "47 témoignages exclusifs recueillis dans 6 chefferies révèlent les blocages et les victoires juridiques récentes.",
-    detail: "47 témoignages · 6 provinces",
-    mins: 9,
-    slug: "femmes-terres-droit-foncier"
-  };
+  // Dynamic editorial pillars selection based on category
+  const enq = ENQUETES.find(e => e.slug !== lead.slug) ||
+              ARTICLES.find(a => a.cat && (a.cat.includes("Enquêt") || a.cat.includes("Analys")) && a.slug !== lead.slug) ||
+              ENQUETES[0] || {
+                title: "Femmes et terres : la bataille silencieuse du droit foncier",
+                ex: "Elles cultivent 70 % des vivriers mais possèdent moins de 15 % des terres. Six mois d'enquête dans six provinces.",
+                detail: "47 témoignages · 6 provinces",
+                mins: 9,
+                slug: "femmes-terres-droit-foncier"
+              };
 
-  const init = INITIATIVES[0] || {
-    name: "Cliniques solaires : la révolution des sages-femmes du Sud-Kivu",
-    desc: "Kits d'énergie solaire et dossiers numérisés réduisent drastiquement la mortalité maternelle dans les zones enclavées.",
-    org: "Bijou Mukendi",
-    slug: "mama-radios"
-  };
+  const init = INITIATIVES.find(i => i.slug !== lead.slug) ||
+               ARTICLES.find(a => a.cat && (a.cat.includes("Init") || a.cat.includes("Terrain")) && a.slug !== lead.slug) ||
+               INITIATIVES[0] || {
+                 name: "Cliniques solaires : la révolution des sages-femmes du Sud-Kivu",
+                 desc: "Kits d'énergie solaire et dossiers numérisés réduisent drastiquement la mortalité maternelle dans les zones enclavées.",
+                 org: "Bijou Mukendi",
+                 slug: "mama-radios"
+               };
 
-  const obs = DOCS[0] || {
-    title: "Baromètre 2026 : Cartographie de la représentation dans 26 provinces",
-    desc: "Une analyse quantitative inédite des assemblées provinciales et exécutifs locaux pour mesurer les avancées de la parité.",
-    year: "2026",
-    slug: "barometre-2025"
-  };
+  const obs = ARTICLES.find(a => a.cat && (a.cat.includes("Obs") || a.cat.includes("Donn")) && a.slug !== lead.slug) ||
+              DOCS[0] || {
+                title: "Baromètre 2026 : Cartographie de la représentation dans 26 provinces",
+                desc: "Une analyse quantitative inédite des assemblées provinciales et exécutifs locaux pour mesurer les avancées de la parité.",
+                year: "2026",
+                slug: "barometre-2025"
+              };
+
+  const enqUrl = (ENQUETES.some(e => e.slug === enq.slug)) ? `/enquetes/${enq.slug}` : `/actualites/${enq.slug}`;
+  const initUrl = (INITIATIVES.some(i => i.slug === init.slug)) ? `/initiatives/${init.slug}` : `/actualites/${init.slug}`;
+  const obsUrl = (DOCS.some(d => d.slug === obs.slug)) ? `/ressources/${obs.slug}` : `/actualites/${obs.slug}`;
+
+  // Dedicated sections on homepage
+  const homeEnquetes = [
+    ...ARTICLES.filter(a => a.cat && (a.cat.includes("Enquêt") || a.cat.includes("Analys"))),
+    ...ENQUETES
+  ].filter((v,i,a)=>a.findIndex(t=>t.slug===v.slug)===i).slice(0, 6);
+
+  const homeFemmes = [
+    ...ARTICLES.filter(a => a.cat && a.cat.includes("Leadership")).map(a => ({
+      slug: a.slug, name: a.title, role: (a.prov ? a.prov + " · " : "") + "Leadership & Impact", prov: a.prov || "RDC",
+      seed: a.slug, customImg: a.customImg, quote: a.ex, bio: a.body
+    })),
+    ...FEMMES
+  ].filter((v,i,a)=>a.findIndex(t=>t.slug===v.slug)===i).slice(0, 6);
+
+  const homeInits = [
+    ...ARTICLES.filter(a => a.cat && (a.cat.includes("Init") || a.cat.includes("Terrain"))).map(a => ({
+      slug: a.slug, name: a.title, org: a.prov || "RDC", cat: a.cat, cls: a.cls || "orange",
+      seed: a.slug, customImg: a.customImg, desc: a.ex, detail: ["Initiative publiée"], body: a.body
+    })),
+    ...INITIATIVES
+  ].filter((v,i,a)=>a.findIndex(t=>t.slug===v.slug)===i).slice(0, 8);
 
   return `
 <section class="hero-media-modele-3" style="padding: 2rem 0 2.5rem; background: #FFFFFF; border-bottom: 1px solid #EBE4F0;">
@@ -3489,7 +3522,7 @@ function vHome(){
         <img src="${leadImg}" alt="${lead.title}">
         <div style="position: absolute; top: 1rem; left: 1rem; z-index: 5;">
           <span style="background: #E91E63; color: #ffffff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.35rem 0.85rem; border-radius: 6px; box-shadow: 0 4px 10px rgba(233,30,99,0.35);">
-            ${lead.cat || "LE GRAND DOSSIER · INVESTIGATION"}
+            ${lead.cat || "ACTUALITÉS"}
           </span>
         </div>
       </div>
@@ -3525,7 +3558,7 @@ function vHome(){
     <div class="home-pillars-grid">
       
       <!-- 1. Pôle ENQUÊTES -->
-      <a href="/enquetes/${enq.slug}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #4B1D6D; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
+      <a href="${enqUrl}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #4B1D6D; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #4B1D6D; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             ENQUÊTES &amp; ANALYSES
@@ -3544,26 +3577,26 @@ function vHome(){
       </a>
 
       <!-- 2. Pôle INITIATIVES -->
-      <a href="/initiatives/${init.slug}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #E91E63; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
+      <a href="${initUrl}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #E91E63; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #E91E63; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             INITIATIVES DE TERRAIN
           </span>
           <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
-            ${init.name}
+            ${init.name || init.title}
           </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
-            ${init.desc}
+            ${init.desc || init.ex}
           </p>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
-          <span>${init.org || "Collectif de terrain"}</span>
+          <span>${init.org || init.prov || "Collectif de terrain"}</span>
           <span style="color: #E91E63; font-weight: 700;">Découvrir →</span>
         </div>
       </a>
 
       <!-- 3. Pôle OBSERVATOIRE -->
-      <a href="/ressources/${obs.slug}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #FF8C00; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
+      <a href="${obsUrl}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #FF8C00; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #FF8C00; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             OBSERVATOIRE &amp; DONNÉES
@@ -3572,7 +3605,7 @@ function vHome(){
             ${obs.title}
           </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
-            ${obs.desc}
+            ${obs.desc || obs.ex}
           </p>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
@@ -3625,22 +3658,22 @@ function vHome(){
 <section class="section"><div class="container">
  <div class="section-head" data-reveal><div><span class="kicker">FemCurrent Investigates</span><h2>Enquêtes &amp; <span class="accent">Analyses</span></h2></div><a class="see-all" href="/enquetes">Toutes les enquêtes →</a></div>
  <div class="cards-grid">
- ${ENQUETES.map((e,i)=>`<a class="card" href="/enquetes/${e.slug}" data-reveal data-delay="${i*90}">
-  <div class="img"><img src="${IMG(e.seed,600,380)}" alt="" loading="lazy"></div>
-  <div class="body"><span class="tag ${e.cls}" style="align-self:flex-start">${e.cat}</span><h3>${e.title}</h3><p>${e.ex}</p>
-  <div class="card-foot"><span class="meta">${e.detail}</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`).join("")}
+ ${homeEnquetes.map((e,i)=>`<a class="card" href="${(ENQUETES.some(x=>x.slug===e.slug)?'/enquetes/':'/actualites/') + e.slug}" data-reveal data-delay="${i*90}">
+  <div class="img"><img src="${e.customImg || IMG(e.seed,600,380)}" alt="" loading="lazy"></div>
+  <div class="body"><span class="tag ${e.cls || 'violet'}" style="align-self:flex-start">${e.cat || 'Enquête'}</span><h3>${e.title}</h3><p>${e.ex}</p>
+  <div class="card-foot"><span class="meta">${e.detail || (e.prov ? e.prov + ' · ' : '') + e.date}</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`).join("")}
  </div>
 </div></section>
 <section class="section section-alt"><div class="container">
  <div class="section-head" data-reveal><div><span class="kicker">Portraits · Parcours inspirants</span><h2>Femmes à la une</h2></div><a class="see-all" href="/femmes">Tous les portraits →</a></div>
  <div class="rail" id="rail">
-  ${FEMMES.slice(0,5).map(cardFemme).join("")}
+  ${homeFemmes.map(cardFemme).join("")}
   <div class="portrait-cta"><span style="font-size:2rem"></span><h3>Et si c'était elle ? Et si c'était vous ?</h3><p>Chaque semaine, la communauté propose des femmes dont l'action mérite d'être racontée.</p><a class="btn btn-white" href="/lumiere">Proposer un profil</a></div>
  </div>
 </div></section>
 <section class="section"><div class="container">
  <div class="section-head" data-reveal><div><span class="kicker">FemCurrent Matendo</span><h2>Initiatives à découvrir</h2></div><a class="see-all" href="/initiatives">Toutes les initiatives →</a></div>
- <div class="cards-grid c4">${INITIATIVES.map((x,i)=>cardInit(x)).join("")}</div>
+ <div class="cards-grid c4">${homeInits.map((x,i)=>cardInit(x)).join("")}</div>
 </div></section>
 <section class="section" style="background:linear-gradient(180deg,var(--lavande),#fff)"><div class="container">
  <div class="section-head" data-reveal><div><span class="kicker">Nos espaces</span><h2>Explorez les univers <span class="accent">FemCurrent</span></h2>
@@ -5459,6 +5492,32 @@ function vArticleLoader(msg) {
   </section>`;
 }
 
+function getCatClass(cat) {
+  if (!cat) return "magenta";
+  const c = cat.toLowerCase();
+  if (c.includes("enqu") || c.includes("analys") || c.includes("num") || c.includes("gouv")) return "violet";
+  if (c.includes("obs") || c.includes("donn") || c.includes("sant") || c.includes("emerg") || c.includes("init") || c.includes("terrain")) return "orange";
+  return "magenta";
+}
+
+function extractCategoryInfo(p) {
+  let catName = "Société";
+  let allCats = [];
+
+  if (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0].length > 0) {
+    allCats = p._embedded['wp:term'][0].map(t => decodeEntities(t.name).trim());
+    const specific = allCats.filter(c => {
+      const cl = c.toLowerCase();
+      return cl !== 'non classé' && cl !== 'non-classe' && cl !== 'blog' && cl !== 'uncategorized';
+    });
+    if (specific.length > 0) catName = specific[0];
+    else if (allCats.length > 0) catName = allCats[0];
+  }
+
+  const cls = getCatClass(catName);
+  return { catName, cls, allCats };
+}
+
 async function fetchAndRenderArticle(pool, slug) {
   if (PENDING_FETCHES.has(slug)) return;
   PENDING_FETCHES.add(slug);
@@ -5476,13 +5535,13 @@ async function fetchAndRenderArticle(pool, slug) {
       const p = data[0];
       const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
       const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
-      const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
-        ? decodeEntities(p._embedded['wp:term'][0][0].name) : "Société";
+      const { catName, cls, allCats } = extractCategoryInfo(p);
 
       const formatted = {
         slug: p.slug,
         cat: catName,
-        cls: "magenta",
+        categories: allCats,
+        cls: cls,
         prov: (p.meta && p.meta.province) ? p.meta.province : "National",
         date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
         mins: Math.max(3, Math.round(plainText.length / 450)),
@@ -5618,13 +5677,13 @@ async function syncWordPressData() {
           const liveArticles = filtered.map(p => {
             const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
             const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
-            const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
-              ? decodeEntities(p._embedded['wp:term'][0][0].name) : "Société";
+            const { catName, cls, allCats } = extractCategoryInfo(p);
 
             return {
               slug: p.slug,
               cat: catName,
-              cls: "magenta",
+              categories: allCats,
+              cls: cls,
               prov: (p.meta && p.meta.province) ? p.meta.province : "National",
               date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
               mins: Math.max(3, Math.round(plainText.length / 450)),
