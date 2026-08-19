@@ -3434,7 +3434,43 @@ const compSidebar=(pool,currentCat,currentSlug)=>{
 };
 
 /* ================= PAGES ================= */
-function vHome(){return `
+function vHome(){
+  const lead = ARTICLES[0] || {
+    title: "Au Lualaba, les coopératives féminines redéfinissent la chaîne de valeur minière responsable",
+    ex: "À Kolwezi et dans les territoires miniers, des femmes s'organisent en coopératives d'épargne et de transformation pour sortir de l'informel et peser dans les décisions économiques.",
+    cat: "LE GRAND DOSSIER · INVESTIGATION",
+    prov: "RDC & GRANDS LACS",
+    date: "24 MAI 2026",
+    mins: 7,
+    slug: "cooperatives-zando-kinshasa",
+    customImg: "public/images/hero-cinematic-leaders.jpg"
+  };
+
+  const leadImg = lead.customImg || (lead.seed ? IMG(lead.seed, 1200, 750) : "public/images/hero-cinematic-leaders.jpg");
+
+  const enq = ENQUETES[0] || {
+    title: "Foncier coutumier : le combat des femmes du Kasaï pour leurs terres",
+    ex: "47 témoignages exclusifs recueillis dans 6 chefferies révèlent les blocages et les victoires juridiques récentes.",
+    detail: "47 témoignages · 6 provinces",
+    mins: 9,
+    slug: "femmes-terres-droit-foncier"
+  };
+
+  const init = INITIATIVES[0] || {
+    name: "Cliniques solaires : la révolution des sages-femmes du Sud-Kivu",
+    desc: "Kits d'énergie solaire et dossiers numérisés réduisent drastiquement la mortalité maternelle dans les zones enclavées.",
+    org: "Bijou Mukendi",
+    slug: "mama-radios"
+  };
+
+  const obs = DOCS[0] || {
+    title: "Baromètre 2026 : Cartographie de la représentation dans 26 provinces",
+    desc: "Une analyse quantitative inédite des assemblées provinciales et exécutifs locaux pour mesurer les avancées de la parité.",
+    year: "2026",
+    slug: "barometre-2025"
+  };
+
+  return `
 <section class="hero-media-modele-3" style="padding: 2rem 0 2.5rem; background: #FFFFFF; border-bottom: 1px solid #EBE4F0;">
   <div class="container">
     
@@ -3447,13 +3483,13 @@ function vHome(){return `
     </div>
 
     <!-- TOP LEAD STORY (Grande Une Horizontale Responsive) -->
-    <a href="#/actualites" class="home-lead-card">
+    <a href="#/actualites/${lead.slug}" class="home-lead-card">
       <!-- Photojournalism Image -->
       <div class="home-lead-img-wrap">
-        <img src="public/images/hero-cinematic-leaders.jpg" alt="Grande Une FemCurrent">
+        <img src="${leadImg}" alt="${lead.title}">
         <div style="position: absolute; top: 1rem; left: 1rem; z-index: 5;">
           <span style="background: #E91E63; color: #ffffff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.35rem 0.85rem; border-radius: 6px; box-shadow: 0 4px 10px rgba(233,30,99,0.35);">
-            LE GRAND DOSSIER · INVESTIGATION
+            ${lead.cat || "LE GRAND DOSSIER · INVESTIGATION"}
           </span>
         </div>
       </div>
@@ -3462,23 +3498,23 @@ function vHome(){return `
       <div class="home-lead-body">
         <div>
           <span style="font-size: 0.76rem; font-weight: 800; font-family: var(--mono); color: #FF8C00; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
-            RDC &amp; GRANDS LACS · 24 MAI 2026
+            ${lead.prov || "RDC & GRANDS LACS"} · ${lead.date}
           </span>
           <h1 style="font-family: var(--display); font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.18; font-weight: 800; color: #1F162B; margin: 0 0 0.85rem;">
-            Au Lualaba, les coopératives féminines redéfinissent la chaîne de valeur minière responsable
+            ${lead.title}
           </h1>
           <p style="font-size: 0.96rem; line-height: 1.58; color: #4A3E56; margin: 0;">
-            À Kolwezi et dans les territoires miniers, des femmes s'organisent en coopératives d'épargne et de transformation pour sortir de l'informel et peser dans les décisions économiques.
+            ${lead.ex}
           </p>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.2rem; margin-top: 1.2rem; border-top: 1px solid #E8DFEE; font-size: 0.82rem; color: #6E5E7A;">
           <div>
-            <strong style="color: #1F162B; display: block;">Par Solange Mwamba</strong>
-            <span style="font-size: 0.72rem;">Journaliste d'investigation économique</span>
+            <strong style="color: #1F162B; display: block;">Par la Rédaction</strong>
+            <span style="font-size: 0.72rem;">FemCurrent Média</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: #E91E63;">
-            <span>7 min de lecture</span>
+            <span>${lead.mins || 5} min de lecture</span>
             <span>→</span>
           </div>
         </div>
@@ -3489,59 +3525,59 @@ function vHome(){return `
     <div class="home-pillars-grid">
       
       <!-- 1. Pôle ENQUÊTES -->
-      <a href="#/enquetes" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #4B1D6D; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
+      <a href="#/enquetes/${enq.slug}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #4B1D6D; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #4B1D6D; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             ENQUÊTES &amp; ANALYSES
           </span>
           <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
-            Foncier coutumier : le combat des femmes du Kasaï pour leurs terres
+            ${enq.title}
           </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
-            47 témoignages exclusifs recueillis dans 6 chefferies révèlent les blocages et les victoires juridiques récentes.
+            ${enq.ex}
           </p>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
-          <span>Par Me Gisèle Mbiye</span>
-          <span style="color: #4B1D6D; font-weight: 700;">9 min · Lire →</span>
+          <span>${enq.detail || "FemCurrent Investigates"}</span>
+          <span style="color: #4B1D6D; font-weight: 700;">${enq.mins || 8} min · Lire →</span>
         </div>
       </a>
 
       <!-- 2. Pôle INITIATIVES -->
-      <a href="#/initiatives" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #E91E63; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
+      <a href="#/initiatives/${init.slug}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #E91E63; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #E91E63; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             INITIATIVES DE TERRAIN
           </span>
           <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
-            Cliniques solaires : la révolution des sages-femmes du Sud-Kivu
+            ${init.name}
           </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
-            Kits d'énergie solaire et dossiers numérisés réduisent drastiquement la mortalité maternelle dans les zones enclavées.
+            ${init.desc}
           </p>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
-          <span>Par Bijou Mukendi</span>
-          <span style="color: #E91E63; font-weight: 700;">6 min · Lire →</span>
+          <span>${init.org || "Collectif de terrain"}</span>
+          <span style="color: #E91E63; font-weight: 700;">Découvrir →</span>
         </div>
       </a>
 
       <!-- 3. Pôle OBSERVATOIRE -->
-      <a href="#/observatoire" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #FF8C00; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
+      <a href="#/ressources/${obs.slug}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #FF8C00; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #FF8C00; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             OBSERVATOIRE &amp; DONNÉES
           </span>
           <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
-            Baromètre 2026 : Cartographie de la représentation dans 26 provinces
+            ${obs.title}
           </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
-            Une analyse quantitative inédite des assemblées provinciales et exécutifs locaux pour mesurer les avancées de la parité.
+            ${obs.desc}
           </p>
         </div>
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; pt: 1rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
-          <span>Dr. Clarisse Tshibola</span>
-          <span style="color: #FF8C00; font-weight: 700;">Données · Voir →</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
+          <span>Édition ${obs.year || "2026"}</span>
+          <span style="color: #FF8C00; font-weight: 700;">Consulter →</span>
         </div>
       </a>
 

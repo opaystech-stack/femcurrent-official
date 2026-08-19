@@ -2,8 +2,8 @@
 /**
  * Plugin Name: FemCurrent Headless Bridge
  * Plugin URI: https://femcurrent.com
- * Description: Connecteur Headless officiel pour FemCurrent : gestion des en-têtes CORS, Custom Post Types (Enquêtes, Femmes leaders, Initiatives, Observatoire, Soumissions), redirection frontend et endpoints REST API pour formulaires.
- * Version: 1.0.2
+ * Description: Connecteur Headless officiel pour FemCurrent : gestion des en-têtes CORS, Custom Post Types (Enquêtes, Femmes leaders, Initiatives, Observatoire, Soumissions), redirection frontend, création automatique des catégories et endpoints REST API.
+ * Version: 1.0.3
  * Author: Équipe FemCurrent & OPAYSTECH
  * Author URI: https://femcurrent.com
  * License: GPL-2.0+
@@ -41,7 +41,34 @@ add_action('init', function () {
 });
 
 /* ==========================================================================
-   2. REDIRECTION DU FRONTEND WORDPRESS VERS LE SITE PUBLIC FEMCURRENT
+   2. CRÉATION AUTOMATIQUE DES CATÉGORIES OFFICIELLES
+   ========================================================================== */
+add_action('init', function () {
+    $categories = [
+        'Enquêtes & Analyses' => 'enquetes-analyses',
+        'Initiatives de terrain' => 'initiatives-terrain',
+        'Observatoire & Données' => 'observatoire-donnees',
+        'Société' => 'societe',
+        'Leadership féminin' => 'leadership-feminin',
+        'Numérique' => 'numerique',
+        'Santé' => 'sante',
+        'Économie' => 'economie',
+        'Gouvernance' => 'gouvernance',
+        'Innovation' => 'innovation',
+        'Enjeux émergents' => 'enjeux-emergents'
+    ];
+
+    foreach ($categories as $cat_name => $cat_slug) {
+        if (!term_exists($cat_name, 'category')) {
+            wp_insert_term($cat_name, 'category', [
+                'slug' => $cat_slug
+            ]);
+        }
+    }
+});
+
+/* ==========================================================================
+   3. REDIRECTION DU FRONTEND WORDPRESS VERS LE SITE PUBLIC FEMCURRENT
    ========================================================================== */
 add_action('template_redirect', function () {
     if (is_admin() || wp_doing_ajax() || wp_is_json_request() || (defined('REST_REQUEST') && REST_REQUEST)) {
@@ -74,7 +101,6 @@ add_action('template_redirect', function () {
         }
     }
 
-    // Redirection de la page d'accueil de l'admin vers le site public
     if (is_front_page() || is_home()) {
         wp_redirect($frontend_url . '/#/', 302);
         exit;
@@ -82,7 +108,7 @@ add_action('template_redirect', function () {
 });
 
 /* ==========================================================================
-   3. ENREGISTREMENT DES CUSTOM POST TYPES (Avec support REST API complet)
+   4. ENREGISTREMENT DES CUSTOM POST TYPES (Avec support REST API complet)
    ========================================================================== */
 add_action('init', function () {
 
@@ -168,7 +194,7 @@ add_action('init', function () {
 });
 
 /* ==========================================================================
-   4. EXPOSITION DES CHAMPS DANS L'API REST
+   5. EXPOSITION DES CHAMPS DANS L'API REST
    ========================================================================== */
 add_action('rest_api_init', function () {
     register_rest_field(['post', 'enquete', 'femme_leader', 'initiative', 'ressource'], 'featured_image_url', [
