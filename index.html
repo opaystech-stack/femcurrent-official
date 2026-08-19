@@ -3049,7 +3049,7 @@ const ICONS = {
 
 const IMG=(s,w,h)=>"https://picsum.photos/seed/"+s+"/"+w+"/"+h;
 
-const ARTICLES=[
+let ARTICLES=[
 {slug:"cooperatives-zando-kinshasa",cat:"Société",cls:"magenta",prov:"Kinshasa",date:"15 mars 2025",mins:6,seed:"marche-zando-kinshasa",
  title:"Kinshasa : quand les coopératives féminines redessinent l'économie du marché de Zando",
  ex:"Plus de 3 000 commerçantes se sont organisées en mutuelles d'épargne pour sécuriser leurs fonds et peser face aux intermédiaires.",
@@ -3111,7 +3111,7 @@ const ARTICLES=[
  "Au menu : ateliers de données participatives, audit d'outils utilisés localement et plaidoyer pour une représentation des femmes dans les équipes techniques. « Si nous ne sommes pas à la table de conception, nos réalités seront codées par d'autres », résume l'initiatrice du projet.",
  "Le programme est soutenu par FemCurrent Lab et donnera lieu à une première étude publique sur les usages de l'IA en RDC à l'automne."]}];
 
-const ENQUETES=[
+let ENQUETES=[
 {slug:"femmes-terres-droit-foncier",cat:"Enquête",cls:"magenta",prov:"6 provinces",date:"En cours",mins:12,seed:"enquete-foncier-rdc",
  title:"Femmes et terres : la bataille silencieuse du droit foncier",
  ex:"Elles cultivent 70 % des vivriers mais possèdent moins de 15 % des terres. Six mois d'enquête dans six provinces.",
@@ -3134,7 +3134,7 @@ const ENQUETES=[
  "Notre équipe documente leurs conditions de travail, leurs revenus réels et l'économie parallèle qui les entoure, en croisant observations de terrain, entretiens et données satellitaires sur l'expansion des sites artisanaux.",
  "Le dossier interrogera aussi les responsabilités : coopératives, acheteurs, autorités et entreprises donneuses d'ordre. Une série documentaire vidéo, produite avec FemCurrent Voices, accompagnera la publication."]}];
 
-const FEMMES=[
+let FEMMES=[
 {slug:"esperance-kalunga",name:"Espérance Kalunga",role:"Agronome · Fondatrice de la coopérative « Mwanga »",prov:"Sud-Kivu",seed:"portrait-esperance-agronome",
  quote:"Une terre bien cultivée est un acte politique. Quand une femme nourrit son village, elle gouverne déjà.",
  bio:["Formée à l'agronomie à Bukavu, Espérance Kalunga a refusé les bureaux pour retourner sur les collines de son enfance. En 2016, elle fonde la coopérative Mwanga avec douze voisines ; elles sont aujourd'hui 340, cultivant 180 hectares en agroécologie.",
@@ -3166,7 +3166,7 @@ const FEMMES=[
  "Elle a initié des audiences foraines dans les territoires, permettant à des centaines de femmes de faire reconnaître leurs droits sans se rendre en ville.",
  "Son parcours est régulièrement cité dans les formations de FemCurrent Academy sur le leadership institutionnel."]}];
 
-const INITIATIVES=[
+let INITIATIVES=[
 {slug:"mama-radios",name:"Réseau Mama Radios",org:"Collectif Sauti",prov:"Maniema",cat:"Médias",cls:"violet",seed:"radio-communautaire-maniema",
  desc:"12 radios communautaires animées par des femmes, pour informer en langues locales sur la santé et les droits.",
  detail:["12 stations dans 4 territoires du Maniema","Émissions quotidiennes en kiswahili et en langues locales","Un réseau de 60 animatrices et techniciennes formées","Un impact mesuré sur la fréquentation des centres de santé maternelle"],
@@ -3188,7 +3188,7 @@ const INITIATIVES=[
  body:["Là où il n'y a ni bibliothèque ni librairie, il y a désormais un vélo chargé de livres. Le projet des Bibliothèques Mobiles du Kasaï a équipé douze enseignantes de vélos-cargos aménagés, qui tournent chaque semaine entre 28 écoles rurales.",
  "Au-delà du prêt, les enseignantes animent des clubs de lecture et forment des « grandes sœurs lectrices » parmi les élèves, pour que la lecture survive au passage du vélo."]}];
 
-const DOCS=[
+let DOCS=[
 {slug:"barometre-2025",type:"Étude",cls:"orange",year:"2025",pages:"48 p.",title:"Baromètre 2025 du leadership féminin dans les instances décisionnelles",
  desc:"Mesure annuelle de la place des femmes dans les assemblées et exécutifs provinciaux, dans 14 provinces, avec cinq recommandations opérationnelles.",
  chap:["Méthodologie et périmètre de collecte","Vue d'ensemble : 31 % en 2025, tendances 2020-2025","Disparités provinciales","Analyse des facteurs de progression","Recommandations"]},
