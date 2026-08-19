@@ -3909,7 +3909,12 @@ function vActualites(){
 
 function vArticle(pool, slug) {
   const a = [...ARTICLES, ...ENQUETES].find(x => x.slug === slug);
-  if (!a) return v404();
+  if (!a) {
+    if (typeof fetchAndRenderArticle === "function") {
+      setTimeout(() => fetchAndRenderArticle(pool, slug), 10);
+    }
+    return typeof vArticleLoader === "function" ? vArticleLoader("Chargement de l'article en direct…") : v404();
+  }
 
   const authorName = a.author || "Solange Mwamba";
   const authorRole = a.authorRole || "Journaliste d'investigation économique";
@@ -4295,7 +4300,12 @@ function vFemmes() {
 
 function vPortrait(slug) {
   const f = FEMMES.find(x => x.slug === slug);
-  if (!f) return v404();
+  if (!f) {
+    if (typeof fetchAndRenderFemme === "function") {
+      setTimeout(() => fetchAndRenderFemme(slug), 10);
+    }
+    return typeof vArticleLoader === "function" ? vArticleLoader("Chargement du portrait en direct…") : v404();
+  }
   const others = FEMMES.filter(x => x.slug !== slug);
 
   return `
@@ -4462,7 +4472,12 @@ function vInitiatives() {
 
 function vInitiative(slug) {
   const i = INITIATIVES.find(x => x.slug === slug);
-  if (!i) return v404();
+  if (!i) {
+    if (typeof fetchAndRenderInit === "function") {
+      setTimeout(() => fetchAndRenderInit(slug), 10);
+    }
+    return typeof vArticleLoader === "function" ? vArticleLoader("Chargement de l'initiative en direct…") : v404();
+  }
   const rel = INITIATIVES.filter(x => x.slug !== slug).slice(0, 3);
 
   return `
@@ -4691,7 +4706,12 @@ function vRessources() {
 
 function vDoc(slug) {
   const d = DOCS.find(x => x.slug === slug);
-  if (!d) return v404();
+  if (!d) {
+    if (typeof fetchAndRenderDoc === "function") {
+      setTimeout(() => fetchAndRenderDoc(slug), 10);
+    }
+    return typeof vArticleLoader === "function" ? vArticleLoader("Chargement de la ressource en direct…") : v404();
+  }
   const rel = DOCS.filter(x => x.slug !== slug).slice(0, 3);
 
   return `
@@ -5419,14 +5439,172 @@ try {
   if (cachedPosts) {
     const parsed = JSON.parse(cachedPosts);
     if (Array.isArray(parsed) && parsed.length > 0) {
-      parsed.reverse().forEach(la => {
-        const idx = ARTICLES.findIndex(a => a.slug === la.slug);
-        if (idx >= 0) ARTICLES[idx] = la;
-        else ARTICLES.unshift(la);
-      });
+      const liveSlugs = new Set(parsed.map(a => a.slug));
+      const remainingStatic = ARTICLES.filter(a => !liveSlugs.has(a.slug));
+      ARTICLES = [...parsed, ...remainingStatic];
     }
   }
 } catch(e) {}
+
+const PENDING_FETCHES = new Set();
+
+function vArticleLoader(msg) {
+  return `
+  <section class="section" style="padding: 6rem 1rem; text-align: center;">
+    <div class="container" style="max-width: 600px; margin: 0 auto;">
+      <div style="width: 46px; height: 46px; border: 3.5px solid #F0E6F6; border-top-color: #E91E63; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1.4rem;"></div>
+      <h2 style="font-family: var(--display); color: #1F162B; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">${msg || "Chargement du contenu en direct…"}</h2>
+      <p style="color: #6E5E7A; font-size: 0.92rem; line-height: 1.5;">Connexion sécurisée au flux éditorial officiel de FemCurrent Média.</p>
+    </div>
+  </section>`;
+}
+
+async function fetchAndRenderArticle(pool, slug) {
+  if (PENDING_FETCHES.has(slug)) return;
+  PENDING_FETCHES.add(slug);
+
+  try {
+    let res = await fetch(`${WP_API_BASE}/posts?slug=${encodeURIComponent(slug)}&_embed`, { cache: 'no-cache' });
+    let data = res.ok ? await res.json() : [];
+
+    if (!Array.isArray(data) || data.length === 0) {
+      res = await fetch(`${WP_API_BASE}/enquetes?slug=${encodeURIComponent(slug)}&_embed`, { cache: 'no-cache' });
+      data = res.ok ? await res.json() : [];
+    }
+
+    if (Array.isArray(data) && data.length > 0) {
+      const p = data[0];
+      const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+      const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+      const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
+        ? decodeEntities(p._embedded['wp:term'][0][0].name) : "Société";
+
+      const formatted = {
+        slug: p.slug,
+        cat: catName,
+        cls: "magenta",
+        prov: (p.meta && p.meta.province) ? p.meta.province : "National",
+        date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+        mins: Math.max(3, Math.round(plainText.length / 450)),
+        seed: p.slug,
+        customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
+        title: decodeEntities(p.title.rendered),
+        ex: plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Lire l'article complet sur FemCurrent.",
+        body: [rawContent || plainText]
+      };
+
+      const idx = ARTICLES.findIndex(x => x.slug === p.slug);
+      if (idx >= 0) ARTICLES[idx] = formatted;
+      else ARTICLES.unshift(formatted);
+
+      try {
+        const cached = JSON.parse(localStorage.getItem("FEMCURRENT_POSTS_CACHE") || "[]");
+        const cIdx = cached.findIndex(x => x.slug === p.slug);
+        if (cIdx >= 0) cached[cIdx] = formatted;
+        else cached.unshift(formatted);
+        localStorage.setItem("FEMCURRENT_POSTS_CACHE", JSON.stringify(cached));
+      } catch(e) {}
+
+      PENDING_FETCHES.delete(slug);
+      render(vArticle(pool, slug), formatted.title);
+      return;
+    }
+  } catch(e) {
+    console.error("Error fetching article on demand:", e);
+  }
+
+  PENDING_FETCHES.delete(slug);
+  render(v404(), "Page introuvable");
+}
+
+async function fetchAndRenderFemme(slug) {
+  if (PENDING_FETCHES.has(slug)) return;
+  PENDING_FETCHES.add(slug);
+  try {
+    const res = await fetch(`${WP_API_BASE}/femmes?slug=${encodeURIComponent(slug)}&_embed`, { cache: 'no-cache' });
+    const data = res.ok ? await res.json() : [];
+    if (Array.isArray(data) && data.length > 0) {
+      const p = data[0];
+      const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+      const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+      const formatted = {
+        slug: p.slug, name: decodeEntities(p.title.rendered),
+        role: (p.meta && p.meta.role) ? p.meta.role : "Femme Leader & Inspirante",
+        prov: (p.meta && p.meta.province) ? p.meta.province : "RDC", seed: p.slug,
+        customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
+        quote: (p.meta && p.meta.quote) ? p.meta.quote : "Chaque action compte pour transformer notre société.",
+        bio: [rawContent || plainText]
+      };
+      const idx = FEMMES.findIndex(x => x.slug === p.slug);
+      if (idx >= 0) FEMMES[idx] = formatted;
+      else FEMMES.unshift(formatted);
+      PENDING_FETCHES.delete(slug);
+      render(vPortrait(slug), formatted.name);
+      return;
+    }
+  } catch(e) {}
+  PENDING_FETCHES.delete(slug);
+  render(v404(), "Page introuvable");
+}
+
+async function fetchAndRenderInit(slug) {
+  if (PENDING_FETCHES.has(slug)) return;
+  PENDING_FETCHES.add(slug);
+  try {
+    const res = await fetch(`${WP_API_BASE}/initiatives?slug=${encodeURIComponent(slug)}&_embed`, { cache: 'no-cache' });
+    const data = res.ok ? await res.json() : [];
+    if (Array.isArray(data) && data.length > 0) {
+      const p = data[0];
+      const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+      const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+      const formatted = {
+        slug: p.slug, name: decodeEntities(p.title.rendered),
+        org: (p.meta && p.meta.org) ? p.meta.org : "Organisation",
+        prov: (p.meta && p.meta.province) ? p.meta.province : "RDC", cat: "Terrain", cls: "orange", seed: p.slug,
+        customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
+        desc: plainText.length > 0 ? (plainText.slice(0, 170) + "…") : "Initiative de terrain.",
+        detail: ["Initiative vérifiée sur le terrain"],
+        body: [rawContent || plainText]
+      };
+      const idx = INITIATIVES.findIndex(x => x.slug === p.slug);
+      if (idx >= 0) INITIATIVES[idx] = formatted;
+      else INITIATIVES.unshift(formatted);
+      PENDING_FETCHES.delete(slug);
+      render(vInitiative(slug), formatted.name);
+      return;
+    }
+  } catch(e) {}
+  PENDING_FETCHES.delete(slug);
+  render(v404(), "Page introuvable");
+}
+
+async function fetchAndRenderDoc(slug) {
+  if (PENDING_FETCHES.has(slug)) return;
+  PENDING_FETCHES.add(slug);
+  try {
+    const res = await fetch(`${WP_API_BASE}/ressources?slug=${encodeURIComponent(slug)}&_embed`, { cache: 'no-cache' });
+    const data = res.ok ? await res.json() : [];
+    if (Array.isArray(data) && data.length > 0) {
+      const p = data[0];
+      const plainText = p.content && p.content.rendered ? p.content.rendered.replace(/<[^>]+>/g, '').trim() : "";
+      const formatted = {
+        slug: p.slug, type: "Étude", cls: "orange",
+        year: new Date(p.date).getFullYear().toString(), pages: "Rapport complet",
+        title: decodeEntities(p.title.rendered),
+        desc: plainText || "Publication de l'Observatoire FemCurrent Data.",
+        chap: ["Synthèse", "Méthodologie", "Données provinciales", "Recommandations"]
+      };
+      const idx = DOCS.findIndex(x => x.slug === p.slug);
+      if (idx >= 0) DOCS[idx] = formatted;
+      else DOCS.unshift(formatted);
+      PENDING_FETCHES.delete(slug);
+      render(vDoc(slug), formatted.title);
+      return;
+    }
+  } catch(e) {}
+  PENDING_FETCHES.delete(slug);
+  render(v404(), "Page introuvable");
+}
 
 // Fast real-time fetch from WordPress API
 async function syncWordPressData() {
@@ -5461,12 +5639,10 @@ async function syncWordPressData() {
           // Store in cache
           try { localStorage.setItem("FEMCURRENT_POSTS_CACHE", JSON.stringify(liveArticles)); } catch(e) {}
 
-          // Merge in front
-          liveArticles.reverse().forEach(la => {
-            const idx = ARTICLES.findIndex(a => a.slug === la.slug);
-            if (idx >= 0) ARTICLES[idx] = la;
-            else ARTICLES.unshift(la);
-          });
+          // Clean merge: newest live posts first, followed by static articles
+          const liveSlugs = new Set(liveArticles.map(a => a.slug));
+          const remainingStatic = ARTICLES.filter(a => !liveSlugs.has(a.slug));
+          ARTICLES = [...liveArticles, ...remainingStatic];
 
           // Update search index
           liveArticles.forEach(la => {
@@ -5476,7 +5652,10 @@ async function syncWordPressData() {
           });
 
           // Re-render UI
-          router();
+          const seg = getRouteSegments();
+          if (seg.length === 0 || seg[0] === "actualites" || seg[0] === "enquetes") {
+            router();
+          }
         }
       }
     }
@@ -5505,12 +5684,14 @@ async function syncWordPressData() {
               body: [rawContent || plainText]
             };
           });
-          liveEnqs.reverse().forEach(le => {
-            const idx = ENQUETES.findIndex(e => e.slug === le.slug);
-            if (idx >= 0) ENQUETES[idx] = le;
-            else ENQUETES.unshift(le);
-          });
-          router();
+          const liveSlugs = new Set(liveEnqs.map(e => e.slug));
+          const remainingStatic = ENQUETES.filter(e => !liveSlugs.has(e.slug));
+          ENQUETES = [...liveEnqs, ...remainingStatic];
+          
+          const seg = getRouteSegments();
+          if (seg.length === 0 || seg[0] === "enquetes") {
+            router();
+          }
         }
       }).catch(()=>{});
 
@@ -5530,12 +5711,14 @@ async function syncWordPressData() {
               bio: [rawContent || plainText]
             };
           });
-          liveFemmes.reverse().forEach(lf => {
-            const idx = FEMMES.findIndex(f => f.slug === lf.slug);
-            if (idx >= 0) FEMMES[idx] = lf;
-            else FEMMES.unshift(lf);
-          });
-          router();
+          const liveSlugs = new Set(liveFemmes.map(f => f.slug));
+          const remainingStatic = FEMMES.filter(f => !liveSlugs.has(f.slug));
+          FEMMES = [...liveFemmes, ...remainingStatic];
+
+          const seg = getRouteSegments();
+          if (seg.length === 0 || seg[0] === "femmes") {
+            router();
+          }
         }
       }).catch(()=>{});
 
@@ -5556,12 +5739,14 @@ async function syncWordPressData() {
               body: [rawContent || plainText]
             };
           });
-          liveInits.reverse().forEach(li => {
-            const idx = INITIATIVES.findIndex(i => i.slug === li.slug);
-            if (idx >= 0) INITIATIVES[idx] = li;
-            else INITIATIVES.unshift(li);
-          });
-          router();
+          const liveSlugs = new Set(liveInits.map(i => i.slug));
+          const remainingStatic = INITIATIVES.filter(i => !liveSlugs.has(i.slug));
+          INITIATIVES = [...liveInits, ...remainingStatic];
+
+          const seg = getRouteSegments();
+          if (seg.length === 0 || seg[0] === "initiatives") {
+            router();
+          }
         }
       }).catch(()=>{});
 
@@ -5579,12 +5764,14 @@ async function syncWordPressData() {
               chap: ["Synthèse", "Méthodologie", "Données provinciales", "Recommandations"]
             };
           });
-          liveDocs.reverse().forEach(ld => {
-            const idx = DOCS.findIndex(d => d.slug === ld.slug);
-            if (idx >= 0) DOCS[idx] = ld;
-            else DOCS.unshift(ld);
-          });
-          router();
+          const liveSlugs = new Set(liveDocs.map(d => d.slug));
+          const remainingStatic = DOCS.filter(d => !liveSlugs.has(d.slug));
+          DOCS = [...liveDocs, ...remainingStatic];
+
+          const seg = getRouteSegments();
+          if (seg.length === 0 || seg[0] === "ressources" || seg[0] === "observatoire") {
+            router();
+          }
         }
       }).catch(()=>{});
   } catch(e) {}

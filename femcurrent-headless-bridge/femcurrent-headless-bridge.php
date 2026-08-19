@@ -68,8 +68,31 @@ add_action('init', function () {
 });
 
 /* ==========================================================================
-   3. REDIRECTION FRONTEND AUTOMATIQUE VERS LE SITE PUBLIC (URLS PROPRES SANS #)
+   3. REDIRECTION FRONTEND AUTOMATIQUE & GESTION DES PREVIEWS ET PERMALIENS
    ========================================================================== */
+add_filter('preview_post_link', function ($link, $post) {
+    $frontend_url = 'https://femcurrent.com';
+    if (!$post) return $link;
+    $type = $post->post_type;
+    $slug = !empty($post->post_name) ? $post->post_name : sanitize_title($post->post_title);
+    if (empty($slug)) $slug = 'post-' . $post->ID;
+
+    if ($type === 'enquete') return $frontend_url . '/enquetes/' . $slug;
+    if ($type === 'femme_leader') return $frontend_url . '/femmes/' . $slug;
+    if ($type === 'initiative') return $frontend_url . '/initiatives/' . $slug;
+    if ($type === 'ressource') return $frontend_url . '/ressources/' . $slug;
+    return $frontend_url . '/actualites/' . $slug;
+}, 10, 2);
+
+add_filter('post_link', function ($permalink, $post) {
+    if (is_admin() && $post) {
+        $frontend_url = 'https://femcurrent.com';
+        $slug = !empty($post->post_name) ? $post->post_name : sanitize_title($post->post_title);
+        return $frontend_url . '/actualites/' . $slug;
+    }
+    return $permalink;
+}, 10, 2);
+
 add_action('template_redirect', function () {
     if (is_admin() || wp_doing_ajax() || wp_is_json_request() || (defined('REST_REQUEST') && REST_REQUEST)) {
         return;
@@ -77,11 +100,17 @@ add_action('template_redirect', function () {
 
     $frontend_url = 'https://femcurrent.com';
 
-    if (is_single()) {
-        global $post;
-        if ($post && !empty($post->post_name)) {
+    if (is_single() || is_preview() || isset($_GET['preview']) || isset($_GET['p'])) {
+        $post_id = get_the_ID();
+        if (!$post_id && isset($_GET['p'])) {
+            $post_id = intval($_GET['p']);
+        }
+        $post = $post_id ? get_post($post_id) : null;
+        if ($post) {
             $type = $post->post_type;
-            $slug = $post->post_name;
+            $slug = !empty($post->post_name) ? $post->post_name : sanitize_title($post->post_title);
+            if (empty($slug)) $slug = 'post-' . $post->ID;
+
             if ($type === 'enquete') {
                 wp_redirect($frontend_url . '/enquetes/' . $slug, 302);
                 exit;
