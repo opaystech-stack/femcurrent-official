@@ -1,0 +1,23 @@
+{
+  "name": "femcurrent-official",
+  "version": "2.0.0",
+  "description": "FemCurrent — Les voix et les actions des femmes (Version Officielle Adoptée)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo Build completed successfully",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "femcurrent",
+    "media",
+    "congo",
+    "rdc",
+    "leadership"
+  ],
+  "author": "Équipe FemCurrent",
+  "license": "ISC"
+}
