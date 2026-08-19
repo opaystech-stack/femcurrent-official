@@ -2,8 +2,8 @@
 /**
  * Plugin Name: FemCurrent Headless Bridge
  * Plugin URI: https://femcurrent.com
- * Description: Connecteur Headless officiel pour FemCurrent : gestion des en-têtes CORS, Custom Post Types (Enquêtes, Femmes leaders, Initiatives, Observatoire, Soumissions), redirection frontend, création automatique des catégories et endpoints REST API.
- * Version: 1.0.3
+ * Description: Moteur Headless officiel pour FemCurrent Média : CORS, Custom Post Types complets (Enquêtes, Femmes leaders, Initiatives, Ressources, Événements, Podcasts, Soumissions), redirection et API REST temps réel.
+ * Version: 2.0.0
  * Author: Équipe FemCurrent & OPAYSTECH
  * Author URI: https://femcurrent.com
  * License: GPL-2.0+
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 }
 
 /* ==========================================================================
-   1. GESTION DU CORS (Cross-Origin Resource Sharing)
+   1. GESTION DU CORS COMPLET
    ========================================================================== */
 add_action('init', function () {
     $allowed_origins = [
@@ -68,7 +68,7 @@ add_action('init', function () {
 });
 
 /* ==========================================================================
-   3. REDIRECTION DU FRONTEND WORDPRESS VERS LE SITE PUBLIC FEMCURRENT
+   3. REDIRECTION FRONTEND AUTOMATIQUE VERS LE SITE PUBLIC
    ========================================================================== */
 add_action('template_redirect', function () {
     if (is_admin() || wp_doing_ajax() || wp_is_json_request() || (defined('REST_REQUEST') && REST_REQUEST)) {
@@ -108,11 +108,11 @@ add_action('template_redirect', function () {
 });
 
 /* ==========================================================================
-   4. ENREGISTREMENT DES CUSTOM POST TYPES (Avec support REST API complet)
+   4. TOUS LES CUSTOM POST TYPES POUR LE MÉDIA FEMCURRENT
    ========================================================================== */
 add_action('init', function () {
 
-    // 1. Enquêtes & Analyses (FemCurrent Investigates)
+    // 1. Enquêtes (FemCurrent Investigates)
     register_post_type('enquete', [
         'labels' => [
             'name' => 'Enquêtes',
@@ -128,12 +128,12 @@ add_action('init', function () {
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 2. Femmes à la une (Portraits & Leaders)
+    // 2. Femmes à la une (Portraits)
     register_post_type('femme_leader', [
         'labels' => [
             'name' => 'Femmes à la une',
             'singular_name' => 'Femme leader',
-            'add_new_item' => 'Ajouter un portrait de femme leader',
+            'add_new_item' => 'Ajouter un portrait',
             'edit_item' => 'Modifier le portrait'
         ],
         'public' => true,
@@ -144,7 +144,7 @@ add_action('init', function () {
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 3. Initiatives & Projets (FemCurrent Matendo)
+    // 3. Initiatives (FemCurrent Matendo)
     register_post_type('initiative', [
         'labels' => [
             'name' => 'Initiatives',
@@ -165,7 +165,7 @@ add_action('init', function () {
         'labels' => [
             'name' => 'Ressources & Études',
             'singular_name' => 'Ressource',
-            'add_new_item' => 'Ajouter une ressource / étude',
+            'add_new_item' => 'Ajouter une ressource',
             'edit_item' => 'Modifier la ressource'
         ],
         'public' => true,
@@ -176,7 +176,39 @@ add_action('init', function () {
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
     ]);
 
-    // 5. Soumissions du public (Mettre en lumière & Contact - Modération)
+    // 5. Agenda & Événements
+    register_post_type('evenement', [
+        'labels' => [
+            'name' => 'Agenda & Événements',
+            'singular_name' => 'Événement',
+            'add_new_item' => 'Ajouter un événement',
+            'edit_item' => 'Modifier l’événement'
+        ],
+        'public' => true,
+        'has_archive' => true,
+        'show_in_rest' => true,
+        'rest_base' => 'evenements',
+        'menu_icon' => 'dashicons-calendar-alt',
+        'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
+    ]);
+
+    // 6. Médiathèque & Podcasts (FemCurrent Voices)
+    register_post_type('podcast', [
+        'labels' => [
+            'name' => 'Podcasts & Médias',
+            'singular_name' => 'Podcast',
+            'add_new_item' => 'Ajouter un podcast / vidéo',
+            'edit_item' => 'Modifier le podcast'
+        ],
+        'public' => true,
+        'has_archive' => true,
+        'show_in_rest' => true,
+        'rest_base' => 'podcasts',
+        'menu_icon' => 'dashicons-format-audio',
+        'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
+    ]);
+
+    // 7. Soumissions du public (Mettre en lumière & Contact)
     register_post_type('soumission', [
         'labels' => [
             'name' => 'Soumissions & Alertes',
@@ -197,7 +229,7 @@ add_action('init', function () {
    5. EXPOSITION DES CHAMPS DANS L'API REST
    ========================================================================== */
 add_action('rest_api_init', function () {
-    register_rest_field(['post', 'enquete', 'femme_leader', 'initiative', 'ressource'], 'featured_image_url', [
+    register_rest_field(['post', 'enquete', 'femme_leader', 'initiative', 'ressource', 'evenement', 'podcast'], 'featured_image_url', [
         'get_callback' => function ($post) {
             $img_id = get_post_thumbnail_id($post['id']);
             return $img_id ? wp_get_attachment_image_url($img_id, 'full') : null;
@@ -219,9 +251,7 @@ add_action('rest_api_init', function () {
 
 function femcurrent_handle_submission($request) {
     $params = $request->get_json_params();
-    if (empty($params)) {
-        $params = $request->get_body_params();
-    }
+    if (empty($params)) $params = $request->get_body_params();
 
     $name = sanitize_text_field(isset($params['name']) ? $params['name'] : 'Proposition anonyme');
     $type = sanitize_text_field(isset($params['type']) ? $params['type'] : 'Femme leader');
@@ -247,19 +277,16 @@ function femcurrent_handle_submission($request) {
     if (is_wp_error($post_id)) {
         return new WP_REST_Response(['success' => false, 'message' => 'Erreur'], 500);
     }
-
-    return new WP_REST_Response(['success' => true, 'id' => $post_id, 'message' => 'Proposition enregistree avec succes.'], 200);
+    return new WP_REST_Response(['success' => true, 'id' => $post_id, 'message' => 'Proposition reçue.'], 200);
 }
 
 function femcurrent_handle_contact($request) {
     $params = $request->get_json_params();
-    if (empty($params)) {
-        $params = $request->get_body_params();
-    }
+    if (empty($params)) $params = $request->get_body_params();
 
     $name = sanitize_text_field(isset($params['name']) ? $params['name'] : '');
     $email = sanitize_text_field(isset($params['email']) ? $params['email'] : '');
-    $subject = sanitize_text_field(isset($params['subject']) ? $params['subject'] : 'Contact general');
+    $subject = sanitize_text_field(isset($params['subject']) ? $params['subject'] : 'Contact général');
     $message = sanitize_textarea_field(isset($params['message']) ? $params['message'] : '');
 
     $content = "Nom : " . $name . "\n" .
@@ -277,6 +304,5 @@ function femcurrent_handle_contact($request) {
     if (is_wp_error($post_id)) {
         return new WP_REST_Response(['success' => false, 'message' => 'Erreur'], 500);
     }
-
-    return new WP_REST_Response(['success' => true, 'id' => $post_id, 'message' => 'Message recu.'], 200);
+    return new WP_REST_Response(['success' => true, 'id' => $post_id, 'message' => 'Message reçu.'], 200);
 }
