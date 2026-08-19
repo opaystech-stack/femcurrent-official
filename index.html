@@ -5542,6 +5542,64 @@ if(typeof addEventListener === "function"){
  addEventListener("keydown",e=>{if(e.key==="Escape"){closeSearch();toggleDrawer(false);}});
 }
 
+
+/* ================= WORDPRESS LIVE SYNC BRIDGE ================= */
+const WP_API_BASE = "https://admin.femcurrent.com/wp-json/wp/v2";
+
+async function syncWithWordPress() {
+  try {
+    // 1. Fetch live Articles
+    const resPosts = await fetch(`${WP_API_BASE}/posts?_embed&per_page=20`, { cache: 'no-cache' });
+    if (resPosts.ok) {
+      const posts = await resPosts.json();
+      if (posts && posts.length > 0) {
+        const liveArticles = posts.map(p => {
+          let featImg = p.featured_image_url || "";
+          if (!featImg && p._embedded && p._embedded['wp:featuredmedia'] && p._embedded['wp:featuredmedia'][0]) {
+            featImg = p._embedded['wp:featuredmedia'][0].source_url || "";
+          }
+          const catName = (p._embedded && p._embedded['wp:term'] && p._embedded['wp:term'][0] && p._embedded['wp:term'][0][0])
+            ? p._embedded['wp:term'][0][0].name : "Actualités";
+
+          return {
+            slug: p.slug,
+            cat: catName,
+            cls: "magenta",
+            prov: p.meta && p.meta.province ? p.meta.province : "National",
+            date: new Date(p.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+            mins: Math.max(3, Math.round((p.content.rendered.replace(/<[^>]+>/g, '').length) / 500)),
+            seed: p.slug,
+            customImg: featImg,
+            title: p.title.rendered,
+            ex: p.excerpt.rendered.replace(/<[^>]+>/g, '').slice(0, 180) + "…",
+            body: [p.content.rendered]
+          };
+        });
+
+        // Merge live articles at the beginning
+        liveArticles.forEach(la => {
+          const idx = ARTICLES.findIndex(a => a.slug === la.slug);
+          if (idx >= 0) ARTICLES[idx] = la;
+          else ARTICLES.unshift(la);
+        });
+
+        // Re-render if on home or actualites
+        const currentHash = location.hash.replace(/^#\/?/, "");
+        if (!currentHash || currentHash === "actualites") {
+          router();
+        }
+      }
+    }
+  } catch (err) {
+    console.log("WordPress API offline or unreachable, using standard fast local dataset.", err);
+  }
+}
+
+// Launch silent background sync
+if (typeof window !== "undefined") {
+  setTimeout(syncWithWordPress, 800);
+}
+
 /* ================= DÉMARRAGE ================= */
 if(!location.hash)history.replaceState(null,"","#/");
 router();
