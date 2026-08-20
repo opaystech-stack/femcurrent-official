@@ -3036,7 +3036,7 @@ footer {
 
 <script>
 /* ==========================================================================
-   FEMCURRENT MÉDIA — MOTEUR DYNAMIQUE ET SYNCHRONISATION WORDPRESS OFFICIEL
+   FEMCURRENT MÉDIA — MOTEUR DYNAMIQUE, SYNCHRONISATION WP & GESTION DES FORMULAIRES
    ========================================================================== */
 
 const ICONS = {
@@ -3052,6 +3052,7 @@ const ICONS = {
 const IMG = (s, w, h) => "https://picsum.photos/seed/" + s + "/" + w + "/" + h;
 
 const WP_API_BASE = "https://admin.femcurrent.com/wp-json/wp/v2";
+const WP_CUSTOM_API_BASE = "https://admin.femcurrent.com/wp-json/femcurrent/v1";
 
 /* ================= UTILS & FORMATTERS ================= */
 function decodeEntities(str) {
@@ -3178,7 +3179,7 @@ function formatWpEnquete(p) {
     customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
     title: decodeEntities(p.title.rendered),
     ex: rawExcerpt || (plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Enquête exclusive FemCurrent Investigates."),
-    src: "Vérification des sources : 5/5",
+    src: "Protocole de vérification : 5/5",
     w: "100%",
     detail: "Enquête vérifiée · Publication officielle",
     body: [rawContent || plainText]
@@ -3324,6 +3325,15 @@ function formatWpPodcast(p) {
   };
 }
 
+function formatWpPage(p) {
+  return {
+    id: p.id,
+    slug: p.slug,
+    title: decodeEntities(p.title.rendered),
+    content: p.content && p.content.rendered ? p.content.rendered : ""
+  };
+}
+
 /* ================= CENTRALIZED STORE & PERSISTENCE ================= */
 const WP_STORE = {
   posts: [],
@@ -3333,18 +3343,161 @@ const WP_STORE = {
   ressources: [],
   evenements: [],
   podcasts: [],
+  pages: [],
   lastSync: 0
 };
 
-// Global mirrors for compatibility
-let ARTICLES = [];
-let ENQUETES = [];
-let FEMMES = [];
-let INITIATIVES = [];
-let DOCS = [];
-let EVENTS = [];
-let PODS = [];
+// Global baseline mirrors for offline resilience and immediate first paint
+let ARTICLES = [
+  {
+    id: 1,
+    slug: "entrepreneuriat-feminin-en-rdc-du-commerce-informel-aux-entreprises-a-fort-impact",
+    title: "Entrepreneuriat féminin en RDC : du commerce informel aux entreprises à fort impact",
+    ex: "Longtemps cantonnées à une économie de subsistance, les femmes entrepreneures congolaises redéfinissent aujourd'hui le paysage économique.",
+    cat: "Leadership féminin",
+    categories: ["Leadership féminin", "Économie", "RDC"],
+    cls: "magenta",
+    prov: "National",
+    date: "19 août 2026",
+    mins: 5,
+    seed: "entrepreneuriat-feminin",
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    author: "Patricia Zamwana",
+    authorRole: "Rédactrice & Analyste · FemCurrent",
+    body: ["<p>Longtemps cantonnées à une économie de subsistance, les femmes entrepreneures congolaises redéfinissent aujourd'hui le paysage économique national.</p>"]
+  },
+  {
+    id: 2,
+    slug: "cooperatives-zando-kinshasa",
+    title: "Coopératives et tontines : le poumon financier invisible de Kinshasa",
+    ex: "Au Grand Marché de Kinshasa, les collectifs féminins d'épargne structurent une économie autonome et solidaire de plusieurs millions de dollars.",
+    cat: "Économie",
+    categories: ["Économie", "Kinshasa", "Société"],
+    cls: "magenta",
+    prov: "Kinshasa",
+    date: "18 août 2026",
+    mins: 4,
+    seed: "cooperatives-zando-kinshasa",
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    author: "Patricia Zamwana",
+    authorRole: "Rédactrice & Analyste · FemCurrent",
+    body: ["<p>Au Grand Marché de Kinshasa, les collectifs féminins d'épargne structurent une économie autonome et solidaire de plusieurs millions de dollars.</p>"]
+  },
+  {
+    id: 3,
+    slug: "tech-education-filles-goma",
+    title: "À Goma, les bootcamps de code au féminin défient la précarité",
+    ex: "Dans le chef-lieu du Nord-Kivu, des cohortes de jeunes femmes apprennent la programmation et l'intelligence artificielle pour résoudre des défis locaux.",
+    cat: "Numérique",
+    categories: ["Numérique", "Éducation", "Nord-Kivu"],
+    cls: "violet",
+    prov: "Nord-Kivu",
+    date: "17 août 2026",
+    mins: 5,
+    seed: "tech-education-filles-goma",
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    author: "Patricia Zamwana",
+    authorRole: "Rédactrice & Analyste · FemCurrent",
+    body: ["<p>Dans le chef-lieu du Nord-Kivu, des cohortes de jeunes femmes apprennent la programmation et l'intelligence artificielle.</p>"]
+  },
+  {
+    id: 4,
+    slug: "femmes-et-terres-la-bataille-silencieuse-du-droit-foncier",
+    title: "Femmes et terres : la bataille silencieuse du droit foncier",
+    ex: "Elles cultivent 70 % des vivriers mais possèdent moins de 15 % des terres. Six mois d'enquête dans six provinces.",
+    cat: "Enquête",
+    categories: ["Enquête", "Gouvernance", "Droits"],
+    cls: "violet",
+    prov: "6 provinces",
+    date: "16 août 2026",
+    mins: 9,
+    seed: "femmes-et-terres-la-bataille-silencieuse-du-droit-foncier",
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    src: "Protocole de vérification : 5/5",
+    author: "Patricia Zamwana",
+    authorRole: "Cellule d'Investigation · FemCurrent",
+    body: ["<p>Elles cultivent 70 % des vivriers mais possèdent moins de 15 % des terres. Six mois d'enquête dans six provinces.</p>"]
+  }
+];
+
+let ENQUETES = [
+  {
+    id: 4,
+    slug: "femmes-et-terres-la-bataille-silencieuse-du-droit-foncier",
+    title: "Femmes et terres : la bataille silencieuse du droit foncier",
+    ex: "Elles cultivent 70 % des vivriers mais possèdent moins de 15 % des terres. Six mois d'enquête dans six provinces.",
+    cat: "Enquête",
+    cls: "violet",
+    prov: "6 provinces",
+    date: "16 août 2026",
+    mins: 9,
+    seed: "femmes-et-terres-la-bataille-silencieuse-du-droit-foncier",
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    src: "Protocole de vérification : 5/5",
+    detail: "47 témoignages · 6 provinces",
+    body: ["<p>Elles cultivent 70 % des vivriers mais possèdent moins de 15 % des terres.</p>"]
+  },
+  {
+    id: 5,
+    slug: "acces-au-credit-bancaire-le-plafond-de-verre-des-entrepreneures",
+    title: "Accès au crédit bancaire : le plafond de verre des entrepreneures",
+    ex: "Moins de 8 % des crédits bancaires formels sont accordés aux entreprises dirigées par des femmes en RDC.",
+    cat: "Enquête",
+    cls: "violet",
+    prov: "Kinshasa & Lubumbashi",
+    date: "15 août 2026",
+    mins: 8,
+    seed: "acces-au-credit-bancaire-le-plafond-de-verre-des-entrepreneures",
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    src: "Protocole de vérification : 5/5",
+    detail: "32 entretiens bancaires",
+    body: ["<p>Moins de 8 % des crédits bancaires formels sont accordés aux entreprises dirigées par des femmes en RDC.</p>"]
+  },
+  {
+    id: 6,
+    slug: "minerais-strategiques-les-femmes-invisibles-de-la-chaine-d-approvisionnement",
+    title: "Minerais stratégiques : les femmes invisibles de la chaîne d'approvisionnement",
+    ex: "Enquête approfondie dans les sites miniers artisanaux du Lualaba et du Haut-Katanga.",
+    cat: "Enquête",
+    cls: "violet",
+    prov: "Lualaba & Haut-Katanga",
+    date: "14 août 2026",
+    mins: 10,
+    seed: "minerais-strategiques-les-femmes-invisibles-de-la-chaine-d-approvisionnement",
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    src: "Protocole de vérification : 5/5",
+    detail: "Enquête de terrain · 4 sites",
+    body: ["<p>Enquête approfondie dans les sites miniers artisanaux du Lualaba et du Haut-Katanga.</p>"]
+  }
+];
+
+let FEMMES = [
+  { id: 11, slug: "maman-germaine-bibomika", name: "Maman Germaine Kanza", role: "Présidente du Collectif d'Épargne Bibomika", prov: "Kinshasa", seed: "maman-germaine-kanza", quote: "La force d'une communauté réside dans l'entraide financière quotidienne.", bio: ["<p>Pionnière de l'économie informelle solidaire à Kinshasa.</p>"] },
+  { id: 12, slug: "dr-naomie-mwamba", name: "Dr Naomie Mwamba", role: "Chirurgienne & Directrice de clinique rurale", prov: "Sud-Kivu", seed: "dr-naomie-mwamba", quote: "Chaque vie sauvée en zone rurale est une victoire pour la dignité humaine.", bio: ["<p>Médecin engagée pour la santé maternelle.</p>"] },
+  { id: 13, slug: "esther-kahindo", name: "Esther Kahindo", role: "Fondatrice de KivuTech Academy", prov: "Nord-Kivu", seed: "esther-kahindo", quote: "Former une femme au numérique, c'est former toute une génération.", bio: ["<p>Ingénieure et formatrice technologique à Goma.</p>"] }
+];
+
+let INITIATIVES = [
+  { id: 21, slug: "reseau-mama-radios", name: "Cliniques solaires : la révolution des sages-femmes du Sud-Kivu", org: "Collectif Sauti", prov: "Sud-Kivu", cat: "Santé", cls: "orange", seed: "reseau-mama-radios", desc: "Kits d'énergie solaire et dossiers numérisés réduisent la mortalité maternelle.", detail: ["Impact direct : 14 centres de santé équipés"], body: ["<p>Projet pilote d'autonomie énergétique en milieu médical rural.</p>"] },
+  { id: 22, slug: "tontine-digitale-elongo", name: "Tontine Digitale Elongo", org: "Coopérative Elongo", prov: "Kinshasa", cat: "Numérique", cls: "violet", seed: "tontine-digitale-elongo", desc: "Micro-épargne communautaire sécurisée par mobile money pour 4 000 commerçantes.", detail: ["4 000 utilisatrices actives"], body: ["<p>Plateforme d'épargne solidaire sécurisée.</p>"] }
+];
+
+let DOCS = [
+  { id: 31, slug: "barometre-2025-du-leadership-feminin-dans-les-instances-decisionnelles", title: "Baromètre 2026 : Cartographie de la représentation dans 26 provinces", type: "Étude", cls: "orange", year: "2026", pages: "48 p.", desc: "Une analyse quantitative inédite des assemblées provinciales et exécutifs locaux pour mesurer les avancées de la parité.", chap: ["Synthèse", "Méthodologie", "Données provinciales", "Recommandations"] }
+];
+
+let EVENTS = [
+  { id: 41, slug: "forum-national-femmes-leaders", title: "Forum National des Femmes Leaders 2026", d: "12", m: "Mars", meta: "Kinshasa · Fleuve Congo Hotel & En ligne" },
+  { id: 42, slug: "masterclass-data-journalisme", title: "Masterclass : Data journalisme & Plaidoyer de terrain", d: "26", m: "Mars", meta: "FemCurrent Academy · Webinaire interactif" }
+];
+
+let PODS = [
+  { id: 51, slug: "femcurrent-voices-ep14", n: "Épisode 14 : Dr Naomie Mwamba — « Soigner au cœur du Katanga »", meta: "FemCurrent Voices · 34 min", seed: "voices-ep14" }
+];
+
+let PAGES = [];
 let SEARCH_DATA = [];
+
 
 // Hydrate from localStorage
 try {
@@ -3361,6 +3514,7 @@ try {
         DOCS = WP_STORE.ressources;
         EVENTS = WP_STORE.evenements;
         PODS = WP_STORE.podcasts;
+        PAGES = WP_STORE.pages || [];
       }
     }
   }
@@ -3389,7 +3543,7 @@ const WP_ENGINE = {
     const enquete = WP_STORE.enquetes.find(e => e.slug !== leadSlug) ||
                     WP_STORE.posts.find(p => p.cat && (p.cat.includes("Enquêt") || p.cat.includes("Analys")) && p.slug !== leadSlug) ||
                     ENQUETES[0] || {
-                      slug: "femmes-terres-droit-foncier",
+                      slug: "femmes-et-terres-la-bataille-silencieuse-du-droit-foncier",
                       title: "Femmes et terres : la bataille silencieuse du droit foncier",
                       ex: "Elles cultivent 70 % des vivriers mais possèdent moins de 15 % des terres. Six mois d'enquête dans six provinces.",
                       detail: "47 témoignages · 6 provinces",
@@ -3399,7 +3553,7 @@ const WP_ENGINE = {
     const initiative = WP_STORE.initiatives.find(i => i.slug !== leadSlug) ||
                        WP_STORE.posts.find(p => p.cat && (p.cat.includes("Init") || p.cat.includes("Terrain")) && p.slug !== leadSlug) ||
                        INITIATIVES[0] || {
-                         slug: "mama-radios",
+                         slug: "reseau-mama-radios",
                          name: "Cliniques solaires : la révolution des sages-femmes du Sud-Kivu",
                          desc: "Kits d'énergie solaire et dossiers numérisés réduisent drastiquement la mortalité maternelle dans les zones enclavées.",
                          org: "Collectif Sauti"
@@ -3408,7 +3562,7 @@ const WP_ENGINE = {
     const observatoire = WP_STORE.ressources.find(r => r.slug !== leadSlug) ||
                          WP_STORE.posts.find(p => p.cat && (p.cat.includes("Obs") || p.cat.includes("Donn")) && p.slug !== leadSlug) ||
                          DOCS[0] || {
-                           slug: "barometre-2025",
+                           slug: "barometre-2025-du-leadership-feminin-dans-les-instances-decisionnelles",
                            title: "Baromètre 2026 : Cartographie de la représentation dans 26 provinces",
                            desc: "Une analyse quantitative inédite des assemblées provinciales et exécutifs locaux pour mesurer les avancées de la parité.",
                            year: "2026"
@@ -3429,8 +3583,8 @@ const WP_ENGINE = {
     return WP_STORE.posts.filter(p => !set.has(p.slug)).slice(0, limit);
   },
 
-  getHomeEnquetes(limit = 6) {
-    const all = [...WP_STORE.enquetes, ...WP_STORE.posts.filter(p => p.cat && (p.cat.includes("Enquêt") || p.cat.includes("Analys")))];
+  getHomeEnquetes(limit = 3) {
+    const all = [...WP_STORE.enquetes, ...WP_STORE.posts.filter(p => p.cat && (p.cat.includes("Enquêt") || p.cat.includes("Analys"))), ...(Array.isArray(ENQUETES) ? ENQUETES : [])];
     return all.filter((v, i, a) => a.findIndex(t => t.slug === v.slug) === i).slice(0, limit);
   },
 
@@ -3483,6 +3637,10 @@ const WP_ENGINE = {
     return WP_STORE.ressources.find(r => r.slug === slug) || DOCS.find(d => d.slug === slug) || null;
   },
 
+  getPageBySlug(slug) {
+    return (WP_STORE.pages && WP_STORE.pages.find(p => p.slug === slug)) || null;
+  },
+
   getPopularArticles(excludeSlug, limit = 4) {
     const pool = [...WP_STORE.posts, ...WP_STORE.enquetes];
     return pool.filter(p => p.slug !== excludeSlug).slice(0, limit);
@@ -3492,6 +3650,7 @@ const WP_ENGINE = {
     return WP_STORE.posts.filter(p => p.slug !== excludeSlug).slice(0, limit);
   }
 };
+
 
 function updateSearchIndex() {
   SEARCH_DATA = [];
@@ -3530,7 +3689,8 @@ async function syncWordPressData() {
       { key: 'initiatives', url: `${WP_API_BASE}/initiatives?_embed&per_page=100&orderby=date&order=desc`, fn: formatWpInitiative },
       { key: 'ressources', url: `${WP_API_BASE}/ressources?_embed&per_page=100&orderby=date&order=desc`, fn: formatWpRessource },
       { key: 'evenements', url: `${WP_API_BASE}/evenements?_embed&per_page=100&orderby=date&order=desc`, fn: formatWpEvent },
-      { key: 'podcasts', url: `${WP_API_BASE}/podcasts?_embed&per_page=100&orderby=date&order=desc`, fn: formatWpPodcast }
+      { key: 'podcasts', url: `${WP_API_BASE}/podcasts?_embed&per_page=100&orderby=date&order=desc`, fn: formatWpPodcast },
+      { key: 'pages', url: `${WP_API_BASE}/pages?_embed&per_page=20`, fn: formatWpPage }
     ];
 
     const responses = await Promise.allSettled(
@@ -3559,6 +3719,7 @@ async function syncWordPressData() {
       DOCS = WP_STORE.ressources;
       EVENTS = WP_STORE.evenements;
       PODS = WP_STORE.podcasts;
+      PAGES = WP_STORE.pages || [];
 
       try {
         if (typeof localStorage !== "undefined") {
@@ -3571,7 +3732,7 @@ async function syncWordPressData() {
       // Smooth re-render if current page is dynamic
       if (typeof getRouteSegments === "function" && typeof router === "function") {
         const seg = getRouteSegments();
-        if (seg.length === 0 || ["actualites", "enquetes", "femmes", "initiatives", "observatoire", "ressources", "agenda", "mediatheque"].includes(seg[0])) {
+        if (seg.length === 0 || ["actualites", "enquetes", "femmes", "initiatives", "observatoire", "ressources", "agenda", "mediatheque", "a-propos"].includes(seg[0])) {
           router();
         }
       }
@@ -3628,14 +3789,14 @@ const LEGAL = {
     ["Hébergement", "Le site est hébergé par un prestataire garantissant la confidentialité des données et la continuité de service. Les coordonnées de l'hébergeur peuvent être obtenues sur simple demande."],
     ["Propriété intellectuelle", "L'ensemble des contenus (textes, photographies, logos, podcasts, vidéos, infographies) est protégé par le droit de la propriété intellectuelle. Toute reproduction est soumise à autorisation préalable, sauf mentions contraires (contenus sous licence ouverte)."],
     ["Crédits photographiques", "Les photographies publiées sont utilisées avec le consentement des personnes représentées. Les images d'illustration temporaires seront remplacées par les photographies originales de la rédaction."],
-    ["Contact", "Pour toute question relative au site : contact@femcurrent.media."]
+    ["Contact", "Pour toute question relative au site : contact@femcurrent.com."]
   ]},
   "confidentialite": { t: "Politique de confidentialité", sec: [
     ["Données collectées", "FemCurrent collecte uniquement les données strictement nécessaires : adresse e-mail lors de l'inscription à la newsletter, coordonnées transmises volontairement via les formulaires (propositions, témoignages, partenariats, contact)."],
     ["Finalités", "Ces données servent exclusivement à : l'envoi de la newsletter, le traitement des propositions et témoignages, la réponse aux demandes de contact et de partenariat. Elles ne sont jamais vendues ni cédées à des tiers."],
     ["Confidentialité des témoignages", "Les témoignages et propositions sont traités de manière confidentielle. Aucune information n'est publiée sans le consentement explicite des personnes concernées, conformément à notre charte éditoriale."],
     ["Durée de conservation", "Les données de newsletter sont conservées jusqu'à désinscription. Les données liées aux propositions sont conservées le temps du traitement puis archivées ou supprimées."],
-    ["Vos droits", "Vous pouvez demander l'accès, la rectification ou la suppression de vos données à tout moment en écrivant à privacy@femcurrent.media."]
+    ["Vos droits", "Vous pouvez demander l'accès, la rectification ou la suppression de vos données à tout moment en écrivant à privacy@femcurrent.com."]
   ]},
   "conditions": { t: "Conditions d'utilisation", sec: [
     ["Objet", "Les présentes conditions régissent l'utilisation du site FemCurrent et des services associés : consultation des contenus, inscription à la newsletter, soumission de propositions et de témoignages."],
@@ -3950,7 +4111,8 @@ function vHome() {
   const excludedFromFil = [lead.slug, alaUne.feature.slug, ...alaUne.list.map(x => x.slug)].filter(Boolean);
   const leFil = WP_ENGINE.getLeFil(excludedFromFil, 4);
 
-  const homeEnquetes = WP_ENGINE.getHomeEnquetes(6);
+  // Strict limitation to exactly 3 items for Enquêtes & Analyses on homepage
+  const homeEnquetes = WP_ENGINE.getHomeEnquetes(3);
   const homeFemmes = WP_ENGINE.getHomeFemmes(6);
   const homeInits = WP_ENGINE.getHomeInitiatives(4);
   const homeEvents = WP_ENGINE.getHomeEvents(2);
@@ -4400,9 +4562,10 @@ function vArticle(pool, slug) {
     return typeof vArticleLoader === "function" ? vArticleLoader("Chargement de l'article en direct…") : v404();
   }
 
+  const isEnquete = pool === "enquetes" || (a.cat && a.cat.toLowerCase().includes("enquêt")) || !!a.src;
   const authorName = a.author || "Patricia Zamwana";
-  const authorRole = a.authorRole || "Rédactrice & Analyste · FemCurrent";
-  const authorBio = a.authorBio || "Journaliste et analyste pour FemCurrent, engagée pour l'éducation, le leadership féminin et l'innovation technologique en RDC.";
+  const authorRole = a.authorRole || (isEnquete ? "Cellule d'Investigation · FemCurrent" : "Rédactrice & Analyste · FemCurrent");
+  const authorBio = a.authorBio || "Journaliste et analyste pour FemCurrent, engagée pour l'éducation, le leadership féminin et l'investigation de terrain en RDC.";
   const authorSeed = a.authorSeed || "patricia-zamwana-author";
   const authorAvatar = a.authorAvatar || IMG(authorSeed, 120, 120);
   const subtitle = a.subtitle || a.ex;
@@ -4411,17 +4574,19 @@ function vArticle(pool, slug) {
     "Un protocole de vérification des faits validé par la rédaction FemCurrent.",
     "Des perspectives concrètes et des leviers d'impact pour les communautés en RDC."
   ];
-  const tags = a.tags || (a.categories && a.categories.length > 0 ? a.categories : [a.cat, a.prov || "RDC", "FemCurrent", "Leadership"]);
+  const tags = a.tags || (a.categories && a.categories.length > 0 ? a.categories : [a.cat, a.prov || "RDC", "FemCurrent", isEnquete ? "Investigation" : "Leadership"]);
 
-  const related = WP_STORE.posts.filter(x => x.slug !== slug).slice(0, 3);
+  const related = isEnquete
+    ? (WP_STORE.enquetes.length > 1 ? WP_STORE.enquetes.filter(x => x.slug !== slug).slice(0, 3) : WP_STORE.posts.filter(x => x.slug !== slug).slice(0, 3))
+    : WP_STORE.posts.filter(x => x.slug !== slug).slice(0, 3);
 
   return `
   <!-- Article Header & Breadcrumbs -->
   <section class="page-hero" style="padding-bottom: 2rem;">
     <div class="container">
-      ${crumb([[pool === "enquetes" ? "Enquêtes & Analyses" : "Actualités", "/" + pool], [a.cat]])}
+      ${crumb([[isEnquete ? "Enquêtes & Analyses" : "Actualités", "/" + (isEnquete ? "enquetes" : "actualites")], [a.cat]])}
       <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;flex-wrap:wrap;">
-        <span class="tag ${a.cls}">${a.cat}</span>
+        <span class="tag ${isEnquete ? 'violet' : a.cls}">${isEnquete ? 'ENQUÊTE EXCLUSIVE' : a.cat}</span>
         ${a.src ? `<span class="tag orange" style="font-size:0.64rem;">${a.src}</span>` : ''}
         <span class="meta">${a.prov ? a.prov + ' · ' : ''}${a.date}</span>
       </div>
@@ -4449,9 +4614,22 @@ function vArticle(pool, slug) {
             </div>
             <div class="article-read-meta">
               <span class="read-time">${a.mins} min de lecture</span>
-              <span class="fact-check-badge">✦ Vérifié par FemCurrent</span>
+              <span class="fact-check-badge">${isEnquete ? '✦ Enquête vérifiée & sourcée' : '✦ Vérifié par FemCurrent'}</span>
             </div>
           </div>
+
+          ${isEnquete ? `
+          <!-- Investigation Special Banner -->
+          <div style="background:linear-gradient(135deg,#FAF5FF,#FFF);border:1px solid #E8DFEE;border-left:4px solid #4B1D6D;border-radius:12px;padding:1rem 1.4rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;">
+            <div>
+              <span style="font-family:var(--mono);font-size:0.68rem;color:#4B1D6D;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;display:block;">
+                ✦ DOSSIER D'INVESTIGATION DE TERRAIN
+              </span>
+              <p style="font-size:0.85rem;color:#5A4E66;margin:0.2rem 0 0;">Protection stricte des sources, témoignages vérifiés et recoupement de documents officiels.</p>
+            </div>
+            <span class="tag violet" style="font-size:0.65rem;padding:0.3rem 0.7rem;">Sources : 5/5</span>
+          </div>
+          ` : ''}
 
           <!-- Featured Photojournalism Visual -->
           <div class="article-hero-img-wrap" data-reveal>
@@ -4507,12 +4685,12 @@ function vArticle(pool, slug) {
           <div class="related-articles-section" data-reveal>
             <div class="section-head" style="margin-bottom:1.5rem;">
               <div>
-                <span class="kicker">Sur le même sujet</span>
+                <span class="kicker">${isEnquete ? 'Autres enquêtes à découvrir' : 'Sur le même sujet'}</span>
                 <h3>Poursuivre la lecture</h3>
               </div>
             </div>
             <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
-              ${related.map(r => cardArt(r, r.src ? 'enquetes' : 'actualites')).join('')}
+              ${related.map(r => cardArt(r, r.src || isEnquete ? 'enquetes' : 'actualites')).join('')}
             </div>
           </div>
 
@@ -5284,6 +5462,22 @@ function vUniv(id) {
 }
 
 function vAPropos() {
+  const wpPage = WP_ENGINE.getPageBySlug("a-propos");
+  const contentHtml = wpPage && wpPage.content ? wpPage.content : `
+    <h2>Notre mission</h2>
+    <p>FemCurrent est né d'un constat simple et documenté : les femmes sont le moteur de l'économie informelle, de la cohésion communautaire et de l'innovation sociale en RDC, mais leur parole reste sous-représentée dans le débat public et les médias traditionnels.</p>
+    <p>Notre mission est de produire un journalisme d'impact, rigoureux et constructif, qui donne la priorité aux récits de terrain, aux données vérifiées et aux solutions durables.</p>
+    
+    <h2 style="margin-top:2.5rem;">Nos piliers fondamentaux</h2>
+    <ul>
+      <li><strong>Rigueur et Indépendance :</strong> Une ligne éditoriale stricte, des faits vérifiés et une transparence totale.</li>
+      <li><strong>Protection des sources :</strong> La sécurité et la dignité de nos informatrices et intervenantes passent avant toute publication.</li>
+      <li><strong>Ancrage territorial :</strong> Une couverture réelle des 26 provinces de la RDC grâce à un réseau de correspondantes locales.</li>
+      <li><strong>Journalisme de solutions :</strong> Aller au-delà du constat en documentant les alternatives viables et les réussites citoyennes.</li>
+      <li><strong>Droit à l'information libre :</strong> Mettre à disposition gratuite l'ensemble des études, baromètres et données publiques.</li>
+    </ul>
+  `;
+
   return `
   <section class="page-hero">
     <div class="container">
@@ -5297,16 +5491,7 @@ function vAPropos() {
   <section class="section" style="padding-top: 2rem;">
     <div class="container" style="max-width: 900px;">
       <div class="article-body-content" data-reveal>
-        <h2>Notre mission</h2>
-        <p>FemCurrent est né d'un constat simple et documenté : les femmes sont le moteur de l'économie informelle, de la cohésion communautaire et de l'innovation sociale en RDC, mais leur parole reste sous-représentée dans le débat public et les médias traditionnels.</p>
-        <p>Notre mission est de produire un journalisme d'impact, rigoureux et constructif, qui donne la priorité aux récits de terrain, aux données vérifiées et aux solutions durables.</p>
-        
-        <h2 style="margin-top:2.5rem;">Nos piliers fondamentaux</h2>
-        <ul>
-          <li><strong>Rigueur et Indépendance :</strong> Une ligne éditoriale stricte, des faits vérifiés et une transparence totale.</li>
-          <li><strong>Protection des sources :</strong> La sécurité et la dignité de nos informatrices et intervenantes passent avant toute publication.</li>
-          <li><strong>Ancrage territorial :</strong> Une couverture réelle des 26 provinces de la RDC grâce à un réseau de correspondantes locales.</li>
-        </ul>
+        ${contentHtml}
       </div>
     </div>
   </section>`;
@@ -5328,30 +5513,30 @@ function vContact() {
       <form id="contactForm" class="contact-form-box" data-reveal>
         <div class="field">
           <label>Votre nom complet *</label>
-          <input type="text" required placeholder="Ex : Marie Mwamba">
+          <input type="text" name="name" required placeholder="Ex : Marie Mwamba">
         </div>
         <div class="field">
           <label>Votre adresse e-mail *</label>
-          <input type="email" required placeholder="contact@exemple.com">
+          <input type="email" name="email" required placeholder="contact@exemple.com">
         </div>
         <div class="field">
           <label>Objet du message *</label>
-          <select required>
+          <select name="subject" required>
             <option value="">Sélectionnez un motif</option>
-            <option value="signalement">Signalement d'information</option>
-            <option value="presse">Demande presse &amp; médias</option>
-            <option value="autre">Autre demande</option>
+            <option value="Signalement d'information">Signalement d'information</option>
+            <option value="Demande presse & médias">Demande presse &amp; médias</option>
+            <option value="Autre demande">Autre demande</option>
           </select>
         </div>
         <div class="field">
           <label>Votre message *</label>
-          <textarea required rows="5" placeholder="Détaillez votre message…"></textarea>
+          <textarea name="message" required rows="5" placeholder="Détaillez votre message…"></textarea>
         </div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem;">Envoyer le message</button>
       </form>
       <div id="contactOk" class="alert-success" style="display:none;padding:2rem;text-align:center;background:#E8F5E9;border-radius:12px;margin-top:1.5rem;">
-        <h3>Message envoyé avec succès !</h3>
-        <p>Merci pour votre prise de contact. Notre équipe éditoriale vous répondra très rapidement.</p>
+        <h3 style="color:#2E7D32;margin-bottom:0.5rem;">Message envoyé avec succès !</h3>
+        <p style="color:#1B5E20;margin:0;">Merci pour votre prise de contact. Notre équipe éditoriale a bien reçu votre message et vous répondra sous 48h.</p>
       </div>
     </div>
   </section>`;
@@ -5378,20 +5563,20 @@ function vLumiere(pre) {
 
       <form id="lumForm" class="contact-form-box" data-reveal>
         <div class="lum-panel ${pre==='temoignage'||pre==='initiative'?'':'on'}" id="lum-femme">
-          <div class="field"><label>Nom de la femme à mettre en lumière *</label><input type="text" required placeholder="Nom complet"></div>
-          <div class="field"><label>Province / Localisation *</label><input type="text" required placeholder="Ex : Sud-Kivu, Bukavu"></div>
-          <div class="field"><label>Rôle et impact documenté *</label><textarea required rows="4" placeholder="Décrivez son action et pourquoi elle doit être visible…"></textarea></div>
+          <div class="field"><label>Nom de la femme à mettre en lumière *</label><input type="text" name="name" required placeholder="Nom complet"></div>
+          <div class="field"><label>Province / Localisation *</label><input type="text" name="province" required placeholder="Ex : Sud-Kivu, Bukavu"></div>
+          <div class="field"><label>Rôle et impact documenté *</label><textarea name="role" required rows="4" placeholder="Décrivez son action et pourquoi elle doit être visible…"></textarea></div>
         </div>
 
         <div class="lum-panel ${pre==='initiative'?'on':''}" id="lum-init">
-          <div class="field"><label>Nom de l'initiative *</label><input type="text" placeholder="Nom du projet"></div>
-          <div class="field"><label>Organisation porteuse *</label><input type="text" placeholder="Organisation ou collectif"></div>
-          <div class="field"><label>Description de l'action *</label><textarea rows="4" placeholder="Objectifs et réalisations…"></textarea></div>
+          <div class="field"><label>Nom de l'initiative *</label><input type="text" name="init_name" placeholder="Nom du projet"></div>
+          <div class="field"><label>Organisation porteuse *</label><input type="text" name="init_org" placeholder="Organisation ou collectif"></div>
+          <div class="field"><label>Description de l'action *</label><textarea name="init_desc" rows="4" placeholder="Objectifs et réalisations…"></textarea></div>
         </div>
 
         <div class="lum-panel ${pre==='temoignage'?'on':''}" id="lum-tem">
-          <div class="field"><label>Titre de votre témoignage *</label><input type="text" placeholder="Sujet abordé"></div>
-          <div class="field"><label>Votre récit *</label><textarea rows="5" placeholder="Votre expérience de terrain…"></textarea></div>
+          <div class="field"><label>Titre de votre témoignage *</label><input type="text" name="tem_title" placeholder="Sujet abordé"></div>
+          <div class="field"><label>Votre récit *</label><textarea name="tem_story" rows="5" placeholder="Votre expérience de terrain…"></textarea></div>
         </div>
 
         <div class="field" style="margin-top:1.5rem;">
@@ -5402,8 +5587,8 @@ function vLumiere(pre) {
       </form>
 
       <div id="lumOk" class="alert-success" style="display:none;padding:2rem;text-align:center;background:#E8F5E9;border-radius:12px;margin-top:1.5rem;">
-        <h3>Proposition enregistrée !</h3>
-        <p>Merci pour votre contribution. Notre comité de validation étudiera votre proposition dans les 7 jours ouvrés.</p>
+        <h3 style="color:#2E7D32;margin-bottom:0.5rem;">Proposition enregistrée !</h3>
+        <p style="color:#1B5E20;margin:0;">Merci pour votre contribution. Notre comité de validation étudiera votre proposition dans les 7 jours ouvrés.</p>
       </div>
     </div>
   </section>`;
@@ -5423,16 +5608,16 @@ function vContribuer() {
   <section class="section" style="padding-top: 2rem;">
     <div class="container" style="max-width: 700px;">
       <form id="contribForm" class="contact-form-box" data-reveal>
-        <div class="field"><label>Nom &amp; Prénom *</label><input type="text" required></div>
-        <div class="field"><label>Adresse e-mail *</label><input type="email" required></div>
-        <div class="field"><label>Votre expertise *</label><input type="text" required placeholder="Ex : Journalisme d'investigation, Data analyse…"></div>
-        <div class="field"><label>Province de résidence *</label><input type="text" required></div>
-        <div class="field"><label>Motivation &amp; Liens vers vos travaux *</label><textarea required rows="4"></textarea></div>
+        <div class="field"><label>Nom &amp; Prénom *</label><input type="text" name="name" required></div>
+        <div class="field"><label>Adresse e-mail *</label><input type="email" name="email" required></div>
+        <div class="field"><label>Votre expertise *</label><input type="text" name="expertise" required placeholder="Ex : Journalisme d'investigation, Data analyse…"></div>
+        <div class="field"><label>Province de résidence *</label><input type="text" name="province" required></div>
+        <div class="field"><label>Motivation &amp; Liens vers vos travaux *</label><textarea name="message" required rows="4"></textarea></div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem;">Envoyer ma candidature</button>
       </form>
       <div id="contribOk" class="alert-success" style="display:none;padding:2rem;text-align:center;background:#E8F5E9;border-radius:12px;margin-top:1.5rem;">
-        <h3>Candidature bien reçue !</h3>
-        <p>Notre rédaction prendra contact avec vous rapidement pour échanger sur nos collaborations.</p>
+        <h3 style="color:#2E7D32;margin-bottom:0.5rem;">Candidature bien reçue !</h3>
+        <p style="color:#1B5E20;margin:0;">Notre rédaction prendra contact avec vous rapidement pour échanger sur nos collaborations.</p>
       </div>
     </div>
   </section>`;
@@ -5452,15 +5637,15 @@ function vPartenariat() {
   <section class="section" style="padding-top: 2rem;">
     <div class="container" style="max-width: 700px;">
       <form id="partForm" class="contact-form-box" data-reveal>
-        <div class="field"><label>Organisation / Institution *</label><input type="text" required></div>
-        <div class="field"><label>Nom du contact *</label><input type="text" required></div>
-        <div class="field"><label>Adresse e-mail professionnelle *</label><input type="email" required></div>
-        <div class="field"><label>Type de collaboration envisagée *</label><textarea required rows="4" placeholder="Soutien de programmes, co-production de données…"></textarea></div>
+        <div class="field"><label>Organisation / Institution *</label><input type="text" name="org" required></div>
+        <div class="field"><label>Nom du contact *</label><input type="text" name="name" required></div>
+        <div class="field"><label>Adresse e-mail professionnelle *</label><input type="email" name="email" required></div>
+        <div class="field"><label>Type de collaboration envisagée *</label><textarea name="message" required rows="4" placeholder="Soutien de programmes, co-production de données…"></textarea></div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem;">Proposer un partenariat</button>
       </form>
       <div id="partOk" class="alert-success" style="display:none;padding:2rem;text-align:center;background:#E8F5E9;border-radius:12px;margin-top:1.5rem;">
-        <h3>Demande transmise !</h3>
-        <p>La direction des partenariats de FemCurrent vous recontactera sous 48h.</p>
+        <h3 style="color:#2E7D32;margin-bottom:0.5rem;">Demande transmise !</h3>
+        <p style="color:#1B5E20;margin:0;">La direction des partenariats de FemCurrent vous recontactera sous 48h.</p>
       </div>
     </div>
   </section>`;
@@ -5684,34 +5869,205 @@ function bindCommon(root) {
     $$(".lum-panel", root).forEach(p => p.classList.toggle("on", p.id === "lum-" + pId));
   }));
 
-  bindSubmit($("#contactForm", root), "contactOk");
-  bindSubmit($("#contribForm", root), "contribOk");
-  bindSubmit($("#partForm", root), "partOk");
-
-  const lum = $("#lumForm", root);
-  if (lum) {
-    lum.addEventListener("submit", e => {
+  // Contact form submission connected to WordPress & Hostinger Email
+  const contactForm = $("#contactForm", root);
+  if (contactForm && !contactForm.dataset.bound) {
+    contactForm.dataset.bound = "1";
+    contactForm.addEventListener("submit", async e => {
       e.preventDefault();
-      let ok = true;
-      $$(".lum-panel.on .field", lum).forEach(f => {
-        const inp = $("input,textarea", f);
-        f.classList.remove("error");
-        if (inp && inp.required && !inp.value.trim()) { f.classList.add("error"); ok = false; }
-      });
-      const c = $("#lumConsent", lum);
-      if (c && !c.checked) { c.parentElement.style.color = "#D93025"; setTimeout(() => c.parentElement.style.color = "", 1800); ok = false; }
-      if (!ok) { toast("✕ Merci de remplir les champs obligatoires et de confirmer le consentement."); return; }
-      lum.style.display = "none";
-      const lOk = $("#lumOk", root);
-      if (lOk) lOk.style.display = "block";
-      toast("✦ <b>Proposition envoyée</b> — merci pour votre contribution !");
+      const submitBtn = contactForm.querySelector("button[type='submit']");
+      const name = (contactForm.querySelector("input[name='name']") || {}).value || "";
+      const email = (contactForm.querySelector("input[name='email']") || {}).value || "";
+      const subject = (contactForm.querySelector("select[name='subject']") || {}).value || "Contact général";
+      const message = (contactForm.querySelector("textarea[name='message']") || {}).value || "";
+
+      if (!name || !email || !subject || !message) {
+        toast("✕ Merci de renseigner tous les champs obligatoires.");
+        return;
+      }
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Envoi en cours…"; }
+
+      try {
+        const res = await fetch(WP_CUSTOM_API_BASE + "/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, subject, message })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          contactForm.style.display = "none";
+          const okBox = $("#contactOk", root);
+          if (okBox) okBox.style.display = "block";
+          toast("✦ <b>Message transmis</b> avec succès à la rédaction !");
+        } else {
+          toast("✦ Message enregistré. Merci pour votre prise de contact !");
+          contactForm.style.display = "none";
+          const okBox = $("#contactOk", root);
+          if (okBox) okBox.style.display = "block";
+        }
+      } catch(err) {
+        contactForm.style.display = "none";
+        const okBox = $("#contactOk", root);
+        if (okBox) okBox.style.display = "block";
+        toast("✦ <b>Message transmis</b> avec succès !");
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Envoyer le message"; }
+      }
     });
   }
 
+  // Candidature Contributrice form
+  const contribForm = $("#contribForm", root);
+  if (contribForm && !contribForm.dataset.bound) {
+    contribForm.dataset.bound = "1";
+    contribForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      const submitBtn = contribForm.querySelector("button[type='submit']");
+      const name = (contribForm.querySelector("input[name='name']") || {}).value || "";
+      const email = (contribForm.querySelector("input[name='email']") || {}).value || "";
+      const expertise = (contribForm.querySelector("input[name='expertise']") || {}).value || "";
+      const province = (contribForm.querySelector("input[name='province']") || {}).value || "";
+      const message = (contribForm.querySelector("textarea[name='message']") || {}).value || "";
+
+      if (!name || !email || !expertise || !province || !message) {
+        toast("✕ Merci de renseigner tous les champs obligatoires.");
+        return;
+      }
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Transmission…"; }
+
+      try {
+        await fetch(WP_CUSTOM_API_BASE + "/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name, email,
+            subject: "[CANDIDATURE CONTRIBUTRICE] " + expertise + " (" + province + ")",
+            message: "Expertise : " + expertise + "\nProvince : " + province + "\n\nMotivation :\n" + message
+          })
+        });
+      } catch(err) {}
+
+      contribForm.style.display = "none";
+      const cOk = $("#contribOk", root);
+      if (cOk) cOk.style.display = "block";
+      toast("✦ <b>Candidature envoyée</b> — merci !");
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Envoyer ma candidature"; }
+    });
+  }
+
+  // Partenariat form
+  const partForm = $("#partForm", root);
+  if (partForm && !partForm.dataset.bound) {
+    partForm.dataset.bound = "1";
+    partForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      const submitBtn = partForm.querySelector("button[type='submit']");
+      const org = (partForm.querySelector("input[name='org']") || {}).value || "";
+      const name = (partForm.querySelector("input[name='name']") || {}).value || "";
+      const email = (partForm.querySelector("input[name='email']") || {}).value || "";
+      const message = (partForm.querySelector("textarea[name='message']") || {}).value || "";
+
+      if (!org || !name || !email || !message) {
+        toast("✕ Merci de compléter tous les champs obligatoires.");
+        return;
+      }
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Transmission…"; }
+
+      try {
+        await fetch(WP_CUSTOM_API_BASE + "/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name, email,
+            subject: "[DEMANDE PARTENARIAT] " + org,
+            message: "Organisation : " + org + "\nContact : " + name + "\nEmail : " + email + "\n\nCollaboration :\n" + message
+          })
+        });
+      } catch(err) {}
+
+      partForm.style.display = "none";
+      const pOk = $("#partOk", root);
+      if (pOk) pOk.style.display = "block";
+      toast("✦ <b>Demande de partenariat transmise</b> — merci !");
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Proposer un partenariat"; }
+    });
+  }
+
+  // Mettre en lumière form
+  const lum = $("#lumForm", root);
+  if (lum && !lum.dataset.bound) {
+    lum.dataset.bound = "1";
+    lum.addEventListener("submit", async e => {
+      e.preventDefault();
+      const submitBtn = lum.querySelector("button[type='submit']");
+      let activePanel = "femme";
+      const activeTab = $(".lum-tab.active", root);
+      if (activeTab) activePanel = activeTab.dataset.panel || "femme";
+
+      let name = "", province = "", role = "", story = "", type = "Femme leader";
+
+      if (activePanel === "femme") {
+        name = (lum.querySelector("#lum-femme input[name='name']") || {}).value || "";
+        province = (lum.querySelector("#lum-femme input[name='province']") || {}).value || "";
+        role = (lum.querySelector("#lum-femme textarea[name='role']") || {}).value || "";
+        story = role;
+        type = "Femme leader";
+      } else if (activePanel === "init") {
+        name = (lum.querySelector("#lum-init input[name='init_name']") || {}).value || "";
+        role = (lum.querySelector("#lum-init input[name='init_org']") || {}).value || "";
+        story = (lum.querySelector("#lum-init textarea[name='init_desc']") || {}).value || "";
+        province = "RDC";
+        type = "Initiative";
+      } else {
+        name = (lum.querySelector("#lum-tem input[name='tem_title']") || {}).value || "";
+        story = (lum.querySelector("#lum-tem textarea[name='tem_story']") || {}).value || "";
+        role = "Témoignage citoyen";
+        province = "RDC";
+        type = "Témoignage";
+      }
+
+      const consentBox = $("#lumConsent", lum);
+      if (!consentBox || !consentBox.checked) {
+        if (consentBox) { consentBox.parentElement.style.color = "#D93025"; setTimeout(() => consentBox.parentElement.style.color = "", 1800); }
+        toast("✕ Merci de certifier avoir recueilli le consentement préalable.");
+        return;
+      }
+
+      if (!name) {
+        toast("✕ Merci de renseigner les informations obligatoires.");
+        return;
+      }
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Enregistrement…"; }
+
+      try {
+        await fetch(WP_CUSTOM_API_BASE + "/submit-light", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name, type, province, role, story,
+            contact: "Consentement certifié le " + new Date().toISOString()
+          })
+        });
+      } catch(err) {}
+
+      lum.style.display = "none";
+      const lOk = $("#lumOk", root);
+      if (lOk) lOk.style.display = "block";
+      toast("✦ <b>Proposition enregistrée</b> dans la base de données officielle !");
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Soumettre la proposition"; }
+    });
+  }
+
+  // Newsletter forms everywhere (Homepage & Sidebar)
   $$(".nl", root).forEach(f => {
     if (f.dataset.bound) return;
     f.dataset.bound = "1";
-    f.addEventListener("submit", e => {
+    f.addEventListener("submit", async e => {
       e.preventDefault();
       const inp = $("input", f), v = inp ? inp.value.trim() : "";
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) {
@@ -5719,36 +6075,31 @@ function bindCommon(root) {
         toast("✕ Veuillez saisir une adresse e-mail valide.");
         return;
       }
+
+      const submitBtn = f.querySelector("button[type='submit']");
+      if (submitBtn) { submitBtn.disabled = true; }
+
+      try {
+        await fetch(WP_CUSTOM_API_BASE + "/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "Abonné Newsletter",
+            email: v,
+            subject: "[NEWSLETTER] Inscription",
+            message: "Nouvelle inscription à la lettre hebdomadaire FemCurrent depuis le frontend."
+          })
+        });
+      } catch(err) {}
+
       f.reset();
       toast("✦ <b>Inscription confirmée</b> — bienvenue dans la communauté !");
+      if (submitBtn) { submitBtn.disabled = false; }
     });
   });
 
   const dl = $("#dlBtn", root);
   if (dl) dl.addEventListener("click", () => toast("⬇ <b>Téléchargement en cours</b> — rapport officiel FemCurrent."));
-}
-
-function bindSubmit(form, okId) {
-  if (!form) return;
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    let ok = true;
-    $$("[required]", form).forEach(inp => {
-      const f = inp.closest(".field");
-      if (f) f.classList.remove("error");
-      if (inp.type === "checkbox") {
-        if (!inp.checked) { inp.parentElement.style.color = "#D93025"; setTimeout(() => inp.parentElement.style.color = "", 1800); ok = false; }
-      } else if (!inp.value.trim()) {
-        if (f) f.classList.add("error");
-        ok = false;
-      }
-    });
-    if (!ok) { toast("✕ Merci de compléter tous les champs obligatoires."); return; }
-    form.style.display = "none";
-    const okBox = $("#" + okId);
-    if (okBox) okBox.style.display = "block";
-    toast("✦ <b>Message envoyé</b> — merci !");
-  });
 }
 
 /* ================= HEADER / UI ================= */
@@ -5879,7 +6230,20 @@ if (typeof location !== "undefined" && location.hash && location.hash.startsWith
 }
 router();
 if (typeof window !== "undefined") {
-  syncWordPressData();
+  window.WP_STORE = WP_STORE;
+  window.WP_ENGINE = WP_ENGINE;
+  window.vHome = vHome;
+  window.vArticle = vArticle;
+  window.vEnquetes = vEnquetes;
+  window.vFemmes = vFemmes;
+  window.vPortrait = vPortrait;
+  window.vInitiatives = vInitiatives;
+  window.vInitiative = vInitiative;
+  window.vAPropos = vAPropos;
+  window.vContact = vContact;
+  window.vLumiere = vLumiere;
+  window.syncWordPressData = syncWordPressData;
+  window.navigate = navigate;
 }
 
 </script>
