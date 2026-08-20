@@ -3291,25 +3291,83 @@ function formatWpRessource(p) {
 
 function formatWpEvent(p) {
   const rawExcerpt = p.excerpt && p.excerpt.rendered ? p.excerpt.rendered.replace(/<[^>]+>/g, '').trim() : "";
+  const rawContent = p.content && p.content.rendered ? p.content.rendered : "";
+  const plainText = rawContent.replace(/<[^>]+>/g, '').trim();
+
   let d = "12";
   let m = "Mars";
-  let meta = rawExcerpt;
+  let y = "2026";
+  let time = "18h00 - 20h00";
+  let location = "En ligne (Zoom)";
+  let organizer = "FemCurrent Academy";
+  let places = "Sur inscription";
+  let price = "Gratuit (sur inscription)";
+  let format = "En ligne";
 
-  if (rawExcerpt.includes("Date :")) {
-    const dateMatch = rawExcerpt.match(/Date\s*:\s*(\d+)\s+([A-Za-zÀ-ÿ]+)/);
-    if (dateMatch) {
-      d = dateMatch[1];
-      m = dateMatch[2];
-    }
+  const MONTHS_FR = {
+    'janvier': '01', 'janv': '01', 'jan': '01',
+    'février': '02', 'fevrier': '02', 'févr': '02', 'fevr': '02', 'fév': '02', 'fev': '02',
+    'mars': '03', 'mar': '03',
+    'avril': '04', 'avr': '04',
+    'mai': '05',
+    'juin': '06',
+    'juillet': '07', 'juil': '07',
+    'août': '08', 'aout': '08', 'aou': '08',
+    'septembre': '09', 'sept': '09', 'sep': '09',
+    'octobre': '10', 'oct': '10',
+    'novembre': '11', 'nov': '11',
+    'décembre': '12', 'decembre': '12', 'déc': '12', 'dec': '12'
+  };
+
+  const dateMatch = rawExcerpt.match(/Date\s*:\s*(\d{1,2})\s+([A-Za-zÀ-ÿ]+)(?:\s+(\d{4}))?/i);
+  if (dateMatch) {
+    d = dateMatch[1].padStart(2, '0');
+    m = dateMatch[2];
+    if (dateMatch[3]) y = dateMatch[3];
   }
+
+  const timeMatch = rawExcerpt.match(/Heure\s*:\s*([^·\n]+)/i);
+  if (timeMatch) time = timeMatch[1].trim();
+
+  const locMatch = rawExcerpt.match(/Lieu\s*:\s*([^·\n]+)/i);
+  if (locMatch) location = locMatch[1].trim();
+
+  const orgMatch = rawExcerpt.match(/Organis[ée]\s*par\s*:\s*([^·\n]+)/i);
+  if (orgMatch) organizer = orgMatch[1].trim();
+
+  const placesMatch = rawExcerpt.match(/Places\s*:\s*([^·\n]+)/i);
+  if (placesMatch) places = placesMatch[1].trim();
+
+  const formatMatch = rawExcerpt.match(/Format\s*:\s*([^·\n]+)/i);
+  if (formatMatch) format = formatMatch[1].trim();
+  else if (location.toLowerCase().includes("ligne") || location.toLowerCase().includes("zoom")) format = "En ligne";
+  else if (location.toLowerCase().includes("hotel") || location.toLowerCase().includes("halle") || location.toLowerCase().includes("centre")) format = "Présentiel";
+
+  const mNorm = m.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const monthNum = MONTHS_FR[m.toLowerCase()] || MONTHS_FR[mNorm] || '03';
+  const isoDate = y + '-' + monthNum + '-' + d;
+  const isPast = isoDate < "2026-03-01" || rawExcerpt.toLowerCase().includes("terminé") || rawExcerpt.toLowerCase().includes("clôturé");
 
   return {
     id: p.id,
     slug: p.slug,
-    d: d,
-    m: m,
     title: decodeEntities(p.title.rendered),
-    meta: meta || "Événement officiel FemCurrent"
+    d: parseInt(d, 10).toString(),
+    m: m.charAt(0).toUpperCase() + m.slice(1),
+    y: y,
+    isoDate: isoDate,
+    time: time,
+    location: location,
+    organizer: organizer,
+    places: places,
+    price: price,
+    format: format,
+    isPast: isPast,
+    customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
+    meta: rawExcerpt || (time + " · " + location),
+    desc: rawExcerpt,
+    content: rawContent || plainText,
+    body: [rawContent || plainText]
   };
 }
 
@@ -3487,8 +3545,69 @@ let DOCS = [
 ];
 
 let EVENTS = [
-  { id: 41, slug: "forum-national-femmes-leaders", title: "Forum National des Femmes Leaders 2026", d: "12", m: "Mars", meta: "Kinshasa · Fleuve Congo Hotel & En ligne" },
-  { id: 42, slug: "masterclass-data-journalisme", title: "Masterclass : Data journalisme & Plaidoyer de terrain", d: "26", m: "Mars", meta: "FemCurrent Academy · Webinaire interactif" }
+  {
+    id: 62,
+    slug: "masterclass-raconter-avec-son-telephone",
+    title: "Masterclass — « Raconter avec son téléphone »",
+    d: "12",
+    m: "Mars",
+    y: "2026",
+    isoDate: "2026-03-12",
+    time: "18h00 - 20h00",
+    location: "En ligne (Zoom)",
+    organizer: "FemCurrent Academy",
+    places: "50 places",
+    price: "Gratuit sur inscription",
+    format: "En ligne",
+    isPast: false,
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    meta: "FemCurrent Academy · 18h00 - 20h00 · En ligne (Zoom) · Gratuit sur inscription · Date : 12 Mars",
+    desc: "Techniques de tournage, prise de son et narration mobile adaptées aux réalités de terrain.",
+    content: "<h2>Présentation de la Masterclass</h2><p>Comment produire des reportages d'impact avec les seuls outils de son smartphone ? Cette masterclass intensive de 2 heures animée par la rédaction de FemCurrent et des journalistes reporters d'images vous apprend les techniques de tournage, de prise de son, de cadrage et de narration mobile adaptées aux réalités de terrain.</p><h2>Programme de la session</h2><ul><li><strong>Module 1 (30 min) :</strong> Préparer son sujet, choisir son angle et sécuriser ses sources sur le terrain.</li><li><strong>Module 2 (40 min) :</strong> Techniques de cadrage, gestion de la lumière naturelle et prise de son sans matériel lourd.</li><li><strong>Module 3 (30 min) :</strong> Montage rapide sur application mobile (CapCut / InShot) et formats pour réseaux sociaux.</li><li><strong>Module 4 (20 min) :</strong> Questions-réponses en direct et retours sur vos projets.</li></ul><h2>Informations pratiques</h2><p><strong>Date & Horaires :</strong> Jeudi 12 Mars 2026 de 18h00 à 20h00 (Heure de Kinshasa / GMT+1).<br><strong>Lieu :</strong> En ligne via Zoom (le lien de connexion sécurisé vous sera envoyé par email après confirmation de votre inscription).<br><strong>Public visé :</strong> Journalistes, communicantes d'associations, créatrices de contenu et étudiantes en journalisme.<br><strong>Prérequis :</strong> Un smartphone disposant d'un appareil photo fonctionnel et d'une connexion internet.</p>",
+    body: ["<h2>Présentation de la Masterclass</h2><p>Comment produire des reportages d'impact avec les seuls outils de son smartphone ? Cette masterclass intensive de 2 heures animée par la rédaction de FemCurrent et des journalistes reporters d'images vous apprend les techniques de tournage, de prise de son, de cadrage et de narration mobile adaptées aux réalités de terrain.</p><h2>Programme de la session</h2><ul><li><strong>Module 1 (30 min) :</strong> Préparer son sujet, choisir son angle et sécuriser ses sources sur le terrain.</li><li><strong>Module 2 (40 min) :</strong> Techniques de cadrage, gestion de la lumière naturelle et prise de son sans matériel lourd.</li><li><strong>Module 3 (30 min) :</strong> Montage rapide sur application mobile (CapCut / InShot) et formats pour réseaux sociaux.</li><li><strong>Module 4 (20 min) :</strong> Questions-réponses en direct et retours sur vos projets.</li></ul><h2>Informations pratiques</h2><p><strong>Date & Horaires :</strong> Jeudi 12 Mars 2026 de 18h00 à 20h00 (Heure de Kinshasa / GMT+1).<br><strong>Lieu :</strong> En ligne via Zoom (le lien de connexion sécurisé vous sera envoyé par email après confirmation de votre inscription).<br><strong>Public visé :</strong> Journalistes, communicantes d'associations, créatrices de contenu et étudiantes en journalisme.<br><strong>Prérequis :</strong> Un smartphone disposant d'un appareil photo fonctionnel et d'une connexion internet.</p>"]
+  },
+  {
+    id: 79,
+    slug: "forum-national-des-femmes-leaders-2026",
+    title: "Forum National des Femmes Leaders 2026",
+    d: "26",
+    m: "Mars",
+    y: "2026",
+    isoDate: "2026-03-26",
+    time: "09h00 - 17h30",
+    location: "Kinshasa · Fleuve Congo Hotel & En ligne",
+    organizer: "FemCurrent Média & Partenaires",
+    places: "150 places",
+    price: "Gratuit sur inscription",
+    format: "Présentiel & Streaming",
+    isPast: false,
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    meta: "FemCurrent Média · Kinshasa · 150 places · Date : 26 Mars",
+    desc: "Le grand rendez-vous annuel réunissant décideuses politiques, entrepreneures et chercheuses des 26 provinces.",
+    content: "<h2>À propos du Forum National</h2><p>Le Forum National des Femmes Leaders est le grand rendez-vous annuel réunissant décideuses politiques, entrepreneures, chercheuses, militantes associatives et pionnières des 26 provinces de la RDC.</p>",
+    body: ["<h2>À propos du Forum National</h2><p>Le Forum National des Femmes Leaders est le grand rendez-vous annuel réunissant décideuses politiques, entrepreneures, chercheuses, militantes associatives et pionnières des 26 provinces de la RDC.</p>"]
+  },
+  {
+    id: 80,
+    slug: "atelier-pratique-securite-numerique-protection-des-sources",
+    title: "Atelier Pratique : Sécurité Numérique & Protection des Sources",
+    d: "15",
+    m: "Avril",
+    y: "2026",
+    isoDate: "2026-04-15",
+    time: "14h00 - 17h00",
+    location: "En ligne (Webinaire interactif)",
+    organizer: "FemCurrent Academy",
+    places: "40 places",
+    price: "Gratuit sur inscription",
+    format: "En ligne",
+    isPast: false,
+    customImg: "public/images/hero-cinematic-leaders.jpg",
+    meta: "FemCurrent Academy · 14h00 - 17h00 · En ligne · 40 places · Date : 15 Avril",
+    desc: "Adoption d'outils chiffrés, gestion des mots de passe et protection des échanges avec les informatrices.",
+    content: "<h2>Présentation de l'Atelier</h2><p>Dans un contexte de digitalisation croissante et de risques accrus pour les voix citoyennes, la sécurité numérique n'est plus une option.</p>",
+    body: ["<h2>Présentation de l'Atelier</h2><p>Dans un contexte de digitalisation croissante et de risques accrus pour les voix citoyennes, la sécurité numérique n'est plus une option.</p>"]
+  }
 ];
 
 let PODS = [
@@ -3596,8 +3715,22 @@ const WP_ENGINE = {
     return (WP_STORE.initiatives.length > 0 ? WP_STORE.initiatives : INITIATIVES).slice(0, limit);
   },
 
+  getUpcomingEvents(limit = 2) {
+    const list = (WP_STORE.evenements.length > 0 ? WP_STORE.evenements : EVENTS);
+    const upcoming = list.filter(e => !e.isPast);
+    if (upcoming.length > 0) {
+      return upcoming.sort((a, b) => (a.isoDate || '').localeCompare(b.isoDate || '')).slice(0, limit);
+    }
+    return list.slice(0, limit);
+  },
+
   getHomeEvents(limit = 2) {
-    return (WP_STORE.evenements.length > 0 ? WP_STORE.evenements : EVENTS).slice(0, limit);
+    return this.getUpcomingEvents(limit);
+  },
+
+  getEventBySlug(slug) {
+    return (WP_STORE.evenements && WP_STORE.evenements.find(e => e.slug === slug)) ||
+           EVENTS.find(e => e.slug === slug) || null;
   },
 
   getTickerItems(limit = 5) {
@@ -4065,6 +4198,33 @@ async function fetchAndRenderInit(slug) {
   render(v404(), "Page introuvable");
 }
 
+async function fetchAndRenderEvent(slug) {
+  if (PENDING_FETCHES.has(slug)) return;
+  PENDING_FETCHES.add(slug);
+  try {
+    const res = await fetch(`${WP_API_BASE}/evenements?slug=${encodeURIComponent(slug)}&_embed`, { cache: 'no-cache' });
+    const data = res.ok ? await res.json() : [];
+    if (Array.isArray(data) && data.length > 0) {
+      const formatted = formatWpEvent(data[0]);
+      const idx = WP_STORE.evenements.findIndex(x => x.slug === formatted.slug);
+      if (idx >= 0) WP_STORE.evenements[idx] = formatted;
+      else WP_STORE.evenements.unshift(formatted);
+
+      try {
+        if (typeof localStorage !== "undefined") {
+          localStorage.setItem("FEMCURRENT_MASTER_STORE_V2", JSON.stringify(WP_STORE));
+        }
+      } catch(e) {}
+
+      PENDING_FETCHES.delete(slug);
+      render(vEvent(slug), formatted.title);
+      return;
+    }
+  } catch(e) {}
+  PENDING_FETCHES.delete(slug);
+  render(v404(), "Page introuvable");
+}
+
 async function fetchAndRenderDoc(slug) {
   if (PENDING_FETCHES.has(slug)) return;
   PENDING_FETCHES.add(slug);
@@ -4313,11 +4473,25 @@ function vHome() {
 </div></section>
 
 <section class="section"><div class="container">
- <div class="section-head" data-reveal><div><span class="kicker">Agenda</span><h2>Prochains événements</h2></div><a class="see-all" href="/agenda">Tout l'agenda →</a></div>
- ${homeEvents.map((e, i) => `<article class="event" data-reveal data-delay="${i * 90}">
-  <div class="event-date"><b>${e.d}</b><span>${e.m}</span></div>
-  <div><h3>${e.title}</h3><div class="meta">${e.meta}</div></div>
-  <div class="event-cta"><a class="btn btn-ghost" href="/contact">S'inscrire</a></div></article>`).join("")}
+ <div class="section-head" data-reveal><div><span class="kicker">Agenda &amp; Formations</span><h2>Prochains événements</h2></div><a class="see-all" href="/agenda">Tout l'agenda →</a></div>
+ <div class="events-list">
+ ${homeEvents.map((e, i) => `<article class="event" data-reveal data-delay="${i * 90}" style="padding:1.4rem;background:#FFF;border:1px solid #E8DFEE;border-radius:14px;display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap;box-shadow:0 2px 8px rgba(75,29,109,0.03);margin-bottom:1.2rem;">
+  <div class="event-date" style="background:var(--lavande);border:1px solid #E8DFEE;border-radius:12px;padding:0.75rem 1.1rem;text-align:center;min-width:70px;">
+    <b style="font-size:1.5rem;color:var(--magenta);display:block;line-height:1;">${e.d}</b>
+    <span style="font-size:0.72rem;font-weight:700;color:#6E5E7A;text-transform:uppercase;">${e.m}</span>
+  </div>
+  <div style="flex:1;min-width:240px;">
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.35rem;align-items:center;flex-wrap:wrap;">
+      <span class="tag violet" style="font-size:0.62rem;">${e.organizer || 'FemCurrent Academy'}</span>
+      <span class="tag" style="background:#E8F5E9;color:#2E7D32;font-size:0.62rem;font-weight:700;">Inscriptions ouvertes</span>
+    </div>
+    <h3 style="margin:0 0 0.35rem;font-size:1.15rem;"><a href="/agenda/${e.slug}" style="color:inherit;text-decoration:none;">${e.title}</a></h3>
+    <div class="meta" style="color:#5A4E66;font-size:0.82rem;">⏰ ${e.time} · 📍 ${e.location} · <strong style="color:var(--magenta)">${e.places}</strong></div>
+  </div>
+  <div class="event-cta">
+    <a class="btn btn-primary" href="/agenda/${e.slug}" style="padding:0.55rem 1.2rem;font-size:0.82rem;">S'inscrire →</a>
+  </div></article>`).join("")}
+ </div>
 </div></section>
 
 <section class="section section-alt"><div class="container">
@@ -5330,7 +5504,7 @@ function vDoc(slug) {
 }
 
 function vAgenda() {
-  const events = WP_STORE.evenements.length > 0 ? WP_STORE.evenements : EVENTS;
+  const allEvents = (WP_STORE.evenements.length > 0 ? WP_STORE.evenements : EVENTS);
 
   return `
   <section class="page-hero">
@@ -5343,20 +5517,276 @@ function vAgenda() {
   </section>
 
   <section class="section" style="padding-top: 2rem;">
-    <div class="container" style="max-width: 900px;">
-      <div class="events-list">
-        ${events.map((e, i) => `
-          <article class="event" style="margin-bottom: 1.5rem;" data-reveal data-delay="${i * 80}">
-            <div class="event-date"><b>${e.d}</b><span>${e.m}</span></div>
-            <div style="flex:1;">
-              <h3 style="margin-bottom:0.4rem;">${e.title}</h3>
-              <div class="meta">${e.meta}</div>
+    <div class="container">
+      
+      <!-- Filters -->
+      <div class="filters category-filter-nav">
+        ${["Tous", "À venir", "En ligne", "Présentiel", "Passés"].map((c, i) => `
+          <button class="f-chip ${i === 0 ? "on" : ""}" data-f="${c}">${c}</button>
+        `).join("")}
+      </div>
+
+      <!-- Events List -->
+      <div class="section-head" style="margin-bottom:1.5rem;">
+        <div>
+          <span class="kicker">Calendrier Éditorial</span>
+          <h2>Toutes les sessions programmées</h2>
+        </div>
+      </div>
+
+      <div class="events-list filterable" style="display:flex;flex-direction:column;gap:1.5rem;">
+        ${allEvents.map((e, i) => {
+          const filterCat = e.isPast ? "Passés" : (e.format || (e.location && e.location.includes("ligne") ? "En ligne" : "Présentiel"));
+          return `
+          <article class="event" data-cat="${filterCat}" data-reveal data-delay="${(i % 5) * 60}" style="padding:1.5rem;background:#FFF;border:1px solid #E8DFEE;border-radius:14px;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;box-shadow:0 2px 10px rgba(75,29,109,0.03);">
+            <div class="event-date" style="background:${e.isPast ? '#F5F5F5' : 'var(--lavande)'};border:1px solid #E8DFEE;border-radius:12px;padding:0.8rem 1.2rem;text-align:center;min-width:75px;">
+              <b style="font-size:1.6rem;color:${e.isPast ? '#757575' : 'var(--magenta)'};display:block;line-height:1;">${e.d}</b>
+              <span style="font-size:0.75rem;font-weight:700;color:#6E5E7A;text-transform:uppercase;">${e.m}</span>
             </div>
+
+            <div style="flex:1;min-width:260px;">
+              <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;flex-wrap:wrap;">
+                <span class="tag violet" style="font-size:0.65rem;">${e.organizer || 'FemCurrent Academy'}</span>
+                ${e.isPast ? `<span class="tag" style="background:#EEEEEE;color:#616161;font-size:0.62rem;">Terminé</span>` : `<span class="tag" style="background:#E8F5E9;color:#2E7D32;font-size:0.62rem;font-weight:700;">Inscriptions ouvertes</span>`}
+                <span class="meta" style="font-size:0.75rem;">${e.places}</span>
+              </div>
+              <h3 style="margin:0 0 0.4rem;font-size:1.2rem;">
+                <a href="/agenda/${e.slug}" style="color:inherit;text-decoration:none;">${e.title}</a>
+              </h3>
+              <div class="meta" style="color:#5A4E66;font-size:0.85rem;">
+                ⏰ ${e.time} · 📍 ${e.location}
+              </div>
+            </div>
+
             <div class="event-cta">
-              <a class="btn btn-primary" href="/contact" style="padding:0.45rem 1rem;font-size:0.8rem;">S'inscrire</a>
+              <a class="btn ${e.isPast ? 'btn-ghost' : 'btn-primary'}" href="/agenda/${e.slug}" style="padding:0.6rem 1.3rem;font-size:0.85rem;">
+                ${e.isPast ? 'Consulter la fiche →' : 'S\'inscrire →'}
+              </a>
             </div>
           </article>
-        `).join("")}
+          `;
+        }).join("")}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bottom Partnership CTA -->
+  <section class="section section-alt" style="margin-top:3rem;">
+    <div class="container">
+      <div class="banner-cta" data-reveal>
+        <span class="kicker" style="justify-content:center;">Co-organisation &amp; Ateliers</span>
+        <h2 style="margin-top:0.8rem;">Vous organisez un événement dédié au leadership féminin ?</h2>
+        <p class="lead" style="margin:.8rem auto 0;text-align:center;">Associez FemCurrent pour animer des tables rondes, diffuser vos interventions et faire rayonner vos initiatives auprès de notre communauté.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="/partenariat">Proposer une collaboration</a>
+          <a class="btn btn-ghost" href="/contact">Contacter l'équipe événementielle</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function vEvent(slug) {
+  const e = WP_ENGINE.getEventBySlug(slug);
+  if (!e) {
+    if (typeof fetchAndRenderEvent === "function") {
+      setTimeout(() => fetchAndRenderEvent(slug), 10);
+    }
+    return typeof vArticleLoader === "function" ? vArticleLoader("Chargement de l'événement…") : v404();
+  }
+
+  const isPast = !!e.isPast;
+  const statusBadge = isPast
+    ? `<span class="tag orange" style="background:#FFF3E0;color:#E65100;border:1px solid #FFE0B2;">✦ Session terminée</span>`
+    : `<span class="tag" style="background:#E8F5E9;color:#2E7D32;border:1px solid #C8E6C9;font-weight:700;">✦ Inscriptions ouvertes (${e.places || 'Sur inscription'})</span>`;
+
+  const relatedEvents = (WP_STORE.evenements.length > 0 ? WP_STORE.evenements : EVENTS)
+    .filter(x => x.slug !== slug && !x.isPast)
+    .slice(0, 3);
+
+  const eventDateStr = `${e.d} ${e.m} ${e.y}`;
+
+  return `
+  <!-- Hero Section -->
+  <section class="page-hero" style="padding-bottom: 2rem;">
+    <div class="container">
+      ${crumb([["Agenda", "/agenda"], [e.title]])}
+      <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;flex-wrap:wrap;">
+        <span class="tag violet">${e.organizer || 'FemCurrent Academy'}</span>
+        ${statusBadge}
+        <span class="meta">${e.format || 'En ligne'} · ${e.location}</span>
+      </div>
+      <h1 class="article-headline" style="max-width: 960px;">${e.title}</h1>
+      <p class="article-chapeau" style="max-width: 920px;">
+        📅 <strong>${eventDateStr}</strong> de <strong>${e.time}</strong> · 📍 <strong>${e.location}</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- Main 2-Column Content -->
+  <section class="section" style="padding-top: 2rem;">
+    <div class="container">
+      <div class="article-layout-grid">
+        
+        <!-- Left Column: Details, Content & Registration Form -->
+        <article class="article-main-col">
+          
+          <!-- Key Practical Highlights Box -->
+          <div class="article-keypoints-box" style="background:#FAF6FD;border-color:#E8DFEE;" data-reveal>
+            <span class="keypoints-title">✦ Informations clés de la session</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:1rem;margin-top:0.8rem;font-size:0.9rem;">
+              <div><strong>📅 Date :</strong> ${eventDateStr}</div>
+              <div><strong>⏰ Horaires :</strong> ${e.time}</div>
+              <div><strong>📍 Lieu :</strong> ${e.location}</div>
+              <div><strong>👥 Places :</strong> ${e.places || 'Places limitées'}</div>
+              <div><strong>🎟 Accès :</strong> ${e.price || 'Gratuit sur inscription'}</div>
+              <div><strong>🎓 Certification :</strong> ${e.organizer ? 'Attestation ' + e.organizer : 'Attestation FemCurrent'}</div>
+            </div>
+          </div>
+
+          <!-- Featured Photo / Banner -->
+          <div class="article-hero-img-wrap" data-reveal>
+            <img src="${e.customImg || IMG(e.seed || e.slug, 1100, 580)}" alt="${e.title}" class="article-hero-img">
+            <div class="article-img-caption">
+              <span>Événement officiel · FemCurrent</span>
+              <span>© Rédaction &amp; Équipe Projets FemCurrent</span>
+            </div>
+          </div>
+
+          <!-- Event Content HTML -->
+          <div class="article-body-content" data-reveal>
+            ${e.body ? e.body.map(p => p.startsWith('<') ? p : `<p>${p}</p>`).join('') : (e.content || `<p>${e.desc || ''}</p>`)}
+          </div>
+
+          <!-- Contextual Registration Section -->
+          <div id="inscription" style="margin-top: 3rem; padding: 2.5rem; background: #FFFFFF; border: 2px solid #E8DFEE; border-radius: 18px; box-shadow: 0 8px 30px rgba(75,29,109,0.06);" data-reveal>
+            ${isPast ? `
+              <div style="text-align:center;padding:1.5rem 0;">
+                <span style="font-size:2.5rem;">⏳</span>
+                <h3 style="margin:0.8rem 0 0.4rem;">Cet événement est maintenant terminé</h3>
+                <p style="color:#6E5E7A;margin-bottom:1.5rem;">Les inscriptions pour cette session sont closes. Consultez notre calendrier pour découvrir les prochains événements ouverts.</p>
+                <a href="/agenda" class="btn btn-primary">Voir tous les prochains événements →</a>
+              </div>
+            ` : `
+              <div style="margin-bottom: 1.5rem;">
+                <span class="tag violet" style="margin-bottom:0.5rem;">INSCRIPTION EN LIGNE</span>
+                <h3 style="font-size: 1.4rem; color: #1F162B; margin: 0 0 0.4rem;">Participer à cet événement</h3>
+                <p style="color: #6E5E7A; font-size: 0.92rem; margin: 0;">
+                  Session du <strong>${eventDateStr}</strong> (${e.time}) · <strong>${e.location}</strong>. Les places étant limitées, merci de compléter ce formulaire pour réserver la vôtre.
+                </p>
+              </div>
+
+              <form id="eventRegForm" class="contact-form-box" style="padding:0;border:none;box-shadow:none;" novalidate>
+                <input type="hidden" name="event_id" value="${e.id}">
+                <input type="hidden" name="event_title" value="${e.title}">
+                <input type="hidden" name="event_date" value="${eventDateStr}">
+                <input type="hidden" name="event_location" value="${e.location}">
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                  <div class="field">
+                    <label>Nom &amp; Prénom *</label>
+                    <input type="text" name="name" required placeholder="Ex : Marie Kabila">
+                  </div>
+                  <div class="field">
+                    <label>Adresse e-mail *</label>
+                    <input type="email" name="email" required placeholder="marie@exemple.com">
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                  <div class="field">
+                    <label>Numéro WhatsApp / Téléphone *</label>
+                    <input type="tel" name="phone" required placeholder="+243 81 000 00 00">
+                  </div>
+                  <div class="field">
+                    <label>Organisation / Profession</label>
+                    <input type="text" name="org" placeholder="Ex : Média, Association, Étudiante…">
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label>Questions ou attentes particulières pour les intervenantes</label>
+                  <textarea name="notes" rows="3" placeholder="Précisez vos attentes ou les points que vous aimeriez voir abordés…"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:0.85rem;font-size:0.95rem;margin-top:0.5rem;">
+                  Confirmer mon inscription à cette session →
+                </button>
+              </form>
+
+              <div id="eventRegOk" class="alert-success" style="display:none;padding:2rem;text-align:center;background:#E8F5E9;border:1px solid #C8E6C9;border-radius:12px;margin-top:1.5rem;">
+                <h3 style="color:#2E7D32;margin-bottom:0.5rem;">✦ Inscription confirmée !</h3>
+                <p style="color:#1B5E20;font-size:0.95rem;margin:0 0 1rem;">
+                  Merci <strong class="reg-name"></strong> ! Votre participation à l'événement <strong>« ${e.title} »</strong> est enregistrée.
+                </p>
+                <p style="color:#2E7D32;font-size:0.85rem;margin:0;">
+                  Un récapitulatif détaillé avec les accès et informations pratiques vous a été envoyé par email.
+                </p>
+              </div>
+            `}
+          </div>
+
+          <!-- Share Section -->
+          <div class="article-share-section" data-reveal>
+            ${shareBar()}
+          </div>
+
+        </article>
+
+        <!-- Right Column: Sidebar & Actions -->
+        <aside class="article-sidebar">
+          <div class="sticky-sidebar-inner">
+            
+            <!-- Event Fast Card -->
+            <div class="side-stat-card" style="background:#FFF;border:1px solid #E8DFEE;" data-reveal>
+              <span class="stat-kicker">✦ Récapitulatif Session</span>
+              <div style="font-family:var(--display);font-size:1.6rem;font-weight:800;color:#1F162B;margin:0.6rem 0 0.3rem;">
+                ${e.d} ${e.m} ${e.y}
+              </div>
+              <p style="font-size:0.88rem;color:#5A4E66;margin:0 0 1rem;">
+                ${e.time} · ${e.location}
+              </p>
+              ${isPast ? `
+                <span class="tag orange" style="display:block;text-align:center;padding:0.5rem;">Session passée</span>
+              ` : `
+                <a href="#inscription" class="btn btn-primary" style="display:block;text-align:center;width:100%;margin-bottom:0.8rem;" onclick="document.getElementById('inscription')&amp;&amp;document.getElementById('inscription').scrollIntoView({behavior:'smooth'})">
+                  S'inscrire à cette session →
+                </a>
+              `}
+              <button class="btn btn-ghost" style="display:block;text-align:center;width:100%;font-size:0.78rem;padding:0.5rem;" onclick="toast('📅 Événement ajouté à votre calendrier (.ics)')">
+                📅 Ajouter à mon agenda
+              </button>
+            </div>
+
+            <!-- Prochains événements à l'agenda -->
+            <div class="side-widget" data-reveal>
+              <div class="side-widget-head">
+                <span class="side-widget-title">Autres rendez-vous</span>
+                <a class="see-all" href="/agenda" style="font-size:0.65rem">Tout voir →</a>
+              </div>
+              <div class="side-recent-list">
+                ${relatedEvents.map(r => `
+                  <a class="side-recent-item" href="/agenda/${r.slug}">
+                    <div style="width:48px;height:48px;background:var(--lavande);border:1px solid #E8DFEE;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
+                      <b style="font-size:0.95rem;color:var(--magenta);line-height:1;">${r.d}</b>
+                      <span style="font-size:0.62rem;color:#6E5E7A;text-transform:uppercase;font-weight:700;">${r.m.slice(0,3)}</span>
+                    </div>
+                    <div class="side-recent-info">
+                      <h5>${r.title}</h5>
+                      <span>${r.time} · ${r.location}</span>
+                    </div>
+                  </a>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Side Ad / Partenariat -->
+            ${compAdBox()}
+
+          </div>
+        </aside>
+
       </div>
     </div>
   </section>`;
@@ -5798,7 +6228,8 @@ function router() {
     case "contribuer": return render(vContribuer(), "Devenir contributrice");
     case "partenariat": return render(vPartenariat(), "Devenir partenaire");
     case "faq": return render(vFaq(), "FAQ");
-    case "agenda": return render(vAgenda(), "Agenda");
+    case "agenda": return b ? render(vEvent(b), ((WP_ENGINE.getEventBySlug(b) || {}).title || "Événement")) : render(vAgenda(), "Agenda & Événements");
+    case "events": return b ? render(vEvent(b), ((WP_ENGINE.getEventBySlug(b) || {}).title || "Événement")) : render(vAgenda(), "Agenda & Événements");
     case "mediatheque": return render(vMediatheque(), "Médiathèque");
     case "legal": return render(vLegal(b), LEGAL[b] ? LEGAL[b].t : "Informations");
     default: return render(v404(), "Page introuvable");
@@ -6240,6 +6671,8 @@ if (typeof window !== "undefined") {
   window.vInitiatives = vInitiatives;
   window.vInitiative = vInitiative;
   window.vAPropos = vAPropos;
+  window.vAgenda = vAgenda;
+  window.vEvent = vEvent;
   window.vContact = vContact;
   window.vLumiere = vLumiere;
   window.syncWordPressData = syncWordPressData;
