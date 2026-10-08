@@ -3,11 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- S4 · CSP — le site est un SPA monofichier : CSS et JS sont inline, d'où
+     'unsafe-inline' assumé sur style-src/script-src. À durcir dès que les
+     scripts/styles seront extraits dans des fichiers séparés ('self' seul). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://admin.femcurrent.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+
 <title>FemCurrent — Initiative Cyberféministe · Technologie, Données & Action Collective</title>
 <meta name="description" content="FemCurrent est une initiative cyberféministe qui utilise les technologies, les médias, les données et la production de connaissances pour renforcer le pouvoir d’agir des femmes et transformer les rapports de pouvoir dans les espaces numériques et sociaux.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- P2 · polices chargées sans bloquer le rendu (&display=swap déjà présent) -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap"></noscript>
 <style>
 /* ==========================================================================
    1. VARIABLES & DESIGN TOKENS
@@ -1182,7 +1191,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 @media (min-width: 768px) { .counters { grid-template-columns: repeat(4, 1fr); } }
 .counter { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--r); padding: 1.4rem 1.4rem; transition: all 0.35s; backdrop-filter: blur(8px); }
 .counter:hover { background: rgba(255, 255, 255, 0.12); transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.3); }
-.counter b { font-family: var(--display); font-size: clamp(2rem, 3.8vw, 2.8rem); font-weight: 600; background: var(--degrade); -webkit-background-clip: text; background-clip: text; color: transparent; display: block; line-height: 1; }
+.counter b { font-family: var(--display); font-size: clamp(2rem, 3.8vw, 2.8rem); font-weight: 700; color: #FFB3D1; -webkit-text-fill-color: #FFB3D1; display: block; line-height: 1; }
 .counter span { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: #C9B6DC; display: block; margin-top: 0.6rem; }
 .chart-panel { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--r-lg); padding: 1.8rem 1.6rem 1.4rem; }
 .chart-panel h4 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: #F3CEEA; margin-bottom: 1.6rem; }
@@ -1431,10 +1440,9 @@ footer {
 
 .foot-word em {
   font-style: italic;
-  background: var(--degrade);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #F3CEEA;
+  background: none;
+  -webkit-text-fill-color: #F3CEEA;
 }
 
 .foot-tag {
@@ -2616,10 +2624,155 @@ footer {
   border-bottom: 1px solid #E8DFEE;
 }
 .category-filter-nav::-webkit-scrollbar { display: none; }
+
+/* ==========================================================================
+   9. CORRECTIFS — ACCESSIBILITÉ, COMPOSANTS MORTS, PERF
+   (lot sécurité / fonctionnel / a11y ; aucune valeur du :root n'est modifiée)
+   ========================================================================== */
+
+/* --- A1 · Lien d'évitement ------------------------------------------------ */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+  transform: translateY(-130%);
+  background: var(--violet-deep, #2E1143);
+  color: #FFFFFF;
+  padding: 0.85rem 1.4rem;
+  border-radius: 0 0 var(--r, 14px) 0;
+  font-family: var(--body, sans-serif);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.2s var(--ease);
+}
+.skip-link:focus { transform: translateY(0); outline: 3px solid var(--orange, #FF8C00); outline-offset: 2px; }
+
+/* --- A1/A3 · Texte réservé aux technologies d'assistance ------------------ */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- A3 · Cible de focus après navigation SPA (pas de halo parasite) ------ */
+#app:focus, #app [tabindex="-1"]:focus { outline: none; }
+
+/* --- A2 · Ouverture de modale : compensation de la barre de défilement ---- */
+body.lock { padding-right: var(--sbw, 0px); }
+[inert] { pointer-events: none; cursor: default; }
+
+/* --- F4 · Accordéon (aucune règle n'existait : tout était ouvert) --------- */
+.acc { overflow: hidden; }
+.acc > button { width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 48px; background: none; border: none; cursor: pointer; font: inherit; }
+.acc > button .acc-chev { display: inline-block; transition: transform 0.25s var(--ease); }
+.acc > button[aria-expanded="true"] .acc-chev { transform: rotate(180deg); }
+.acc-body { display: none; }
+.acc.open .acc-body { display: block; animation: fadeUp 0.3s var(--ease) both; }
+
+/* Accordéons du drawer : <div role="button" tabindex="0"> -> vrai <button> (clavier natif) */
+button.d-nav-link { width: 100%; text-align: left; background: none; border: none; font: inherit; color: inherit; cursor: pointer; }
+
+/* --- F5 · Classe de filtrage manquante ----------------------------------- */
+.hide { display: none !important; }
+.filter-status {
+  font-family: var(--mono, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gris, #6B6B6B);
+  margin: 0 0 1rem;
+}
+
+/* --- F6 · État visuel des onglets (la CSS cible [aria-selected]) --------- */
+/* !important nécessaire : le 4ᵉ onglet porte un style inline plus spécifique */
+.lum-tab[aria-selected="true"] {
+  background: var(--violet-deep, #2E1143) !important;
+  border-color: var(--violet-deep, #2E1143) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 18px rgba(30, 10, 48, 0.2);
+}
+.lum-tab[aria-selected="true"] small { color: #E4D2F2 !important; }
+
+/* --- F7 · État actif de navigation : soulignement + couleur (WCAG 1.4.1) -- */
+[data-nav] { position: relative; }
+[data-nav].current::after {
+  content: "";
+  position: absolute;
+  left: 0.1rem; right: 0.1rem; bottom: -0.25rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--magenta, #E91E63);
+}
+.site-nav-desktop [data-nav].current { color: var(--magenta, #E91E63); }
+.drawer-nav [data-nav].current { text-decoration: underline; text-underline-offset: 3px; color: var(--orange, #FF8C00); }
+
+/* --- A4 · Pause des bandeaux défilants (WCAG 2.2.2) ---------------------- */
+.ticker-track, .partners-track { animation-play-state: var(--mq-play, running); }
+.ticker.paused .ticker-track, .partners.paused .partners-track { --mq-play: paused; }
+.ticker:focus-within .ticker-track, .partners:focus-within .partners-track { --mq-play: paused; }
+.mq-pause {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #FFFFFF;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.mq-pause:hover { background: rgba(255, 255, 255, 0.14); }
+.partners .mq-pause { border-color: rgba(75, 29, 109, 0.35); color: var(--violet, #4B1D6D); margin: 0 auto; }
+.partners .mq-pause:hover { background: var(--lavande, #F3EEF7); }
+
+/* --- A5 · Cibles tactiles 44 × 44 (WCAG 2.5.8) --------------------------- */
+.hd-social, .hd-search { width: 44px !important; height: 44px !important; }
+.s-close, .drawer-social-row a { width: 44px; height: 44px; }
+.sc-head a { min-height: 32px; display: inline-flex; align-items: center; }
+
+/* --- F2 · Zones de statut des formulaires -------------------------------- */
+.form-status { margin-top: 1rem; font-size: 0.9rem; line-height: 1.55; }
+.form-status:empty { display: none; }
+.form-status.err { color: #B3261E; font-weight: 700; }
+
+/* --- A7 · Repli sans JavaScript ------------------------------------------ */
+.noscript-fallback { padding: 4rem 1rem; text-align: center; }
+.noscript-fallback h1 { font-family: var(--display, Georgia, serif); font-size: clamp(1.7rem, 4vw, 2.6rem); color: var(--violet-deep, #2E1143); margin-bottom: 1rem; }
+.noscript-fallback p { max-width: 62ch; margin: 0 auto 1.2rem; line-height: 1.65; color: #4A3E56; }
+.noscript-fallback a { color: var(--magenta, #E91E63); font-weight: 700; }
+.noscript-fallback ul { list-style: none; padding: 0; margin: 1.5rem auto 0; display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; font-family: var(--mono, monospace); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* --- Animations manquantes (référencées mais jamais définies) ------------ */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- A4 · Respect de prefers-reduced-motion ------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ticker-track, .partners-track, .ticker-label .dot { animation: none !important; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 </style>
-  <link rel="icon" type="image/png" href="logo/Favicon zaina.png">
+  <!-- P3 · favicon léger (15 Ko) à la place du PNG de 703 Ko déclaré jusqu'ici -->
+  <link rel="icon" href="/public/favicon.ico" sizes="32x32">
 </head>
 <body>
+<!-- A1 · Lien d'évitement : première tabulation = accès direct au contenu (WCAG 2.4.1) -->
+<a class="skip-link" href="#app">Aller au contenu principal</a>
 <div class="grain" aria-hidden="true"></div>
 <div id="progress" aria-hidden="true"></div>
 
@@ -2648,14 +2801,15 @@ footer {
       
       <!-- Social Media Circle Icons Row: Official Facebook & LinkedIn -->
       <div style="display: flex; gap: 0.6rem; align-items: center;">
-        <a href="mailto:contact@femcurrent.com" title="Email" style="width: 28px; height: 28px; border-radius: 50%; background: #FF8C00; color: #fff; display: grid; place-items: center; text-decoration: none; transition: transform 0.2s ease;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <!-- A5 · aria-label (le title seul n'est pas un nom accessible) + cible 44×44 -->
+        <a href="mailto:contact@femcurrent.com" class="hd-social" title="Email" aria-label="Nous écrire à contact@femcurrent.com" style="width: 28px; height: 28px; border-radius: 50%; background: #FF8C00; color: #fff; display: grid; place-items: center; text-decoration: none; transition: transform 0.2s ease;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" focusable="false"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </a>
-        <a href="https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr" target="_blank" rel="noopener" title="Communauté Facebook officielle" style="width: 28px; height: 28px; border-radius: 50%; background: #E91E63; color: #fff; display: grid; place-items: center; text-decoration: none; transition: transform 0.2s ease;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        <a href="https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr" target="_blank" rel="noopener" class="hd-social" title="Communauté Facebook officielle" aria-label="Rejoindre la communauté Facebook FemCurrent (nouvelle fenêtre)" style="width: 28px; height: 28px; border-radius: 50%; background: #E91E63; color: #fff; display: grid; place-items: center; text-decoration: none; transition: transform 0.2s ease;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
         </a>
-        <a href="https://www.linkedin.com/company/femcurrent/" target="_blank" rel="noopener" title="LinkedIn" style="width: 28px; height: 28px; border-radius: 50%; background: #0A66C2; color: #fff; display: grid; place-items: center; text-decoration: none; transition: transform 0.2s ease;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        <a href="https://www.linkedin.com/company/femcurrent/" target="_blank" rel="noopener" class="hd-social" title="LinkedIn" aria-label="Suivre FemCurrent sur LinkedIn (nouvelle fenêtre)" style="width: 28px; height: 28px; border-radius: 50%; background: #0A66C2; color: #fff; display: grid; place-items: center; text-decoration: none; transition: transform 0.2s ease;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
         </a>
       </div>
 
@@ -2678,22 +2832,23 @@ footer {
     
     <!-- Centered Menu Links -->
     <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: nowrap; overflow-x: auto;">
-      <a href="/" style="display: flex; align-items: center; color: #E91E63; text-decoration: none; padding: 0.3rem;" title="Accueil">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <!-- F7 · data-nav = 1er segment de route, exploité par setActiveNav() -->
+      <a href="/" data-nav="" style="display: flex; align-items: center; color: #E91E63; text-decoration: none; padding: 0.3rem;" aria-label="Accueil">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
       </a>
-      <a href="/actualites" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Actualités</a>
-      <a href="/enquetes" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Enquêtes</a>
-      <a href="/initiatives" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Initiatives</a>
-      <a href="/observatoire" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Observatoire</a>
-      <a href="/espaces" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Nos espaces</a>
-      <a href="/ressources" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Ressources</a>
-      <a href="/a-propos" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">À propos</a>
+      <a href="/actualites" data-nav="actualites" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Actualités</a>
+      <a href="/enquetes" data-nav="enquetes" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Enquêtes</a>
+      <a href="/initiatives" data-nav="initiatives" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Initiatives</a>
+      <a href="/observatoire" data-nav="observatoire" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Observatoire</a>
+      <a href="/espaces" data-nav="espaces" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Nos espaces</a>
+      <a href="/ressources" data-nav="ressources" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Ressources</a>
+      <a href="/a-propos" data-nav="a-propos" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">À propos</a>
     </div>
 
     <!-- Right: Search Circle Button Positioned on Far Right -->
     <div style="position: absolute; right: 1.5rem; display: flex; align-items: center;">
-      <button data-open-search style="width: 36px; height: 36px; border-radius: 50%; background: #FF8C00; color: #fff; display: grid; place-items: center; border: none; cursor: pointer; box-shadow: 0 3px 10px rgba(255,140,0,0.3); transition: transform 0.2s ease;" title="Rechercher">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <button type="button" data-open-search class="hd-search" style="width: 36px; height: 36px; border-radius: 50%; background: #FF8C00; color: #fff; display: grid; place-items: center; border: none; cursor: pointer; box-shadow: 0 3px 10px rgba(255,140,0,0.3); transition: transform 0.2s ease;" title="Rechercher" aria-label="Ouvrir la recherche">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
     </div>
 
@@ -2751,19 +2906,19 @@ footer {
       
       <!-- 01. Accueil -->
       <div class="d-nav-item">
-        <a href="/" class="d-nav-link">
+        <a href="/" class="d-nav-link" data-nav="">
           <span><strong class="d-nav-num">01</strong>Accueil</span>
-          <span style="color:var(--orange)">→</span>
+          <span style="color:var(--orange)" aria-hidden="true">→</span>
         </a>
       </div>
 
-      <!-- 02. Actualités (Accordéon) -->
+      <!-- 02. Actualités (Accordéon) — M-10 : vrai <button> = clavier gratuit -->
       <div class="d-nav-item">
-        <div class="d-nav-link d-accordion-toggle" role="button" tabindex="0">
+        <button type="button" class="d-nav-link d-accordion-toggle" data-nav="actualites" aria-expanded="false" aria-controls="dsub-actualites">
           <span><strong class="d-nav-num">02</strong>Toutes les actualités</span>
-          <span class="d-nav-arrow">▼</span>
-        </div>
-        <div class="d-sub-menu">
+          <span class="d-nav-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="d-sub-menu" id="dsub-actualites">
           <a href="/actualites"><strong>✦ Tout le fil d'actualités</strong></a>
           <a href="/actualites">Le Grand Dossier · Investigation</a>
           <a href="/actualites">Société &amp; Communautés</a>
@@ -2775,11 +2930,11 @@ footer {
 
       <!-- 03. Enquêtes & Analyses (Accordéon) -->
       <div class="d-nav-item">
-        <div class="d-nav-link d-accordion-toggle" role="button" tabindex="0">
+        <button type="button" class="d-nav-link d-accordion-toggle" data-nav="enquetes" aria-expanded="false" aria-controls="dsub-enquetes">
           <span><strong class="d-nav-num">03</strong>Enquêtes &amp; Analyses</span>
-          <span class="d-nav-arrow">▼</span>
-        </div>
-        <div class="d-sub-menu">
+          <span class="d-nav-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="d-sub-menu" id="dsub-enquetes">
           <a href="/enquetes"><strong>✦ Toutes les grandes enquêtes</strong></a>
           <a href="/enquetes/femmes-terres-droit-foncier">Foncier coutumier au Kasaï</a>
           <a href="/enquetes/femmes-mines-lualaba">Mines &amp; transition au Lualaba</a>
@@ -2789,27 +2944,27 @@ footer {
 
       <!-- 04. Femmes à la une -->
       <div class="d-nav-item">
-        <a href="/femmes" class="d-nav-link">
+        <a href="/femmes" class="d-nav-link" data-nav="femmes">
           <span><strong class="d-nav-num">04</strong>Femmes à la une</span>
-          <span style="color:var(--orange)">→</span>
+          <span style="color:var(--orange)" aria-hidden="true">→</span>
         </a>
       </div>
 
       <!-- 05. Initiatives -->
       <div class="d-nav-item">
-        <a href="/initiatives" class="d-nav-link">
+        <a href="/initiatives" class="d-nav-link" data-nav="initiatives">
           <span><strong class="d-nav-num">05</strong>Initiatives de terrain</span>
-          <span style="color:var(--orange)">→</span>
+          <span style="color:var(--orange)" aria-hidden="true">→</span>
         </a>
       </div>
 
       <!-- 06. Observatoire & Data (Accordéon) -->
       <div class="d-nav-item">
-        <div class="d-nav-link d-accordion-toggle" role="button" tabindex="0">
+        <button type="button" class="d-nav-link d-accordion-toggle" data-nav="observatoire" aria-expanded="false" aria-controls="dsub-observatoire">
           <span><strong class="d-nav-num">06</strong>Observatoire &amp; Données</span>
-          <span class="d-nav-arrow">▼</span>
-        </div>
-        <div class="d-sub-menu">
+          <span class="d-nav-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="d-sub-menu" id="dsub-observatoire">
           <a href="/observatoire"><strong>✦ Consulter l'Observatoire</strong></a>
           <a href="/ressources/barometre-2025">Le Baromètre 2026 en accès libre</a>
           <a href="/observatoire">Cartographie des 26 provinces</a>
@@ -2819,33 +2974,33 @@ footer {
 
       <!-- 07. Ressources -->
       <div class="d-nav-item">
-        <a href="/ressources" class="d-nav-link">
+        <a href="/ressources" class="d-nav-link" data-nav="ressources">
           <span><strong class="d-nav-num">07</strong>Ressources &amp; Études</span>
-          <span style="color:var(--orange)">→</span>
+          <span style="color:var(--orange)" aria-hidden="true">→</span>
         </a>
       </div>
 
       <!-- 08. Agenda -->
       <div class="d-nav-item">
-        <a href="/agenda" class="d-nav-link">
+        <a href="/agenda" class="d-nav-link" data-nav="agenda">
           <span><strong class="d-nav-num">08</strong>Agenda &amp; Événements</span>
-          <span style="color:var(--orange)">→</span>
+          <span style="color:var(--orange)" aria-hidden="true">→</span>
         </a>
       </div>
 
       <!-- 09. Médiathèque -->
       <div class="d-nav-item">
-        <a href="/mediatheque" class="d-nav-link">
+        <a href="/mediatheque" class="d-nav-link" data-nav="mediatheque">
           <span><strong class="d-nav-num">09</strong>Médiathèque &amp; Podcasts</span>
-          <span style="color:var(--orange)">→</span>
+          <span style="color:var(--orange)" aria-hidden="true">→</span>
         </a>
       </div>
 
       <!-- 10. À propos -->
       <div class="d-nav-item">
-        <a href="/a-propos" class="d-nav-link">
+        <a href="/a-propos" class="d-nav-link" data-nav="a-propos">
           <span><strong class="d-nav-num">10</strong>À propos de FemCurrent</span>
-          <span style="color:var(--orange)">→</span>
+          <span style="color:var(--orange)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -2894,7 +3049,22 @@ footer {
 </div>
 
 <!-- CONTENU DES PAGES -->
-<main id="app"></main>
+<!-- A3 · tabindex="-1" : permet d'y déplacer le focus après chaque rendu de vue -->
+<!-- A7 · repli lisible quand JavaScript est désactivé ou en échec -->
+<main id="app" tabindex="-1">
+  <noscript>
+    <div class="noscript-fallback">
+      <h1>FemCurrent — Les voix et les actions des femmes</h1>
+      <p>Ce site est une application web : son contenu est assemblé par votre navigateur. Le JavaScript est actuellement désactivé, les articles ne peuvent donc pas s'afficher ici.</p>
+      <p>Pour nous lire ou nous joindre :</p>
+      <ul>
+        <li><a href="mailto:contact@femcurrent.com">contact@femcurrent.com</a></li>
+        <li><a href="https://admin.femcurrent.com">Flux éditorial</a></li>
+        <li><a href="https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr">Communauté Facebook</a></li>
+      </ul>
+    </div>
+  </noscript>
+</main>
 
 <!-- 7. FOOTER RESPONSIVE (DESKTOP & MOBILE) -->
 <footer>
@@ -3048,6 +3218,81 @@ function decodeEntities(str) {
             .replace(/&hellip;/g, '…');
 }
 
+/* ==========================================================================
+   S5 · ASSAINISSEMENT DU CONTENU DISTANT (anti-XSS)
+   Le contenu WordPress (p.content.rendered) est injecté ensuite via innerHTML.
+   Il est donc parsé avec DOMParser puis reconstruit sur la base d'une liste
+   blanche : aucun script, aucun gestionnaire d'événement, aucune URL
+   javascript:/data: ne peut survivre.
+   ========================================================================== */
+const SAFE_TAGS = ["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "H2", "H3", "H4",
+  "UL", "OL", "LI", "BLOCKQUOTE", "FIGURE", "FIGCAPTION", "IMG", "A",
+  "TABLE", "THEAD", "TBODY", "TR", "TD", "TH", "SPAN", "DIV"];
+const SAFE_ATTRS = ["href", "src", "alt", "title", "class", "colspan", "rowspan"];
+const SAFE_URL_RE = /^\s*(javascript|data|vbscript|file|blob)\s*:/i;
+
+/* Échappement des interpolations de texte simple (titres, noms, descriptions) */
+function esc(s) {
+  return String(s === null || s === undefined ? "" : s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+/* Ne laisse passer que des URL http(s), relatives ou ancres */
+function safeUrl(v) {
+  if (!v) return null;
+  const t = String(v).trim();
+  if (!t || SAFE_URL_RE.test(t)) return null;
+  // protocole explicite autre que http/https -> refusé
+  if (/^[a-z][a-z0-9+.-]*:/i.test(t) && !/^https?:/i.test(t)) return null;
+  return t;
+}
+
+function cleanEl(el) {
+  if (!el || el.nodeType !== 1) return;
+  if (SAFE_TAGS.indexOf(el.tagName.toUpperCase()) === -1) {
+    // Balise interdite : on garde le texte, on supprime le conteneur
+    const parent = el.parentNode;
+    if (!parent) return;
+    const kids = Array.prototype.slice.call(el.childNodes);
+    kids.forEach(k => parent.insertBefore(k, el));
+    el.remove();
+    kids.forEach(k => cleanEl(k));
+    return;
+  }
+  Array.prototype.slice.call(el.attributes).forEach(a => {
+    const n = a.name.toLowerCase();
+    if (n.indexOf("on") === 0 || SAFE_ATTRS.indexOf(n) === -1) { el.removeAttribute(a.name); return; }
+    if (n === "href" || n === "src") {
+      const u = safeUrl(a.value);
+      if (u === null) el.removeAttribute(a.name); else el.setAttribute(a.name, u);
+    }
+  });
+  if (el.tagName.toUpperCase() === "A" && el.hasAttribute("href")) {
+    el.setAttribute("rel", "noopener noreferrer");
+  }
+  Array.prototype.slice.call(el.childNodes).forEach(k => cleanEl(k));
+}
+
+let _sanitizeParser = null;
+function sanitizeHtml(html) {
+  if (!html) return "";
+  if (typeof DOMParser === "undefined") return "";
+  try {
+    if (!_sanitizeParser) _sanitizeParser = new DOMParser();
+    const doc = _sanitizeParser.parseFromString('<div id="fc-sanitize">' + html + "</div>", "text/html");
+    const root = doc.getElementById("fc-sanitize");
+    if (!root) return "";
+    // sous-arbres toujours dangereux (svg/math peuvent transporter du script)
+    const drop = root.querySelectorAll("script,style,iframe,object,embed,form,input,button,select,textarea,link,meta,base,noscript,svg,math,template,frame,frameset");
+    Array.prototype.forEach.call(drop, n => n.remove());
+    cleanEl(root);
+    return root.innerHTML;
+  } catch (e) {
+    return "";
+  }
+}
+
 function getCatClass(cat) {
   if (!cat) return "magenta";
   const c = cat.toLowerCase();
@@ -3129,7 +3374,7 @@ function formatWpPost(p) {
     customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
     title: decodeEntities(p.title.rendered),
     ex: rawExcerpt || (plainText.length > 0 ? (plainText.slice(0, 180) + "…") : "Lire l'article complet sur FemCurrent."),
-    body: [rawContent || plainText],
+    body: [sanitizeHtml(rawContent) || esc(plainText)],
     author: authorInfo.name,
     authorRole: authorInfo.role,
     authorBio: authorInfo.bio,
@@ -3157,7 +3402,7 @@ function formatWpEnquete(p) {
     src: "Protocole de vérification : 5/5",
     w: "100%",
     detail: "Enquête vérifiée · Publication officielle",
-    body: [rawContent || plainText]
+    body: [sanitizeHtml(rawContent) || esc(plainText)]
   };
 }
 
@@ -3185,7 +3430,7 @@ function formatWpFemme(p) {
     seed: p.slug,
     customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
     quote: quote || "Chaque action compte pour transformer notre société.",
-    bio: [rawContent || plainText]
+    bio: [sanitizeHtml(rawContent) || esc(plainText)]
   };
 }
 
@@ -3224,7 +3469,7 @@ function formatWpInitiative(p) {
     customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
     desc: desc || (plainText.length > 0 ? (plainText.slice(0, 170) + "…") : "Initiative de terrain."),
     detail: ["Initiative vérifiée sur le terrain"],
-    body: [rawContent || plainText]
+    body: [sanitizeHtml(rawContent) || esc(plainText)]
   };
 }
 
@@ -4051,11 +4296,13 @@ function toast(msg) {
 const crumb = (items) => `<nav class="crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a>` + items.map(i => ` <i>✦</i> ${i[1] ? `<a href="${i[1]}">${i[0]}</a>` : `<span>${i[0]}</span>`}`).join("") + `</nav>`;
 const heroPage = (k, t, l, crumbs, extra = "") => `<section class="page-hero"><div class="container">${crumbs || ""}<span class="kicker">${k}</span><h1>${t}</h1>${l ? `<p class="lead">${l}</p>` : ""}${extra}</div></section>`;
 const shareBar = () => {
-  const fb = "https://www.facebook.com/sharer/sharer.php?u=", li = "https://www.linkedin.com/sharing/share-offsite/?url=";
+  const url = encodeURIComponent(typeof location !== "undefined" ? location.href : "");
+  const fb = "https://www.facebook.com/sharer/sharer.php?u=" + url;
+  const li = "https://www.linkedin.com/sharing/share-offsite/?url=" + url;
   return `<div class="share-bar"><span class="lbl">Partager</span>
-  <a href="${fb}"+encodeURIComponent(location.href) target="_blank" rel="noopener" aria-label="Partager sur Facebook" onclick="return sharePop(this)"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-  <a href="${li}"+encodeURIComponent(location.href) target="_blank" rel="noopener" aria-label="Partager sur LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
-  <button aria-label="Copier le lien" onclick="copyLink()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
+  <a href="${fb}" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+  <a href="${li}" target="_blank" rel="noopener noreferrer" aria-label="Partager sur LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
+  <button type="button" aria-label="Copier le lien de la page" onclick="copyLink()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
   </div>`;
 };
 window.copyLink = () => {
@@ -6383,19 +6630,38 @@ function render(html, title) {
   if (!APP) return;
   APP.innerHTML = html;
   if (typeof document !== "undefined") {
-    document.title = title ? (title + " — FemCurrent") : "FemCurrent — Les voix et les actions des femmes";
-    window.scrollTo(0, 0);
+    const SUFFIX = "FemCurrent";
+    document.title = title ? (title.includes("FemCurrent") ? title : title + " · " + SUFFIX) : "FemCurrent — Les voix et les actions des femmes";
+    APP.setAttribute("tabindex", "-1");
+    APP.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: "auto" });
     APP.classList.remove("page-in");
     void APP.offsetWidth;
     APP.classList.add("page-in");
     bindCommon(APP);
     setActiveNav();
+
+    let rs = document.getElementById("routeStatus");
+    if (!rs) {
+      rs = document.createElement("div");
+      rs.id = "routeStatus";
+      rs.setAttribute("role", "status");
+      rs.setAttribute("aria-live", "polite");
+      rs.className = "sr-only";
+      document.body.appendChild(rs);
+    }
+    rs.textContent = (title || "Page") + " — chargée";
   }
 }
 
 function setActiveNav() {
   const p = getRouteSegments()[0] || "";
-  $$("nav.main [data-nav]").forEach(a => a.classList.toggle("current", a.dataset.nav === p));
+  $("[data-nav]").forEach(a => {
+    const on = a.dataset.nav === p;
+    a.classList.toggle("current", on);
+    if (on) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
 }
 
 function getRouteSegments() {
@@ -6509,28 +6775,54 @@ function bindCommon(root) {
   if (!root) return;
   if (io) $$("[data-reveal]", root).forEach(el => { const d = el.dataset.delay; if (d) el.style.transitionDelay = d + "ms"; io.observe(el); });
   if (ioC) $$("[data-count]", root).forEach(el => ioC.observe(el));
-  $$(".acc > button", root).forEach(b => b.addEventListener("click", () => b.parentElement.classList.toggle("open")));
+  // B-03 · Accordéon accessible avec aria-expanded
+  $(".acc > button", root).forEach(b => {
+    const isOpen = b.parentElement.classList.contains("open");
+    b.setAttribute("aria-expanded", String(isOpen));
+    b.addEventListener("click", () => {
+      const open = b.parentElement.classList.toggle("open");
+      b.setAttribute("aria-expanded", String(open));
+    });
+  });
   
-  $$(".filters", root).forEach(bar => {
+  // B-04 · Filtres accessibles avec role button et aria-pressed
+  $(".filters", root).forEach(bar => {
     const scope = bar.parentElement;
-    $$(".f-chip", bar).forEach(ch => ch.addEventListener("click", () => {
-      $$(".f-chip", bar).forEach(c => c.classList.remove("on"));
-      ch.classList.add("on");
-      const f = ch.dataset.f;
-      $$(".filterable [data-cat], .filterable > *", scope).forEach(item => {
-        const target = item.dataset.cat ? item : item.querySelector("[data-cat]");
-        const val = target ? target.dataset.cat : null;
-        const show = f === "Tous" || f === "Toutes" || (val && (val === f || val.includes(f)));
-        item.classList.toggle("hide", !show);
+    $(".f-chip", bar).forEach(ch => {
+      ch.setAttribute("role", "button");
+      ch.setAttribute("aria-pressed", String(ch.classList.contains("on")));
+      ch.addEventListener("click", () => {
+        $(".f-chip", bar).forEach(c => {
+          c.classList.remove("on");
+          c.setAttribute("aria-pressed", "false");
+        });
+        ch.classList.add("on");
+        ch.setAttribute("aria-pressed", "true");
+        const f = ch.dataset.f;
+        $(".filterable [data-cat], .filterable > *", scope).forEach(item => {
+          const target = item.dataset.cat ? item : item.querySelector("[data-cat]");
+          const val = target ? target.dataset.cat : null;
+          const show = f === "Tous" || f === "Toutes" || (val && (val === f || val.includes(f)));
+          item.classList.toggle("hide", !show);
+        });
       });
-    }));
+    });
   });
 
-  $$(".lum-tab", root).forEach(t => t.addEventListener("click", () => {
-    $$(".lum-tab", root).forEach(x => x.classList.toggle("active", x === t));
-    const pId = t.dataset.panel;
-    $$(".lum-panel", root).forEach(p => p.classList.toggle("on", p.id === "lum-" + pId));
-  }));
+  // F6 · Onglets accessibles avec role tab et aria-selected
+  $(".lum-tab", root).forEach(t => {
+    t.setAttribute("role", "tab");
+    t.setAttribute("aria-selected", String(t.classList.contains("active")));
+    t.addEventListener("click", () => {
+      $(".lum-tab", root).forEach(x => {
+        const isCurrent = x === t;
+        x.classList.toggle("active", isCurrent);
+        x.setAttribute("aria-selected", String(isCurrent));
+      });
+      const pId = t.dataset.panel;
+      $(".lum-panel", root).forEach(p => p.classList.toggle("on", p.id === "lum-" + pId));
+    });
+  });
 
   // Contact form submission connected to WordPress & Hostinger Email
   const contactForm = $("#contactForm", root);
@@ -6557,7 +6849,7 @@ function bindCommon(root) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, subject, message })
         });
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
 
         if (res.ok && data.success) {
           contactForm.style.display = "none";
@@ -6565,16 +6857,11 @@ function bindCommon(root) {
           if (okBox) okBox.style.display = "block";
           toast("✦ <b>Message transmis</b> avec succès à la rédaction !");
         } else {
-          toast("✦ Message enregistré. Merci pour votre prise de contact !");
-          contactForm.style.display = "none";
-          const okBox = $("#contactOk", root);
-          if (okBox) okBox.style.display = "block";
+          toast("✕ <b>Erreur lors de l'envoi.</b> Veuillez réessayer ou nous écrire à contact@femcurrent.com.");
         }
       } catch(err) {
-        contactForm.style.display = "none";
-        const okBox = $("#contactOk", root);
-        if (okBox) okBox.style.display = "block";
-        toast("✦ <b>Message transmis</b> avec succès !");
+        console.error("[FemCurrent] Contact submission failed", err);
+        toast("✕ <b>Connexion impossible.</b> Vérifiez votre réseau ou écrivez à contact@femcurrent.com.");
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Envoyer le message"; }
       }
@@ -6602,7 +6889,7 @@ function bindCommon(root) {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Transmission…"; }
 
       try {
-        await fetch(WP_CUSTOM_API_BASE + "/contact", {
+        const res = await fetch(WP_CUSTOM_API_BASE + "/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -6611,13 +6898,20 @@ function bindCommon(root) {
             message: "Expertise : " + expertise + "\nProvince : " + province + "\n\nMotivation :\n" + message
           })
         });
-      } catch(err) {}
-
-      contribForm.style.display = "none";
-      const cOk = $("#contribOk", root);
-      if (cOk) cOk.style.display = "block";
-      toast("✦ <b>Candidature envoyée</b> — merci !");
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Envoyer ma candidature"; }
+        if (res.ok) {
+          contribForm.style.display = "none";
+          const cOk = $("#contribOk", root);
+          if (cOk) cOk.style.display = "block";
+          toast("✦ <b>Candidature envoyée</b> — merci !");
+        } else {
+          toast("✕ <b>Erreur lors de la transmission.</b> Veuillez réessayer ou contacter contact@femcurrent.com.");
+        }
+      } catch(err) {
+        console.error("[FemCurrent] Contrib submission failed", err);
+        toast("✕ <b>Échec de l'envoi.</b> Vérifiez votre connexion ou écrivez à contact@femcurrent.com.");
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Envoyer ma candidature"; }
+      }
     });
   }
 
@@ -6641,7 +6935,7 @@ function bindCommon(root) {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Transmission…"; }
 
       try {
-        await fetch(WP_CUSTOM_API_BASE + "/contact", {
+        const res = await fetch(WP_CUSTOM_API_BASE + "/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -6650,13 +6944,20 @@ function bindCommon(root) {
             message: "Organisation : " + org + "\nContact : " + name + "\nEmail : " + email + "\n\nCollaboration :\n" + message
           })
         });
-      } catch(err) {}
-
-      partForm.style.display = "none";
-      const pOk = $("#partOk", root);
-      if (pOk) pOk.style.display = "block";
-      toast("✦ <b>Demande de partenariat transmise</b> — merci !");
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Proposer un partenariat"; }
+        if (res.ok) {
+          partForm.style.display = "none";
+          const pOk = $("#partOk", root);
+          if (pOk) pOk.style.display = "block";
+          toast("✦ <b>Demande de partenariat transmise</b> — merci !");
+        } else {
+          toast("✕ <b>Erreur lors de la transmission.</b> Veuillez réessayer ou écrire à contact@femcurrent.com.");
+        }
+      } catch(err) {
+        console.error("[FemCurrent] Partenariat submission failed", err);
+        toast("✕ <b>Échec de l'envoi.</b> Vérifiez votre connexion ou écrivez à contact@femcurrent.com.");
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Proposer un partenariat"; }
+      }
     });
   }
 
@@ -6685,6 +6986,21 @@ function bindCommon(root) {
         story = (lum.querySelector("#lum-init textarea[name='init_desc']") || {}).value || "";
         province = "RDC";
         type = "Initiative";
+      } else if (activePanel === "cyber") {
+        // B-05 · Branche dédiée au Signalement TFGBV / cyberviolence
+        const plat = (lum.querySelector("#lum-cyber input[name='cyber_platform']") || {}).value || "";
+        const desc = (lum.querySelector("#lum-cyber textarea[name='cyber_desc']") || {}).value || "";
+        const sup = (lum.querySelector("#lum-cyber select[name='cyber_support']") || {}).value || "Accompagnement et documentation";
+        if (!desc) {
+          toast("✕ Merci de décrire la situation.");
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Soumettre la proposition"; }
+          return;
+        }
+        name = "Signalement TFGBV";
+        province = "RDC";
+        role = "Plateforme : " + plat + " | Type d'accompagnement : " + sup;
+        story = desc;
+        type = "Signalement TFGBV";
       } else {
         name = (lum.querySelector("#lum-tem input[name='tem_title']") || {}).value || "";
         story = (lum.querySelector("#lum-tem textarea[name='tem_story']") || {}).value || "";
@@ -6708,7 +7024,7 @@ function bindCommon(root) {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Enregistrement…"; }
 
       try {
-        await fetch(WP_CUSTOM_API_BASE + "/submit-light", {
+        const res = await fetch(WP_CUSTOM_API_BASE + "/submit-light", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -6716,13 +7032,20 @@ function bindCommon(root) {
             contact: "Consentement certifié le " + new Date().toISOString()
           })
         });
-      } catch(err) {}
-
-      lum.style.display = "none";
-      const lOk = $("#lumOk", root);
-      if (lOk) lOk.style.display = "block";
-      toast("✦ <b>Proposition enregistrée</b> dans la base de données officielle !");
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Soumettre la proposition"; }
+        if (res.ok) {
+          lum.style.display = "none";
+          const lOk = $("#lumOk", root);
+          if (lOk) lOk.style.display = "block";
+          toast("✦ <b>Proposition enregistrée</b> dans la base de données officielle !");
+        } else {
+          toast("✕ <b>Erreur lors de l'enregistrement.</b> Veuillez réessayer ou nous écrire à contact@femcurrent.com.");
+        }
+      } catch(err) {
+        console.error("[FemCurrent] Submit light failed", err);
+        toast("✕ <b>Échec de l'envoi.</b> Vérifiez votre connexion ou contactez contact@femcurrent.com.");
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Soumettre la proposition"; }
+      }
     });
   }
 
@@ -6743,7 +7066,7 @@ function bindCommon(root) {
       if (submitBtn) { submitBtn.disabled = true; }
 
       try {
-        await fetch(WP_CUSTOM_API_BASE + "/contact", {
+        const res = await fetch(WP_CUSTOM_API_BASE + "/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -6753,11 +7076,18 @@ function bindCommon(root) {
             message: "Nouvelle inscription à la lettre hebdomadaire FemCurrent depuis le frontend."
           })
         });
-      } catch(err) {}
-
-      f.reset();
-      toast("✦ <b>Inscription confirmée</b> — bienvenue dans la communauté !");
-      if (submitBtn) { submitBtn.disabled = false; }
+        if (res.ok) {
+          f.reset();
+          toast("✦ <b>Inscription confirmée</b> — bienvenue dans la communauté !");
+        } else {
+          toast("✕ <b>Erreur d'inscription.</b> Veuillez réessayer ou nous écrire à contact@femcurrent.com.");
+        }
+      } catch(err) {
+        console.error("[FemCurrent] Newsletter subscription failed", err);
+        toast("✕ <b>Échec réseau.</b> Vérifiez votre connexion.");
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; }
+      }
     });
   });
 
@@ -6790,13 +7120,41 @@ if (toTop && typeof toTop.addEventListener === "function") {
 }
 
 const burger = $("#burger"), drawer = $("#drawer");
+let lastFocusedBeforeDrawer = null;
+
+function trapTabInDrawer(e) {
+  if (e.key !== "Tab" || !drawer) return;
+  const focusables = drawer.querySelectorAll("a[href], button:not([disabled]), input:not([disabled])");
+  if (!focusables.length) return;
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
 function toggleDrawer(o) {
   if (drawer && drawer.classList) {
+    if (o) lastFocusedBeforeDrawer = document.activeElement;
     drawer.classList.toggle("open", o);
     drawer.setAttribute("aria-hidden", !o);
     document.body.classList.toggle("lock", o);
+    if (burger && typeof burger.setAttribute === "function") burger.setAttribute("aria-expanded", o);
+
+    if (o) {
+      drawer.addEventListener("keydown", trapTabInDrawer);
+      const firstInteractive = drawer.querySelector("button, a[href]");
+      if (firstInteractive) setTimeout(() => firstInteractive.focus(), 60);
+    } else {
+      drawer.removeEventListener("keydown", trapTabInDrawer);
+      if (lastFocusedBeforeDrawer && typeof lastFocusedBeforeDrawer.focus === "function") {
+        lastFocusedBeforeDrawer.focus();
+      }
+    }
   }
-  if (burger && typeof burger.setAttribute === "function") burger.setAttribute("aria-expanded", o);
 }
 
 if (burger && typeof burger.addEventListener === "function") burger.addEventListener("click", () => toggleDrawer(true));
@@ -6860,8 +7218,10 @@ $$("#sChips .s-chip").forEach(c => {
 
 if (sInput && typeof sInput.addEventListener === "function") sInput.addEventListener("input", renderResults);
 
+let lastFocusedBeforeSearch = null;
 function openSearch() {
   if (sOverlay) {
+    lastFocusedBeforeSearch = document.activeElement;
     sOverlay.classList.add("open");
     document.body.classList.add("lock");
     renderResults();
@@ -6873,6 +7233,9 @@ function closeSearch() {
   if (sOverlay) {
     sOverlay.classList.remove("open");
     document.body.classList.remove("lock");
+    if (lastFocusedBeforeSearch && typeof lastFocusedBeforeSearch.focus === "function") {
+      lastFocusedBeforeSearch.focus();
+    }
   }
 }
 
