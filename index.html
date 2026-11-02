@@ -3112,9 +3112,6 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
     <!-- Centered Menu Links -->
     <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: nowrap; overflow-x: auto;">
       <!-- F7 · data-nav = 1er segment de route, exploité par setActiveNav() -->
-      <a href="/" data-nav="" style="display: flex; align-items: center; color: var(--magenta-ink); text-decoration: none; padding: 0.3rem;" aria-label="Accueil">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      </a>
       <a href="/actualites" data-nav="actualites" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Actualités</a>
       <a href="/enquetes" data-nav="enquetes" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Enquêtes</a>
       <a href="/initiatives" data-nav="initiatives" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Initiatives</a>
@@ -3183,18 +3180,10 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
     <!-- Navigation Principale avec Accordéons -->
     <nav class="drawer-nav" aria-label="Navigation principale mobile">
       
-      <!-- 01. Accueil -->
-      <div class="d-nav-item">
-        <a href="/" class="d-nav-link" data-nav="">
-          <span><strong class="d-nav-num">01</strong>Accueil</span>
-          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
-        </a>
-      </div>
-
-      <!-- 02. Actualités (Accordéon) — M-10 : vrai <button> = clavier gratuit -->
+      <!-- 01. Actualités (Accordéon) — M-10 : vrai <button> = clavier gratuit -->
       <div class="d-nav-item">
         <button type="button" class="d-nav-link d-accordion-toggle" data-nav="actualites" aria-expanded="false" aria-controls="dsub-actualites">
-          <span><strong class="d-nav-num">02</strong>Toutes les actualités</span>
+          <span><strong class="d-nav-num">01</strong>Toutes les actualités</span>
           <span class="d-nav-arrow" aria-hidden="true">▼</span>
         </button>
         <div class="d-sub-menu" id="dsub-actualites">
