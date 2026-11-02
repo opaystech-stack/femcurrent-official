@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- S4 · CSP — le site est un SPA monofichier : CSS et JS sont inline, d'où
-     'unsafe-inline' assumé sur style-src/script-src. À durcir dès que les
-     scripts/styles seront extraits dans des fichiers séparés ('self' seul). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://admin.femcurrent.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+<!-- S4 · CSP — la politique est désormais servie en EN-TÊTE HTTP par server.js
+     (avec un nonce par requête) : une balise <meta> ne peut pas porter de
+     nonce et ignorait de toute façon `frame-ancestors`. Le marqueur
+     __CSP_NONCE__ est remplacé par le nonce réel à chaque réponse ; les
+     balises <style> et <script> ci-dessous le portent. Voir server.js §S4. -->
 
 <title>FemCurrent — Initiative Cyberféministe · Technologie, Données & Action Collective</title>
 <meta name="description" content="FemCurrent est une initiative cyberféministe qui utilise les technologies, les médias, les données et la production de connaissances pour renforcer le pouvoir d’agir des femmes et transformer les rapports de pouvoir dans les espaces numériques et sociaux.">
@@ -15,37 +16,88 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- P2 · polices chargées sans bloquer le rendu (&display=swap déjà présent) -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap">
-<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap">
+<!-- S6 · le basculement media="print" -> "all" se fait depuis le script principal :
+     un gestionnaire inline `onload=` serait bloqué par la CSP à nonce. -->
+<link rel="stylesheet" id="fontCss" media="print" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Mono:wght@400;700&display=swap"></noscript>
-<style>
+<style nonce="__CSP_NONCE__">
 /* ==========================================================================
    1. VARIABLES & DESIGN TOKENS
    ========================================================================== */
+/* --------------------------------------------------------------------------
+   1. VARIABLES & DESIGN TOKENS — bloc conforme à DESIGN-TOKENS.md §2
+   Les valeurs « brutes » (--magenta, --orange…) restent réservées aux aplats,
+   bordures, ombres et dégradés. Tout ce qui porte du TEXTE ou du SENS passe
+   par un jeton « -ink » (sur clair) ou « -on-dark » (sur sombre), dont le
+   rapport de contraste a été recalculé (cf. tools/contrast.js).
+   -------------------------------------------------------------------------- */
 :root {
   --violet: #4B1D6D;
   --violet-deep: #2E1143;
   --violet-night: #1A072A;
   --violet-glow: rgba(75, 29, 109, 0.15);
-  
-  --magenta: #E91E63;
+
+  --magenta: #E91E63;   /* décoratif / aplats uniquement */
   --magenta-dark: #B3114B;
   --magenta-light: #FCE4EC;
-  
-  --orange: #FF8C00;
+
+  --orange: #FF8C00;    /* décoratif / aplats uniquement */
   --orange-deep: #E65100;
   --orange-light: #FFF3E0;
-  
+
   --lavande: #F3EEF7;
   --lavande-soft: #FAF7FC;
   --lavande-tint: #EADFF0;
-  
-  --gris: #6B6B6B;
+
+  --gris: #6B6B6B;      /* conservé pour les éléments non textuels */
   --gris-light: #F0EDF2;
   --gris-dark: #403B45;
-  
+
   --encre: #241730;
   --blanc: #FFFFFF;
-  
+
+  /* ── Couleurs d'ENCRE (textuelles) — WCAG AA/AAA vérifiées ───────────── */
+  --gris-ink:          #595959; /* 7.00:1 sur blanc — AAA */
+  --magenta-ink:       #C2185B; /* 5.87:1 sur blanc — AA  */
+  --orange-ink:        #A35500; /* 5.45:1 sur blanc — AA  */
+  --orange-deep-ink:   #B33E00; /* 5.82:1 sur blanc · 5.13:1 sur #FFEED9 — AA */
+  --violet-ink:        #4B1D6D; /* 12.38:1 sur blanc — AAA */
+
+  /* Accents sur surfaces SOMBRES */
+  --magenta-on-dark:   #FF5C94; /* 6.36:1 sur #1B0B2E — AA  */
+  --orange-on-dark:    #FF8C00; /* 7.94:1 sur #1B0B2E — AAA */
+  --lavande-on-dark:   #D9CBE8; /* 12.04:1 — AAA */
+  --rose-on-dark:      #F3CEEA; /* 13.08:1 — AAA */
+
+  /* Réseaux / marques tierces */
+  --li:         #0B5CAE; /* blanc dessus 6.65:1 — AA+ */
+  --li-ink:     #0B5CAE; /* 6.65:1 sur blanc */
+  --wa-bright:  #25D366; /* vert WhatsApp d'origine : aplat DÉCORATIF seul */
+  --wa:         #107C41; /* blanc dessus 5.27:1 — AA (fond de bouton) */
+  --wa-ink:     #0B6B33; /* 6.63:1 sur blanc · 5.91:1 sur #DEF8E8 — AA */
+  --wa-on-dark: #4FE08A; /* 11.16:1 sur #1B0B2E — AAA */
+
+  /* ── Surfaces ────────────────────────────────────────────────────────── */
+  --surface:            #FFFFFF;
+  --surface-subtle:     #FAF7FC;
+  --surface-muted:      #F3EEF7;
+  --surface-tint:       #EADFF0;
+  --surface-inset:      #F0EDF2;
+  --surface-inverse:    #1B0B2E;
+
+  --nuit:               #1B0B2E;  /* remplace #1B0B2E et #1F162B */
+  --nuit-deep:          #1A072A;
+  --nuit-raised:        #241730;
+  --nuit-raised-hi:     #2E1143;
+  --nuit-hairline:      rgba(243, 206, 234, 0.22);
+  --nuit-hairline-hi:   rgba(243, 206, 234, 0.38);
+
+  --text:               var(--encre);
+  --text-muted:         var(--gris-ink);
+  --text-inverse:       #FFFFFF;
+  --text-inverse-muted: #D9CBE8;
+
+  /* ── Dégradés ────────────────────────────────────────────────────────── */
   --degrade: linear-gradient(135deg, #4B1D6D 0%, #E91E63 52%, #FF8C00 100%);
   --degrade-rev: linear-gradient(135deg, #FF8C00 0%, #E91E63 48%, #4B1D6D 100%);
   --degrade-violet-magenta: linear-gradient(135deg, #4B1D6D 0%, #E91E63 100%);
@@ -53,27 +105,145 @@
   --degrade-subtle: linear-gradient(180deg, #F3EEF7 0%, #FFFFFF 100%);
   --degrade-dark: linear-gradient(180deg, #1A072A 0%, #2E1143 100%);
 
+  /* CTA : seuls autorisés sous du texte blanc */
+  --degrade-cta:     linear-gradient(135deg, #4B1D6D 0%, #C2185B 52%, #A84500 100%);
+  --degrade-cta-rev: linear-gradient(135deg, #A84500 0%, #C2185B 48%, #4B1D6D 100%);
+  --degrade-cta-vm:  linear-gradient(135deg, #4B1D6D 0%, #C2185B 100%);
+  --degrade-cta-mo:  linear-gradient(135deg, #C2185B 0%, #A84500 100%);
+
   --display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --body: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --mono: 'Space Mono', 'SF Mono', Consolas, Monaco, monospace;
 
+  /* Échelle de corps */
+  --fs-body:  1.0625rem;
+  --fs-lead:  clamp(1.0625rem, 1.4vw, 1.25rem);
+  --fs-sm:    0.9375rem;
+  --fs-xs:    0.8125rem;
+  --fs-mono:  0.75rem;
+  --fs-micro: 0.6875rem;
+
+  /* Échelle display */
+  --fs-h1: clamp(2.5rem, 6.0vw, 4.25rem);
+  --fs-h2: clamp(2.0rem, 4.0vw, 3.0rem);
+  --fs-h3: clamp(1.5rem, 2.4vw, 2.0rem);
+  --fs-h4: clamp(1.25rem, 1.7vw, 1.5rem);
+  --fs-h5: 1.125rem;
+  --fs-h6: 1rem;
+
+  --lh-display: 1.10;
+  --lh-h2: 1.15;
+  --lh-h3: 1.22;
+  --lh-h4: 1.28;
+  --lh-body: 1.65;
+  --lh-lead: 1.60;
+
+  --fw-display: 600;
+  --fw-body: 400;
+  --fw-bold: 700;
+  --fw-black: 800;
+  --ls-display: -0.018em;
+  --ls-mono: 0.14em;
+  --ls-kicker: 0.22em;
+
+  /* Espacement — base 4 px */
+  --sp-0: 0; --sp-1: 0.25rem; --sp-2: 0.5rem;  --sp-3: 0.75rem;
+  --sp-4: 1rem;  --sp-5: 1.25rem; --sp-6: 1.5rem; --sp-7: 2rem;
+  --sp-8: 2.5rem; --sp-9: 3rem;  --sp-10: 4rem;  --sp-11: 5rem;
+  --sp-12: 6rem; --sp-px: 1px;
+  --section-y:    clamp(4rem, 7.5vw, 6.5rem);
+  --section-y-sm: clamp(2.8rem, 5vw, 4.5rem);
+  --stack:  var(--sp-4);
+  --gutter: clamp(1rem, 2.5vw, 2rem);
+
+  --r-xs: 4px;
   --r-sm: 8px;
   --r: 14px;
   --r-md: 18px;
   --r-lg: 26px;
   --r-xl: 36px;
+  --r-2xl: 48px;
   --r-full: 9999px;
 
+  --shadow-xs: 0 1px 2px rgba(46, 17, 67, 0.06);
   --shadow-sm: 0 4px 14px rgba(46, 17, 67, 0.05);
   --shadow: 0 16px 45px -12px rgba(46, 17, 67, 0.16);
   --shadow-lg: 0 28px 65px -18px rgba(46, 17, 67, 0.26);
+  --shadow-xl: 0 44px 90px -24px rgba(46, 17, 67, 0.34);
   --shadow-glow: 0 12px 32px -8px rgba(233, 30, 99, 0.45);
-  --shadow-orange: 0 12px 32px -8px rgba(255, 140, 0, 0.4);
+  --shadow-orange: 0 12px 32px -8px rgba(255, 140, 0, 0.40);
+  --shadow-nuit: 0 18px 44px -14px rgba(12, 4, 22, 0.60);
+  --shadow-dry: 3px 3px 0 rgba(46, 17, 67, 0.14);
 
-  --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+  /* États */
+  --state-hover:  rgba(46, 17, 67, 0.06);
+  --state-active: rgba(46, 17, 67, 0.12);
+  --state-hover-inverse:  rgba(255, 255, 255, 0.12);
+  --state-active-inverse: rgba(255, 255, 255, 0.20);
+  --disabled-bg:   #E7E3EA;
+  --disabled-text: #8A8590;
+  --disabled-op:   0.55;
+
+  --focus-ring:      #E91E63;
+  --focus-ring-dark: #FFB020;
+  --focus-halo:      #FFFFFF;
+  --focus-halo-dark: #1B0B2E;
+  --focus-w:      3px;
+  --focus-offset: 2px;
+
+  /* Mouvement */
+  --dur-1: 120ms; --dur-2: 200ms; --dur-3: 320ms; --dur-4: 480ms; --dur-5: 720ms;
+  --ease: cubic-bezier(0.22, 0.80, 0.24, 1);
+  --ease-in: cubic-bezier(0.40, 0.00, 1.00, 1);
+  --ease-out: cubic-bezier(0.00, 0.00, 0.20, 1);
+  --ease-in-out: cubic-bezier(0.42, 0.00, 0.58, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-linear: linear;
+
+  --z-grain: 1500;
+  --z-progress: 2100;
   --header-h: 76px;
   --topbar-h: 38px;
+  --measure: 60ch;
+  --container: 1240px;
+  --container-narrow: 840px;
+  --hairline: 1px solid rgba(46, 17, 67, 0.12);
+
+  /* Jetons alpha (DESIGN-TOKENS.md §6.2) */
+  --violet-a10: rgba(75, 29, 109, .10);
+  --violet-a12: rgba(75, 29, 109, .12);
+  --violet-a25: rgba(75, 29, 109, .25);
+  --violet-a40: rgba(75, 29, 109, .40);
+  --magenta-a12: rgba(233, 30, 99, .12);
+  --magenta-a22: rgba(233, 30, 99, .22);
+  --magenta-a30: rgba(233, 30, 99, .30);
+  --magenta-a45: rgba(233, 30, 99, .45);
+  --orange-a15: rgba(255, 140, 0, .15);
+  --orange-a25: rgba(255, 140, 0, .25);
+  --orange-a40: rgba(255, 140, 0, .40);
+  --nuit-a05: rgba(46, 17, 67, .05);
+  --nuit-a12: rgba(46, 17, 67, .12);
+  --nuit-a16: rgba(46, 17, 67, .16);
+  --nuit-a26: rgba(46, 17, 67, .26);
+  --nuit-a34: rgba(46, 17, 67, .34);
+  --blanc-a12: rgba(255, 255, 255, .12);
+  --blanc-a20: rgba(255, 255, 255, .20);
+  --blanc-a30: rgba(255, 255, 255, .30);
+
+  /* M-19 · largeur de la barre de défilement, alimentée en JS au verrouillage */
+  --sbw: 0px;
+}
+
+/* Variante « surface sombre » — à poser sur le conteneur concerné */
+.surface-dark, .on-dark {
+  --focus-ring: var(--focus-ring-dark);
+  --focus-halo: var(--focus-halo-dark);
+  --text: var(--text-inverse);
+  --text-muted: var(--text-inverse-muted);
+  --state-hover: var(--state-hover-inverse);
+  --state-active: var(--state-active-inverse);
+  --hairline: 1px solid var(--nuit-hairline);
+  color: var(--text);
 }
 
 *, *::before, *::after {
@@ -179,7 +349,7 @@ h2 { font-size: clamp(1.85rem, 3.8vw, 2.75rem); }
 h3 { font-size: clamp(1.25rem, 2.2vw, 1.6rem); }
 h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 
-.accent { font-style: italic; color: var(--magenta); }
+.accent { font-style: italic; color: var(--magenta-ink); }
 .accent-grad {
   background: var(--degrade);
   -webkit-background-clip: text;
@@ -188,7 +358,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .lead {
-  color: var(--gris);
+  color: var(--gris-ink);
   font-size: clamp(1.05rem, 1.4vw, 1.2rem);
   line-height: 1.65;
   max-width: 60ch;
@@ -225,7 +395,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gris);
+  color: var(--gris-ink);
   display: flex;
   gap: 0.65rem;
   flex-wrap: wrap;
@@ -234,13 +404,13 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .crumb a { color: var(--violet); transition: color 0.2s; }
-.crumb a:hover { color: var(--magenta); }
-.crumb i { color: var(--orange); font-style: normal; font-size: 0.8em; }
+.crumb a:hover { color: var(--magenta-ink); }
+.crumb i { color: var(--orange-ink); font-style: normal; font-size: 0.8em; }
 
 .meta {
   font-family: var(--mono);
   font-size: 0.72rem;
-  color: var(--gris);
+  color: var(--gris-ink);
   letter-spacing: 0.04em;
   display: inline-flex;
   align-items: center;
@@ -263,7 +433,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .tag.magenta { background: rgba(233, 30, 99, 0.12); color: var(--magenta-dark); }
-.tag.orange { background: rgba(255, 140, 0, 0.15); color: var(--orange-deep); }
+.tag.orange { background: rgba(255, 140, 0, 0.15); color: var(--orange-deep-ink); }
 .tag.violet { background: rgba(75, 29, 109, 0.12); color: var(--violet); }
 .tag.ghost { background: rgba(255, 255, 255, 0.2); color: #ffffff; backdrop-filter: blur(4px); }
 
@@ -354,7 +524,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .see-all:hover {
-  color: var(--magenta);
+  color: var(--magenta-ink);
   border-color: var(--magenta);
   letter-spacing: 0.16em;
 }
@@ -480,8 +650,8 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
     transform: scale(0.96);
   }
   .m-action-wa {
-    background: #25D366;
-    color: #ffffff;
+    background: var(--wa-bright);
+    color: var(--nuit);
     box-shadow: 0 3px 10px rgba(37, 211, 102, 0.25);
   }
   .m-action-wa:active {
@@ -616,13 +786,13 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .d-action-wa {
-  background: rgba(37, 211, 102, 0.15);
-  color: #25D366;
-  border: 1.5px solid #25D366;
+  background: rgba(79, 224, 138, 0.15);
+  color: var(--wa-on-dark);
+  border: 1.5px solid var(--wa-on-dark);
 }
 
 .d-action-wa:active {
-  background: rgba(37, 211, 102, 0.25);
+  background: rgba(79, 224, 138, 0.25);
   transform: scale(0.97);
 }
 
@@ -649,14 +819,14 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .d-nav-link:hover, .d-nav-link:active {
-  color: var(--orange);
+  color: var(--orange-on-dark);
   padding-left: 0.4rem;
 }
 
 .d-nav-num {
   font-family: var(--mono);
   font-size: 0.68rem;
-  color: var(--orange);
+  color: var(--orange-on-dark);
   margin-right: 0.8rem;
 }
 
@@ -668,7 +838,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 
 .d-nav-item.open .d-nav-arrow {
   transform: rotate(180deg);
-  color: var(--orange);
+  color: var(--orange-on-dark);
 }
 
 .d-sub-menu {
@@ -725,7 +895,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 
 .d-espaces-toggle span.plus-ic {
   font-size: 1.2rem;
-  color: var(--orange);
+  color: var(--orange-on-dark);
   transition: transform 0.3s ease;
 }
 
@@ -780,7 +950,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .drawer-lang-bar a.active {
-  color: var(--orange);
+  color: var(--orange-on-dark);
   font-weight: 800;
   text-decoration: underline;
 }
@@ -881,9 +1051,9 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
   transition: color 0.25s;
 }
 
-.ticker-track a:hover { color: var(--orange); }
-.ticker-track b { color: var(--orange); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
-.ticker-track i { font-style: normal; color: var(--magenta); }
+.ticker-track a:hover { color: var(--orange-on-dark); }
+.ticker-track b { color: var(--orange-on-dark); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+.ticker-track i { font-style: normal; color: var(--magenta-on-dark); }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* Cartes Éditoriales */
@@ -942,8 +1112,8 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .card h3 { font-size: 1.18rem; transition: color 0.3s; }
-.card:hover h3 { color: var(--magenta); }
-.card p { font-size: 0.88rem; color: var(--gris); flex: 1; line-height: 1.55; }
+.card:hover h3 { color: var(--magenta-ink); }
+.card p { font-size: 0.88rem; color: var(--gris-ink); flex: 1; line-height: 1.55; }
 .card-foot {
   display: flex;
   justify-content: space-between;
@@ -988,8 +1158,8 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .une-feature:hover img { transform: scale(1.06); }
 .une-feature .body { padding: 1.6rem 1.8rem 1.8rem; }
 .une-feature h3 { font-size: clamp(1.35rem, 2.5vw, 1.85rem); margin: 0.85rem 0 0.75rem; transition: color 0.3s; }
-.une-feature:hover h3 { color: var(--magenta); }
-.une-feature p { color: var(--gris); font-size: 0.95rem; }
+.une-feature:hover h3 { color: var(--magenta-ink); }
+.une-feature p { color: var(--gris-ink); font-size: 0.95rem; }
 
 .une-item {
   display: grid;
@@ -1012,9 +1182,9 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
   transition: all 0.3s;
 }
 
-.une-item:hover .num { color: var(--magenta); -webkit-text-stroke: 0; }
+.une-item:hover .num { color: var(--magenta-ink); -webkit-text-stroke: 0; }
 .une-item h4 { font-size: 1.05rem; font-weight: 600; color: var(--violet-deep); line-height: 1.35; margin: 0.35rem 0 0.45rem; transition: all 0.3s; }
-.une-item:hover h4 { transform: translateX(6px); color: var(--magenta); }
+.une-item:hover h4 { transform: translateX(6px); color: var(--magenta-ink); }
 
 /* Actu List */
 .actu-list { border-top: 1px solid rgba(75, 29, 109, 0.14); }
@@ -1045,8 +1215,8 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .actu-row:hover { padding-left: 1.2rem; }
 @media (min-width: 860px) { .actu-row { grid-template-columns: 160px 1fr 140px 85px; gap: 1.6rem; } }
 .actu-row h3 { font-size: clamp(1.08rem, 2vw, 1.42rem); transition: color 0.3s; margin-top: 0.35rem; }
-.actu-row:hover h3 { color: var(--magenta); }
-.actu-row p { color: var(--gris); font-size: 0.9rem; margin-top: 0.35rem; display: none; }
+.actu-row:hover h3 { color: var(--magenta-ink); }
+.actu-row p { color: var(--gris-ink); font-size: 0.9rem; margin-top: 0.35rem; display: none; }
 @media (min-width: 860px) { .actu-row p { display: block; } }
 .actu-thumb { width: 130px; height: 86px; border-radius: var(--r-sm); overflow: hidden; justify-self: end; display: none; background: var(--lavande); }
 @media (min-width: 860px) { .actu-thumb { display: block; } }
@@ -1099,8 +1269,8 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 
 .portrait-body { padding: 1.2rem 1.35rem 1.45rem; }
 .portrait-body h3 { font-size: 1.2rem; }
-.portrait-body .role { font-size: 0.82rem; color: var(--gris); margin: 0.3rem 0 0.8rem; line-height: 1.4; }
-.portrait-body .go { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--magenta); font-weight: 700; }
+.portrait-body .role { font-size: 0.82rem; color: var(--gris-ink); margin: 0.3rem 0 0.8rem; line-height: 1.4; }
+.portrait-body .go { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--magenta-ink); font-weight: 700; }
 .portrait-cta {
   flex: 0 0 270px;
   scroll-snap-align: start;
@@ -1178,10 +1348,10 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 
 .uni-card h3 { font-size: 1.25rem; }
-.uni-card h3 small { display: block; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.24em; color: var(--gris); font-weight: 400; margin-bottom: 0.3rem; text-transform: uppercase; }
-.uni-card p { font-size: 0.88rem; color: var(--gris); flex: 1; line-height: 1.5; }
+.uni-card h3 small { display: block; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.24em; color: var(--gris-ink); font-weight: 400; margin-bottom: 0.3rem; text-transform: uppercase; }
+.uni-card p { font-size: 0.88rem; color: var(--gris-ink); flex: 1; line-height: 1.5; }
 .uni-link { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--violet); display: inline-flex; gap: 0.4rem; align-items: center; transition: all 0.3s; }
-.uni-card:hover .uni-link { color: var(--magenta); gap: 0.8rem; }
+.uni-card:hover .uni-link { color: var(--magenta-ink); gap: 0.8rem; }
 
 /* Observatoire */
 .obs { background: var(--violet-night); color: #EFE6F7; overflow: hidden; position: relative; }
@@ -1215,7 +1385,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .event { display: grid; grid-template-columns: auto 1fr; gap: 1.4rem; align-items: center; background: #ffffff; border: 1px solid rgba(75, 29, 109, 0.1); border-radius: var(--r-lg); padding: 1.3rem 1.6rem; transition: all 0.35s var(--ease); margin-bottom: 1.1rem; box-shadow: var(--shadow-sm); }
 .event:hover { border-color: var(--orange); box-shadow: var(--shadow); transform: translateY(-4px); }
 .event-date { text-align: center; background: var(--lavande); border-radius: var(--r); padding: 0.75rem 1.1rem; min-width: 80px; }
-.event-date b { font-family: var(--display); font-size: 1.9rem; color: var(--magenta); display: block; line-height: 1; }
+.event-date b { font-family: var(--display); font-size: 1.9rem; color: var(--magenta-ink); display: block; line-height: 1; }
 .event-date span { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--violet); }
 .event h3 { font-size: 1.12rem; margin-bottom: 0.35rem; }
 .event-cta { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
@@ -1232,9 +1402,9 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .full-form-wrapper { max-width: 980px; margin: 0 auto; width: 100%; }
 .lum-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 2rem; }
 @media (min-width: 768px) { .lum-tabs { grid-template-columns: repeat(4, 1fr); } }
-.lum-tab { padding: 1rem 0.85rem; min-height: 52px; border-radius: 14px; border: 1.5px solid #E8DFEE; font-size: 0.88rem; font-weight: 700; color: var(--gris); transition: all 0.25s ease; line-height: 1.35; text-align: center; background: #FAF7FC; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.lum-tab small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--gris); margin-top: 3px; }
-.lum-tab:hover { border-color: var(--magenta); color: var(--magenta); background: #ffffff; }
+.lum-tab { padding: 1rem 0.85rem; min-height: 52px; border-radius: 14px; border: 1.5px solid #E8DFEE; font-size: 0.88rem; font-weight: 700; color: var(--gris-ink); transition: all 0.25s ease; line-height: 1.35; text-align: center; background: #FAF7FC; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.lum-tab small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--gris-ink); margin-top: 3px; }
+.lum-tab:hover { border-color: var(--magenta); color: var(--magenta-ink); background: #ffffff; }
 .lum-tab[aria-selected="true"] { background: var(--violet-deep); border-color: var(--violet-deep); color: #ffffff; box-shadow: 0 6px 18px rgba(30, 10, 48, 0.2); }
 .lum-tab[aria-selected="true"] small { color: #E4D2F2; }
 .lum-panel { display: none; flex-direction: column; gap: 1.25rem; animation: fadeUp 0.4s var(--ease); }
@@ -1264,14 +1434,14 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 }
 .editorial-step-card { background: #FFFFFF; border: 1px solid #E8DFEE; border-radius: 16px; padding: 1.8rem 1.5rem; display: flex; flex-direction: column; transition: all 0.3s ease; box-shadow: 0 4px 18px rgba(75, 29, 109, 0.04); }
 .editorial-step-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(75, 29, 109, 0.09); border-color: var(--magenta); }
-.step-num-badge { font-family: var(--display); font-size: 2.2rem; font-style: italic; font-weight: 800; color: var(--magenta); line-height: 1; margin-bottom: 0.8rem; display: block; }
+.step-num-badge { font-family: var(--display); font-size: 2.2rem; font-style: italic; font-weight: 800; color: var(--magenta-ink); line-height: 1; margin-bottom: 0.8rem; display: block; }
 .step-card-title { font-family: var(--display); font-size: 1.22rem; font-weight: 700; color: var(--violet-deep); margin-bottom: 0.45rem; line-height: 1.3; }
 .step-card-text { font-size: 0.92rem; line-height: 1.58; color: #5A4E66; margin: 0; }
 
 .editorial-num-list { display: flex; flex-direction: column; gap: 1.25rem; margin: 2rem 0; }
 .editorial-num-item { display: grid; grid-template-columns: auto 1fr; gap: 1.4rem; align-items: center; background: #FFFFFF; border: 1px solid #E8DFEE; border-radius: 16px; padding: 1.6rem 1.8rem; box-shadow: 0 4px 18px rgba(75, 29, 109, 0.03); transition: all 0.25s ease; }
 .editorial-num-item:hover { border-color: var(--magenta); box-shadow: 0 8px 24px rgba(75, 29, 109, 0.07); transform: translateX(4px); }
-.num-badge-box { width: 56px; height: 56px; border-radius: 14px; background: #FAF7FC; border: 1.5px solid #E8DFEE; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-style: italic; font-weight: 800; font-size: 1.6rem; color: var(--magenta); flex-shrink: 0; }
+.num-badge-box { width: 56px; height: 56px; border-radius: 14px; background: #FAF7FC; border: 1.5px solid #E8DFEE; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-style: italic; font-weight: 800; font-size: 1.6rem; color: var(--magenta-ink); flex-shrink: 0; }
 .num-item-content h3, .num-item-content h4 { font-family: var(--display); font-size: 1.2rem; color: var(--violet-deep); margin: 0 0 0.35rem; }
 .num-item-content p { font-size: 0.92rem; line-height: 1.55; color: #5A4E66; margin: 0; }
 
@@ -1296,7 +1466,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .nl-form input:focus { outline: none; border-color: #ffffff; background: rgba(255, 255, 255, 0.22); }
 .nl-form .btn { height: 48px; padding: 0 1.4rem; font-size: 0.88rem; font-weight: 700; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
 .nl-form.light input { border-color: rgba(75, 29, 109, 0.25); background: #ffffff; color: var(--encre); }
-.nl-form.light input::placeholder { color: var(--gris); }
+.nl-form.light input::placeholder { color: var(--gris-ink); }
 
 @media (max-width: 540px) {
   .nl-form {
@@ -1324,7 +1494,7 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .wa-card h3 { color: #ffffff; font-size: 1.18rem; margin: 0.75rem 0 0.4rem; font-family: var(--display); }
 .wa-card p { font-size: 0.86rem; color: rgba(255, 255, 255, 0.88); margin-bottom: 1.1rem; line-height: 1.5; }
 .wa-ic { width: 44px; height: 44px; border-radius: 12px; background: #ffffff; display: grid; place-items: center; }
-.wa-ic svg { width: 22px; height: 22px; fill: #25D366; }
+.wa-ic svg { width: 22px; height: 22px; fill: var(--wa); }
 .wa-card .btn { height: 46px; border-radius: 12px; font-size: 0.88rem; display: inline-flex; align-items: center; justify-content: center; width: 100%; }
 
 /* Social Grid & Partners */
@@ -1336,19 +1506,19 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .sc-head { display: flex; align-items: center; gap: 0.7rem; padding: 0.75rem 1rem; border-bottom: 1px solid #E8DFEE; background: #FAF7FC; }
 .sc-head svg { width: 18px; height: 18px; flex-shrink: 0; }
 .sc-head b { font-size: 0.84rem; font-weight: 700; color: var(--violet-deep); }
-.sc-head a { margin-left: auto; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--magenta); font-weight: 700; padding: 0.22rem 0.65rem; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E8DFEE; transition: all 0.2s; text-decoration: none; }
+.sc-head a { margin-left: auto; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--magenta-ink); font-weight: 700; padding: 0.22rem 0.65rem; border-radius: 9999px; background: #FFFFFF; border: 1px solid #E8DFEE; transition: all 0.2s; text-decoration: none; }
 .sc-head a:hover { background: var(--magenta); color: #FFFFFF; border-color: var(--magenta); }
 .sc-body { padding: 1rem 1rem 0.8rem; font-size: 0.86rem; flex: 1; display: flex; flex-direction: column; gap: 0.7rem; }
 .sc-body .img { border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; max-height: 170px; position: relative; background: #FAF7FC; width: 100%; }
 .sc-body img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .sc-body p { font-size: 0.85rem; line-height: 1.45; color: #33263F; margin: 0; flex: 1; }
-.sc-foot { padding: 0.65rem 1rem; border-top: 1px dashed #E8DFEE; font-family: var(--mono); font-size: 0.7rem; color: var(--gris); display: flex; justify-content: space-between; align-items: center; background: #FAF7FC; margin-top: auto; }
+.sc-foot { padding: 0.65rem 1rem; border-top: 1px dashed #E8DFEE; font-family: var(--mono); font-size: 0.7rem; color: var(--gris-ink); display: flex; justify-content: space-between; align-items: center; background: #FAF7FC; margin-top: auto; }
 .partners { padding: 3.2rem 0; border-top: 1px solid rgba(75, 29, 109, 0.08); border-bottom: 1px solid rgba(75, 29, 109, 0.08); overflow: hidden; background: #ffffff; }
-.partners p { text-align: center; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gris); margin-bottom: 1.6rem; }
+.partners p { text-align: center; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gris-ink); margin-bottom: 1.6rem; }
 .partners-track { display: flex; gap: 4.5rem; width: max-content; animation: marquee 34s linear infinite; }
 .partners:hover .partners-track { animation-play-state: paused; }
 .partners-track span { font-family: var(--display); font-style: italic; font-size: 1.35rem; color: rgba(75, 29, 109, 0.55); white-space: nowrap; display: flex; align-items: center; gap: 4.5rem; }
-.partners-track i { font-style: normal; color: var(--orange); font-size: 0.8em; }
+.partners-track i { font-style: normal; color: var(--orange-ink); font-size: 0.8em; }
 
 /* Article & Media Views */
 .article-wrap { max-width: 820px; margin: 0 auto; }
@@ -1358,14 +1528,14 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .article-body p { margin: 1.25rem 0; }
 .pull { font-family: var(--display); font-style: italic; font-size: clamp(1.3rem, 2.7vw, 1.65rem); color: var(--violet); border-left: 4px solid var(--orange); padding: 0.5rem 0 0.5rem 1.6rem; margin: 2.4rem 0; line-height: 1.45; }
 .share-bar { display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: center; padding: 1.2rem 0; border-block: 1px solid rgba(75, 29, 109, 0.12); margin: 2.4rem 0; }
-.share-bar .lbl { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gris); margin-right: 0.5rem; }
+.share-bar .lbl { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gris-ink); margin-right: 0.5rem; }
 .share-bar a, .share-bar button { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid rgba(75, 29, 109, 0.18); transition: all 0.3s; color: var(--violet); background: transparent; }
 .share-bar a:hover, .share-bar button:hover { background: var(--violet); color: #ffffff; border-color: var(--violet); transform: translateY(-3px); }
 .share-bar svg { width: 17px; height: 17px; fill: currentColor; }
 .author-box { display: flex; gap: 1.2rem; align-items: center; background: var(--lavande); border-radius: var(--r-lg); padding: 1.4rem 1.6rem; margin: 2.2rem 0; }
 .author-box img { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; border: 2px solid #ffffff; }
 .author-box b { color: var(--violet-deep); font-size: 1.05rem; }
-.author-box span { font-size: 0.85rem; color: var(--gris); display: block; margin-top: 3px; }
+.author-box span { font-size: 0.85rem; color: var(--gris-ink); display: block; margin-top: 3px; }
 
 /* Overlay & Modals */
 .overlay { position: fixed; inset: 0; z-index: 1600; background: rgba(26, 7, 42, 0.65); backdrop-filter: blur(10px); display: grid; place-items: center; padding: 1rem; opacity: 0; visibility: hidden; transition: all 0.35s; }
@@ -1378,20 +1548,20 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .s-close { width: 40px; height: 40px; border-radius: 50%; background: var(--lavande); display: grid; place-items: center; font-size: 1.1rem; transition: all 0.3s; }
 .s-close:hover { background: var(--magenta); color: #ffffff; transform: rotate(90deg); }
 .s-chips { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 1.2rem; }
-.s-chip { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.4rem 0.9rem; border-radius: var(--r-full); border: 1.5px solid rgba(75, 29, 109, 0.2); color: var(--gris); transition: all 0.25s; background: transparent; }
-.s-chip:hover { border-color: var(--magenta); color: var(--magenta); }
+.s-chip { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.4rem 0.9rem; border-radius: var(--r-full); border: 1.5px solid rgba(75, 29, 109, 0.2); color: var(--gris-ink); transition: all 0.25s; background: transparent; }
+.s-chip:hover { border-color: var(--magenta); color: var(--magenta-ink); }
 .s-chip.on { background: var(--violet); border-color: var(--violet); color: #ffffff; }
 .s-results { display: flex; flex-direction: column; }
 .s-item { display: flex; gap: 1.1rem; align-items: center; padding: 0.85rem 0.7rem; border-bottom: 1px solid rgba(75, 29, 109, 0.08); cursor: pointer; transition: all 0.25s; width: 100%; text-align: left; text-decoration: none; }
 .s-item:hover { background: var(--lavande); padding-left: 1.1rem; border-radius: var(--r-sm); }
 .s-item b { font-size: 0.95rem; color: var(--violet-deep); display: block; }
-.s-item span { font-size: 0.75rem; color: var(--gris); }
-.s-empty { padding: 1.6rem; color: var(--gris); font-size: 0.9rem; text-align: center; }
+.s-item span { font-size: 0.75rem; color: var(--gris-ink); }
+.s-empty { padding: 1.6rem; color: var(--gris-ink); font-size: 0.9rem; text-align: center; }
 
 /* Toast & ToTop */
 .toast { position: fixed; bottom: 28px; left: 50%; transform: translate(-50%, 80px); background: var(--violet-deep); color: #ffffff; padding: 0.95rem 1.8rem; border-radius: var(--r-full); font-size: 0.88rem; font-weight: 600; z-index: 2200; transition: all 0.45s var(--ease); opacity: 0; box-shadow: var(--shadow-lg); max-width: 90vw; text-align: center; }
 .toast.on { transform: translate(-50%, 0); opacity: 1; }
-.toast b { color: var(--orange); }
+.toast b { color: var(--orange-on-dark); }
 #toTop { position: fixed; bottom: 26px; right: 26px; width: 52px; height: 52px; border-radius: 50%; background: var(--degrade); color: #ffffff; display: grid; place-items: center; z-index: 1200; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); box-shadow: var(--shadow-glow); }
 #toTop.show { opacity: 1; visibility: visible; transform: none; }
 #toTop:hover { transform: translateY(-4px) scale(1.05); }
@@ -1450,7 +1620,7 @@ footer {
   font-size: 0.68rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--orange);
+  color: var(--orange-on-dark);
   margin: 0.8rem 0 1.2rem;
 }
 
@@ -1473,7 +1643,7 @@ footer {
 
 .foot-mantra span::before {
   content: '✦ ';
-  color: var(--magenta);
+  color: var(--magenta-on-dark);
 }
 
 .foot-cols {
@@ -1507,7 +1677,7 @@ footer {
 }
 
 .foot-cols a:hover {
-  color: var(--orange);
+  color: var(--orange-on-dark);
   transform: translateX(5px);
 }
 
@@ -1655,7 +1825,7 @@ footer {
   }
 
   .m-foot-col a:active {
-    color: var(--orange);
+    color: var(--orange-ink);
   }
 
   /* Newsletter Box Mobile Encadrée */
@@ -1685,7 +1855,7 @@ footer {
     width: 36px;
     height: 36px;
     margin: 0 auto 0.9rem;
-    color: var(--orange);
+    color: var(--orange-ink);
   }
 
   .m-foot-nl-form {
@@ -1949,7 +2119,7 @@ footer {
 
 .author-byline-info span {
   font-size: 0.76rem;
-  color: var(--gris);
+  color: var(--gris-ink);
   display: block;
 }
 
@@ -1959,7 +2129,7 @@ footer {
   gap: 1rem;
   font-family: var(--mono);
   font-size: 0.74rem;
-  color: var(--gris);
+  color: var(--gris-ink);
 }
 
 .article-read-meta .read-time {
@@ -1987,7 +2157,7 @@ footer {
 
 .article-img-caption {
   font-size: 0.78rem;
-  color: var(--gris);
+  color: var(--gris-ink);
   padding: 0.75rem 1rem;
   background: #FAF7FC;
   border-bottom: 1px solid #E8DFEE;
@@ -2013,7 +2183,7 @@ footer {
   font-size: 3.8rem;
   line-height: 0.82;
   font-weight: 800;
-  color: var(--magenta);
+  color: var(--magenta-ink);
   padding-right: 0.75rem;
   padding-top: 0.25rem;
 }
@@ -2077,7 +2247,7 @@ footer {
   position: absolute;
   left: 0;
   top: 0;
-  color: var(--magenta);
+  color: var(--magenta-ink);
   font-size: 0.85em;
 }
 
@@ -2095,7 +2265,7 @@ footer {
   font-family: var(--mono);
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--gris);
+  color: var(--gris-ink);
   margin-right: 0.4rem;
   text-transform: uppercase;
 }
@@ -2206,7 +2376,7 @@ footer {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   background: rgba(255, 140, 0, 0.2);
-  color: var(--orange);
+  color: var(--orange-on-dark);
   border: 1px solid rgba(255, 140, 0, 0.4);
   padding: 0.25rem 0.65rem;
   border-radius: 4px;
@@ -2288,7 +2458,7 @@ footer {
 }
 
 .side-popular-item:hover .side-popular-num {
-  color: var(--magenta);
+  color: var(--magenta-ink);
   -webkit-text-stroke: 0;
   transform: scale(1.1);
 }
@@ -2303,13 +2473,13 @@ footer {
 }
 
 .side-popular-item:hover .side-popular-info h5 {
-  color: var(--magenta);
+  color: var(--magenta-ink);
 }
 
 .side-popular-info .side-meta {
   font-family: var(--mono);
   font-size: 0.66rem;
-  color: var(--gris);
+  color: var(--gris-ink);
   display: flex;
   gap: 0.5rem;
 }
@@ -2360,13 +2530,13 @@ footer {
 }
 
 .side-recent-item:hover .side-recent-info h5 {
-  color: var(--magenta);
+  color: var(--magenta-ink);
 }
 
 .side-recent-info span {
   font-family: var(--mono);
   font-size: 0.65rem;
-  color: var(--gris);
+  color: var(--gris-ink);
 }
 
 /* Mini Newsletter Box */
@@ -2387,7 +2557,7 @@ footer {
 
 .side-nl-card p {
   font-size: 0.82rem;
-  color: var(--gris);
+  color: var(--gris-ink);
   line-height: 1.45;
   margin-bottom: 1rem;
 }
@@ -2465,7 +2635,7 @@ footer {
 }
 
 .side-stat-card .stat-num span {
-  color: var(--magenta);
+  color: var(--magenta-ink);
 }
 
 .side-stat-card p {
@@ -2488,7 +2658,7 @@ footer {
 }
 
 .side-stat-card a:hover {
-  color: var(--magenta);
+  color: var(--magenta-ink);
 }
 
 /* Magazine Page Top Hero Grid (Grande Une + 2 Piliers) */
@@ -2557,7 +2727,7 @@ footer {
 }
 
 .lead-hero-card:hover .lead-hero-body h2 {
-  color: var(--magenta);
+  color: var(--magenta-ink);
 }
 
 .lead-hero-body p {
@@ -2603,7 +2773,7 @@ footer {
 }
 
 .magazine-mini-card:hover h3 {
-  color: var(--magenta);
+  color: var(--magenta-ink);
 }
 
 .magazine-mini-card p {
@@ -2710,7 +2880,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
   border-radius: 2px;
   background: var(--magenta, #E91E63);
 }
-.site-nav-desktop [data-nav].current { color: var(--magenta, #E91E63); }
+.site-nav-desktop [data-nav].current { color: var(--magenta-ink); }
 .drawer-nav [data-nav].current { text-decoration: underline; text-underline-offset: 3px; color: var(--orange, #FF8C00); }
 
 /* --- A4 · Pause des bandeaux défilants (WCAG 2.2.2) ---------------------- */
@@ -2730,8 +2900,15 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
   cursor: pointer;
 }
 .mq-pause:hover { background: rgba(255, 255, 255, 0.14); }
-.partners .mq-pause { border-color: rgba(75, 29, 109, 0.35); color: var(--violet, #4B1D6D); margin: 0 auto; }
+.mq-pause:focus-visible { outline: var(--focus-w, 3px) solid var(--focus-ring-dark, #FFB020); outline-offset: var(--focus-offset, 2px); }
+/* Le glyphe indique l'ACTION ; l'état est porté par aria-pressed. */
+.mq-pause .mq-ic { font-size: 0; line-height: 1; }
+.mq-pause .mq-ic::before { content: "❚❚"; font-size: 0.8rem; }
+.mq-pause[aria-pressed="true"] .mq-ic::before { content: "▶"; }
+.partners .mq-pause { border-color: rgba(75, 29, 109, 0.35); color: var(--violet, #4B1D6D); margin: 0.8rem auto 0; }
 .partners .mq-pause:hover { background: var(--lavande, #F3EEF7); }
+.partners .mq-pause:focus-visible { outline-color: var(--focus-ring, #E91E63); }
+/* Le conteneur annonce l'état au lecteur d'écran via le bouton (aria-pressed) */
 
 /* --- A5 · Cibles tactiles 44 × 44 (WCAG 2.5.8) --------------------------- */
 .hd-social, .hd-search { width: 44px !important; height: 44px !important; }
@@ -2747,8 +2924,110 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
 .noscript-fallback { padding: 4rem 1rem; text-align: center; }
 .noscript-fallback h1 { font-family: var(--display, Georgia, serif); font-size: clamp(1.7rem, 4vw, 2.6rem); color: var(--violet-deep, #2E1143); margin-bottom: 1rem; }
 .noscript-fallback p { max-width: 62ch; margin: 0 auto 1.2rem; line-height: 1.65; color: #4A3E56; }
-.noscript-fallback a { color: var(--magenta, #E91E63); font-weight: 700; }
+.noscript-fallback a { color: var(--magenta-ink); font-weight: 700; }
 .noscript-fallback ul { list-style: none; padding: 0; margin: 1.5rem auto 0; display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; font-family: var(--mono, monospace); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* --- M-07 · Corps éditorial ------------------------------------------------ */
+/* La classe était posée 7 fois dans le balisage sans la moindre règle CSS :
+   les corps d'articles, de pages légales et d'événements étaient donc rendus
+   avec les seuls styles par défaut du navigateur. */
+.article-body-content {
+  font-family: var(--body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text);
+  max-width: var(--measure);
+  /* césure : le français a des mots longs et la colonne est étroite */
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+.article-body-content > * + * { margin-top: 1.1em; }
+.article-body-content > :first-child { margin-top: 0; }
+
+.article-body-content h2,
+.article-body-content h3,
+.article-body-content h4 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: var(--lh-h3);
+  letter-spacing: var(--ls-display);
+  color: var(--encre);
+  text-wrap: balance;
+}
+.article-body-content h2 { font-size: var(--fs-h3); margin-top: 1.8em; }
+.article-body-content h3 { font-size: var(--fs-h4); margin-top: 1.6em; }
+.article-body-content h4 { font-size: var(--fs-h5); margin-top: 1.4em; }
+
+.article-body-content p { margin: 0; }
+/* Chapeau : premier paragraphe un peu plus généreux */
+.article-body-content > p:first-of-type {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--encre);
+}
+
+.article-body-content ul,
+.article-body-content ol {
+  margin: 0;
+  padding-left: 1.4em;
+  display: grid;
+  gap: 0.5em;
+}
+.article-body-content li { padding-left: 0.2em; }
+.article-body-content li::marker { color: var(--magenta-ink); font-weight: 700; }
+
+.article-body-content blockquote {
+  margin: 1.6em 0;
+  padding: 0.9em 0 0.9em 1.2em;
+  border-left: 4px solid var(--orange-deep-ink);
+  background: var(--surface-subtle);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  color: var(--violet-ink);
+}
+.article-body-content blockquote p { margin: 0; }
+
+/* Liens dans le texte : soulignés et contrastés (WCAG 1.4.1 — pas seulement
+   la couleur comme unique information) */
+.article-body-content a {
+  color: var(--magenta-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 0.08em;
+}
+.article-body-content a:hover { color: var(--violet-ink); text-decoration-thickness: 0.14em; }
+
+.article-body-content figure { margin: 1.8em 0; }
+.article-body-content figure img,
+.article-body-content > img,
+.article-body-content p > img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--hairline, rgba(46, 17, 67, 0.12));
+}
+.article-body-content figcaption {
+  margin-top: 0.6em;
+  font-family: var(--mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.02em;
+  color: var(--gris-ink);
+}
+
+.article-body-content hr {
+  border: 0;
+  border-top: 1px solid var(--hairline, rgba(46, 17, 67, 0.12));
+  margin: 2.2em 0;
+}
+
+.article-body-content table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.article-body-content th,
+.article-body-content td { padding: 0.55em 0.7em; border-bottom: 1px solid var(--hairline); text-align: left; }
+.article-body-content th { font-family: var(--mono); font-size: var(--fs-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--gris-ink); }
 
 /* --- Animations manquantes (référencées mais jamais définies) ------------ */
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -2778,7 +3057,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
 
 <!-- 1. Top Alert Strip -->
 <div class="top-alert-strip">
-  <span>✦ LE BAROMÈTRE 2026 DU LEADERSHIP FÉMININ EN RDC EST DISPONIBLE EN ACCÈS LIBRE ✦</span>
+  <span>✦ FEMCURRENT EXPÉRIMENTE UN MODÈLE DE CYBERFÉMINISME ORGANISÉ EN RDC ✦</span>
 </div>
 
 <!-- 2. Main Media Header Brand Center (Desktop >= 992px) -->
@@ -2833,7 +3112,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
     <!-- Centered Menu Links -->
     <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: nowrap; overflow-x: auto;">
       <!-- F7 · data-nav = 1er segment de route, exploité par setActiveNav() -->
-      <a href="/" data-nav="" style="display: flex; align-items: center; color: #E91E63; text-decoration: none; padding: 0.3rem;" aria-label="Accueil">
+      <a href="/" data-nav="" style="display: flex; align-items: center; color: var(--magenta-ink); text-decoration: none; padding: 0.3rem;" aria-label="Accueil">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
       </a>
       <a href="/actualites" data-nav="actualites" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Actualités</a>
@@ -2908,7 +3187,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
       <div class="d-nav-item">
         <a href="/" class="d-nav-link" data-nav="">
           <span><strong class="d-nav-num">01</strong>Accueil</span>
-          <span style="color:var(--orange)" aria-hidden="true">→</span>
+          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -2946,7 +3225,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
       <div class="d-nav-item">
         <a href="/femmes" class="d-nav-link" data-nav="femmes">
           <span><strong class="d-nav-num">04</strong>Femmes à la une</span>
-          <span style="color:var(--orange)" aria-hidden="true">→</span>
+          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -2954,7 +3233,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
       <div class="d-nav-item">
         <a href="/initiatives" class="d-nav-link" data-nav="initiatives">
           <span><strong class="d-nav-num">05</strong>Initiatives de terrain</span>
-          <span style="color:var(--orange)" aria-hidden="true">→</span>
+          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -2966,9 +3245,8 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
         </button>
         <div class="d-sub-menu" id="dsub-observatoire">
           <a href="/observatoire"><strong>✦ Consulter l'Observatoire</strong></a>
-          <a href="/ressources/barometre-2025">Le Baromètre 2026 en accès libre</a>
-          <a href="/observatoire">Cartographie des 26 provinces</a>
-          <a href="/observatoire">Indicateurs clés de représentation</a>
+          <a href="/ressources">Études et ressources publiées</a>
+          <a href="/espaces/data">FemCurrent Data · Méthode participative</a>
         </div>
       </div>
 
@@ -2976,7 +3254,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
       <div class="d-nav-item">
         <a href="/ressources" class="d-nav-link" data-nav="ressources">
           <span><strong class="d-nav-num">07</strong>Ressources &amp; Études</span>
-          <span style="color:var(--orange)" aria-hidden="true">→</span>
+          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -2984,7 +3262,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
       <div class="d-nav-item">
         <a href="/agenda" class="d-nav-link" data-nav="agenda">
           <span><strong class="d-nav-num">08</strong>Agenda &amp; Événements</span>
-          <span style="color:var(--orange)" aria-hidden="true">→</span>
+          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -2992,7 +3270,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
       <div class="d-nav-item">
         <a href="/mediatheque" class="d-nav-link" data-nav="mediatheque">
           <span><strong class="d-nav-num">09</strong>Médiathèque &amp; Podcasts</span>
-          <span style="color:var(--orange)" aria-hidden="true">→</span>
+          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -3000,7 +3278,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
       <div class="d-nav-item">
         <a href="/a-propos" class="d-nav-link" data-nav="a-propos">
           <span><strong class="d-nav-num">10</strong>À propos de FemCurrent</span>
-          <span style="color:var(--orange)" aria-hidden="true">→</span>
+          <span style="color:var(--orange-on-dark)" aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -3018,7 +3296,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
         <a class="d-espace-row" href="/espaces/lab"><strong>🟣 TECHNOLOGIE</strong> — Expérimenter au Lab</a>
         <a class="d-espace-row" href="/espaces/community"><strong>🟣 ORGANISATION</strong> — Créer la communauté</a>
         <a class="d-espace-row" href="/espaces/impact"><strong>🟣 IMPACT</strong> — Pouvoir politique & Plaidoyer</a>
-        <a class="d-espace-row" href="/espaces" style="color:var(--orange);font-weight:800;">→ Explorer les 5 fonctions</a>
+        <a class="d-espace-row" href="/espaces" style="color:var(--orange-on-dark);font-weight:800;">→ Explorer les 5 fonctions</a>
       </div>
     </div>
 
@@ -3178,7 +3456,7 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button id="toTop" aria-label="Retour en haut de page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
-<script>
+<script nonce="__CSP_NONCE__">
 /* ==========================================================================
    FEMCURRENT MÉDIA — MOTEUR DYNAMIQUE, SYNCHRONISATION WP & GESTION DES FORMULAIRES
    ========================================================================== */
@@ -3200,23 +3478,55 @@ const WP_API_BASE = "https://admin.femcurrent.com/wp-json/wp/v2";
 const WP_CUSTOM_API_BASE = "https://admin.femcurrent.com/wp-json/femcurrent/v1";
 
 /* ================= UTILS & FORMATTERS ================= */
+
+/* B-01 · L'API REST WordPress renvoie déjà les titres échappés en HTML.
+   L'ancienne implémentation faisait `el.innerHTML = str` puis lisait
+   `el.value` : elle DÉSÉCHAPPAIT donc la protection de l'API. Le résultat
+   était ensuite réinjecté tel quel dans innerHTML — y compris dans des
+   attributs (`alt="${e.title}"`), où un simple « " » suffit à sortir de
+   l'attribut et à injecter `onerror=`.
+   La fonction décode donc vers du TEXTE PLAT, puis ré-échappe pour le HTML.
+   `&#8217;` redevient « ’ » (affichage correct des apostrophes et accents),
+   mais `&lt;script&gt;` reste inerte. */
+function esc(s) {
+  return String(s === null || s === undefined ? "" : s)
+    // Le « & » n'est échappé que s'il n'introduit pas déjà une entité :
+    // ainsi esc() est idempotente et peut être appliquée en défense en
+    // profondeur sur une valeur déjà assainie sans double échappement.
+    .replace(/&(?![a-zA-Z][a-zA-Z0-9]*;|#\d+;|#[xX][0-9a-fA-F]+;)/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/* Décodage sans création de balisage : le résultat est sûr dans un nœud de
+   texte comme dans un attribut entre guillemets. */
 function decodeEntities(str) {
   if (!str) return "";
+  let txt;
   if (typeof document !== "undefined") {
     const el = document.createElement("textarea");
-    el.innerHTML = str;
-    return el.value || str;
+    el.innerHTML = String(str);
+    txt = el.value || String(str);
+  } else {
+    txt = String(str)
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
+      .replace(/&#0?39;/g, "'").replace(/&apos;/g, "'").replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&#8217;/g, "’").replace(/&#8216;/g, "‘")
+      .replace(/&#8220;/g, "«").replace(/&#8221;/g, "»")
+      .replace(/&rsquo;/g, "’").replace(/&lsquo;/g, "‘")
+      .replace(/&laquo;/g, "«").replace(/&raquo;/g, "»")
+      .replace(/&eacute;/g, "é").replace(/&agrave;/g, "à")
+      .replace(/&hellip;/g, "…").replace(/&mdash;/g, "—").replace(/&ndash;/g, "–");
   }
-  return str.replace(/&amp;/g, '&')
-            .replace(/&#8217;/g, "'")
-            .replace(/&#8220;/g, '«')
-            .replace(/&#8221;/g, '»')
-            .replace(/&rsquo;/g, "'")
-            .replace(/&lsquo;/g, "'")
-            .replace(/&eacute;/g, 'é')
-            .replace(/&agrave;/g, 'à')
-            .replace(/&hellip;/g, '…');
+  return esc(txt);
 }
+
+/* Échappement strict pour un attribut : à utiliser quand la valeur n'est pas
+   déjà passée par decodeEntities(). */
+function escAttr(v) { return esc(v); }
 
 /* ==========================================================================
    S5 · ASSAINISSEMENT DU CONTENU DISTANT (anti-XSS)
@@ -3231,12 +3541,8 @@ const SAFE_TAGS = ["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "H2", "H3", "H
 const SAFE_ATTRS = ["href", "src", "alt", "title", "class", "colspan", "rowspan"];
 const SAFE_URL_RE = /^\s*(javascript|data|vbscript|file|blob)\s*:/i;
 
-/* Échappement des interpolations de texte simple (titres, noms, descriptions) */
-function esc(s) {
-  return String(s === null || s === undefined ? "" : s).replace(/[&<>"']/g, c => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[c]));
-}
+/* NB : esc() est défini plus haut, avant decodeEntities(), dont il garantit
+   la sortie sûre. Ancienne définition supprimée (doublon). */
 
 /* Ne laisse passer que des URL http(s), relatives ou ancres */
 function safeUrl(v) {
@@ -3566,7 +3872,8 @@ function formatWpEvent(p) {
   const mNorm = m.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const monthNum = MONTHS_FR[m.toLowerCase()] || MONTHS_FR[mNorm] || '03';
   const isoDate = y + '-' + monthNum + '-' + d;
-  const isPast = isoDate < "2026-03-01" || rawExcerpt.toLowerCase().includes("terminé") || rawExcerpt.toLowerCase().includes("clôturé");
+  const todayIso = new Date().toLocaleDateString("sv-SE");
+  const isPast = isoDate < todayIso || rawExcerpt.toLowerCase().includes("terminé") || rawExcerpt.toLowerCase().includes("clôturé");
 
   return {
     id: p.id,
@@ -3586,8 +3893,10 @@ function formatWpEvent(p) {
     customImg: getFeatImg(p) || "public/images/hero-cinematic-leaders.jpg",
     meta: rawExcerpt || (time + " · " + location),
     desc: rawExcerpt,
-    content: rawContent || plainText,
-    body: [rawContent || plainText]
+    /* B-01 · le HTML brut de WordPress est assaini dès l'entrée : il est
+       réinjecté plus bas via innerHTML sans ré-échappement. */
+    content: sanitizeHtml(rawContent || plainText),
+    body: [sanitizeHtml(rawContent || plainText)]
   };
 }
 
@@ -3608,7 +3917,7 @@ function formatWpPage(p) {
     id: p.id,
     slug: p.slug,
     title: decodeEntities(p.title.rendered),
-    content: p.content && p.content.rendered ? p.content.rendered : ""
+    content: p.content && p.content.rendered ? sanitizeHtml(p.content.rendered) : ""
   };
 }
 
@@ -3841,7 +4150,7 @@ let SEARCH_DATA = [];
 // Hydrate from localStorage
 try {
   if (typeof localStorage !== "undefined") {
-    const cachedRaw = localStorage.getItem("FEMCURRENT_MASTER_STORE_V2");
+    const cachedRaw = localStorage.getItem("FEMCURRENT_MASTER_STORE_V3");
     if (cachedRaw) {
       const parsed = JSON.parse(cachedRaw);
       if (parsed && Array.isArray(parsed.posts) && parsed.posts.length > 0) {
@@ -4085,7 +4394,7 @@ async function syncWordPressData() {
 
       try {
         if (typeof localStorage !== "undefined") {
-          localStorage.setItem("FEMCURRENT_MASTER_STORE_V2", JSON.stringify(WP_STORE));
+          localStorage.setItem("FEMCURRENT_MASTER_STORE_V3", JSON.stringify(WP_STORE));
         }
       } catch(e) {}
 
@@ -4284,6 +4593,13 @@ const FAQ = [
 const $ = (s, c = document) => c.querySelector(s), $$ = (s, c = document) => [...c.querySelectorAll(s)];
 const APP = $("#app");
 const reduced = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* S6 · Bascule de la feuille Google Fonts : l'ancien `onload="this.media='all'"`
+   était un gestionnaire inline, incompatible avec une CSP à nonce. */
+(function () {
+  const f = document.getElementById("fontCss");
+  if (f && f.media !== "all") f.media = "all";
+})();
 let toastT;
 function toast(msg) {
   const t = $("#toast");
@@ -4302,34 +4618,38 @@ const shareBar = () => {
   return `<div class="share-bar"><span class="lbl">Partager</span>
   <a href="${fb}" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
   <a href="${li}" target="_blank" rel="noopener noreferrer" aria-label="Partager sur LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
-  <button type="button" aria-label="Copier le lien de la page" onclick="copyLink()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
+  <button type="button" data-copy-link aria-label="Copier le lien de la page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
   </div>`;
 };
 window.copyLink = () => {
   navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => toast("✦ <b>Lien copié</b> dans votre presse-papiers.")).catch(() => toast("✦ Copiez l'adresse depuis la barre du navigateur."));
 };
 
-const cardArt = (a, pool) => `<a class="card" href="/${pool}/${a.slug}" data-reveal>
- <div class="img"><img src="${a.customImg || IMG(a.seed, 600, 380)}" alt="" loading="lazy"></div>
- <div class="body"><span class="tag ${a.cls}" style="align-self:flex-start">${a.cat}</span><h3>${a.title}</h3><p>${a.ex}</p>
- <div class="card-foot"><span class="meta">${a.date} · ${a.mins} min</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`;
+/* B-01 · défense en profondeur. esc() est idempotente : ces valeurs ont déjà
+   été assainies par decodeEntities(), mais sont ré-échappées ici au cas où
+   elles proviendraient d'un jeu de repli local. Aucun double affichage
+   d'entité (esc(esc(x)) === esc(x)). */
+const cardArt = (a, pool) => `<a class="card" href="/${esc(pool)}/${esc(a.slug)}" data-reveal>
+ <div class="img"><img src="${esc(a.customImg || IMG(a.seed, 600, 380))}" alt="" loading="lazy"></div>
+ <div class="body"><span class="tag ${esc(a.cls)}" style="align-self:flex-start">${esc(a.cat)}</span><h3>${esc(a.title)}</h3><p>${esc(a.ex)}</p>
+ <div class="card-foot"><span class="meta">${esc(a.date)} · ${esc(a.mins)} min</span><span class="meta" style="color: var(--magenta-ink)">Lire →</span></div></div></a>`;
 
-const cardFemme = f => `<a class="portrait-card" href="/femmes/${f.slug}">
- <div class="img"><img src="${f.customImg || IMG(f.seed, 500, 620)}" alt="Portrait de ${f.name}" loading="lazy"><span class="prov">${f.prov}</span></div>
- <div class="portrait-body"><h3>${f.name}</h3><p class="role">${f.role}</p><span class="go">Lire le portrait →</span></div></a>`;
+const cardFemme = f => `<a class="portrait-card" href="/femmes/${esc(f.slug)}">
+ <div class="img"><img src="${esc(f.customImg || IMG(f.seed, 500, 620))}" alt="Portrait de ${esc(f.name)}" loading="lazy"><span class="prov">${esc(f.prov)}</span></div>
+ <div class="portrait-body"><h3>${esc(f.name)}</h3><p class="role">${esc(f.role)}</p><span class="go">Lire le portrait →</span></div></a>`;
 
-const cardInit = i => `<a class="card" href="/initiatives/${i.slug}" data-reveal>
- <div class="img"><img src="${i.customImg || IMG(i.seed, 600, 380)}" alt="" loading="lazy"><span class="card-loc">${i.prov}</span></div>
- <div class="body"><span class="tag ${i.cls}" style="align-self:flex-start">${i.cat}</span><h3>${i.name}</h3><p>${i.desc}</p>
- <div class="card-foot"><span class="meta">Org. : ${i.org}</span><span class="meta" style="color:var(--magenta)">Découvrir →</span></div></div></a>`;
+const cardInit = i => `<a class="card" href="/initiatives/${esc(i.slug)}" data-reveal>
+ <div class="img"><img src="${esc(i.customImg || IMG(i.seed, 600, 380))}" alt="" loading="lazy"><span class="card-loc">${esc(i.prov)}</span></div>
+ <div class="body"><span class="tag ${esc(i.cls)}" style="align-self:flex-start">${esc(i.cat)}</span><h3>${esc(i.name)}</h3><p>${esc(i.desc)}</p>
+ <div class="card-foot"><span class="meta">Org. : ${esc(i.org)}</span><span class="meta" style="color: var(--magenta-ink)">Découvrir →</span></div></div></a>`;
 
-const cardDoc = d => `<a class="doc-card" href="/ressources/${d.slug}" data-reveal>
- <span class="tag ${d.cls}" style="align-self:flex-start">${d.type}</span><h3>${d.title}</h3><p style="font-size:.85rem;color:var(--gris);flex:1">${d.desc}</p>
- <div class="meta"><span>${d.year}</span><span>${d.pages}</span></div>
- <span class="meta" style="color:var(--magenta);font-weight:700">Consulter →</span></a>`;
+const cardDoc = d => `<a class="doc-card" href="/ressources/${esc(d.slug)}" data-reveal>
+ <span class="tag ${esc(d.cls)}" style="align-self:flex-start">${esc(d.type)}</span><h3>${esc(d.title)}</h3><p style="font-size:.85rem;color: var(--gris-ink);flex:1">${esc(d.desc)}</p>
+ <div class="meta"><span>${esc(d.year)}</span><span>${esc(d.pages)}</span></div>
+ <span class="meta" style="color: var(--magenta-ink);font-weight:700">Consulter →</span></a>`;
 
 const uniCard = (id, u, w, dl) => `<a class="uni-card ${w}" href="/espaces/${id}" style="--uc:${u.g}" ${dl ? `data-reveal data-delay="${dl}"` : ""}>
- <span class="uni-emo">${u.emo}</span><h3><small style="color:var(--orange);font-weight:800;letter-spacing:0.08em;text-transform:uppercase;">${u.pillar || "Fonction Cyberféministe"}</small>${u.title || ("FemCurrent " + id.charAt(0).toUpperCase() + id.slice(1))}</h3><p>${u.tag}</p><span class="uni-link">Explorer la fonction →</span></a>`;
+ <span class="uni-emo">${u.emo}</span><h3><small style="color: var(--orange-ink);font-weight:800;letter-spacing:0.08em;text-transform:uppercase;">${u.pillar || "Fonction Cyberféministe"}</small>${u.title || ("FemCurrent " + id.charAt(0).toUpperCase() + id.slice(1))}</h3><p>${u.tag}</p><span class="uni-link">Explorer la fonction →</span></a>`;
 
 const nlBlock = (dark) => `<form class="nl-form ${dark ? "" : "light"} nl" novalidate>
  <input type="email" placeholder="Votre adresse e-mail" aria-label="Adresse e-mail" required>
@@ -4337,10 +4657,10 @@ const nlBlock = (dark) => `<form class="nl-form ${dark ? "" : "light"} nl" noval
 
 const compAdBox = () => `
 <div class="side-ad-card" data-reveal>
-  <span class="side-ad-badge">✦ Espace Partenaire · Média</span>
-  <h4>Prix du Leadership Féminin 2026</h4>
-  <p>Appel à candidatures ouvert jusqu'au 30 avril. Soutenez les projets innovants portés par les femmes en RDC.</p>
-  <a href="/partenariat" class="ad-btn">Découvrir l'appel →</a>
+  <span class="side-ad-badge">FemCurrent · Initiative émergente</span>
+  <h4>Construire avec la communauté</h4>
+  <p>Rejoignez les femmes qui souhaitent expérimenter, produire des connaissances et mener des actions collectives.</p>
+  <a href="/contribuer" class="ad-btn">Rejoindre la communauté →</a>
 </div>`;
 
 const compSidebar = (pool, currentCat, currentSlug) => {
@@ -4355,7 +4675,7 @@ const compSidebar = (pool, currentCat, currentSlug) => {
       <div class="side-widget" data-reveal>
         <div class="side-widget-head">
           <span class="side-widget-title">Les plus lus</span>
-          <span class="meta" style="font-size:0.68rem;color:var(--magenta)">Cette semaine</span>
+          <span class="meta" style="font-size:0.68rem;color: var(--magenta-ink)">Cette semaine</span>
         </div>
         <div class="side-popular-list">
           ${popular.map((p, idx) => `
@@ -4393,8 +4713,8 @@ const compSidebar = (pool, currentCat, currentSlug) => {
       <!-- 3. Chiffre Clé Observatoire -->
       <div class="side-stat-card" data-reveal>
         <span class="stat-kicker">✦ Observatoire FemCurrent</span>
-        <div class="stat-num">31 <span>%</span></div>
-        <p>de femmes dans les assemblées provinciales en 2025 (+14 pts en 5 ans). Données vérifiées par province.</p>
+        <div class="stat-num">Data</div>
+        <p>L'observatoire participatif est en construction. Les premiers indicateurs seront publiés avec leurs sources et leur méthode.</p>
         <a href="/observatoire">Explorer le baromètre →</a>
       </div>
 
@@ -4449,7 +4769,7 @@ async function fetchAndRenderArticle(pool, slug) {
 
       try {
         if (typeof localStorage !== "undefined") {
-          localStorage.setItem("FEMCURRENT_MASTER_STORE_V2", JSON.stringify(WP_STORE));
+          localStorage.setItem("FEMCURRENT_MASTER_STORE_V3", JSON.stringify(WP_STORE));
         }
       } catch(e) {}
 
@@ -4479,7 +4799,7 @@ async function fetchAndRenderFemme(slug) {
 
       try {
         if (typeof localStorage !== "undefined") {
-          localStorage.setItem("FEMCURRENT_MASTER_STORE_V2", JSON.stringify(WP_STORE));
+          localStorage.setItem("FEMCURRENT_MASTER_STORE_V3", JSON.stringify(WP_STORE));
         }
       } catch(e) {}
 
@@ -4506,7 +4826,7 @@ async function fetchAndRenderInit(slug) {
 
       try {
         if (typeof localStorage !== "undefined") {
-          localStorage.setItem("FEMCURRENT_MASTER_STORE_V2", JSON.stringify(WP_STORE));
+          localStorage.setItem("FEMCURRENT_MASTER_STORE_V3", JSON.stringify(WP_STORE));
         }
       } catch(e) {}
 
@@ -4533,7 +4853,7 @@ async function fetchAndRenderEvent(slug) {
 
       try {
         if (typeof localStorage !== "undefined") {
-          localStorage.setItem("FEMCURRENT_MASTER_STORE_V2", JSON.stringify(WP_STORE));
+          localStorage.setItem("FEMCURRENT_MASTER_STORE_V3", JSON.stringify(WP_STORE));
         }
       } catch(e) {}
 
@@ -4560,7 +4880,7 @@ async function fetchAndRenderDoc(slug) {
 
       try {
         if (typeof localStorage !== "undefined") {
-          localStorage.setItem("FEMCURRENT_MASTER_STORE_V2", JSON.stringify(WP_STORE));
+          localStorage.setItem("FEMCURRENT_MASTER_STORE_V3", JSON.stringify(WP_STORE));
         }
       } catch(e) {}
 
@@ -4614,10 +4934,10 @@ function vHome() {
     <a href="/actualites/${lead.slug}" class="home-lead-card">
       <!-- Photojournalism Image -->
       <div class="home-lead-img-wrap">
-        <img src="${leadImg}" alt="${lead.title}">
+        <img src="${esc(leadImg)}" alt="${esc(lead.title)}">
         <div style="position: absolute; top: 1rem; left: 1rem; z-index: 5;">
           <span style="background: #E91E63; color: #ffffff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.35rem 0.85rem; border-radius: 6px; box-shadow: 0 4px 10px rgba(233,30,99,0.35);">
-            ${lead.cat || "ACTUALITÉS"}
+            ${esc(lead.cat || "ACTUALITÉS")}
           </span>
         </div>
       </div>
@@ -4625,23 +4945,23 @@ function vHome() {
       <!-- Lead Story Content -->
       <div class="home-lead-body">
         <div>
-          <span style="font-size: 0.76rem; font-weight: 800; font-family: var(--mono); color: #FF8C00; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
-            ${lead.prov || "RDC & GRANDS LACS"} · ${lead.date}
+          <span style="font-size: 0.76rem; font-weight: 800; font-family: var(--mono); color: var(--orange-ink); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
+            ${esc(lead.prov || "RDC &amp; GRANDS LACS")} · ${esc(lead.date)}
           </span>
           <h1 style="font-family: var(--display); font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.18; font-weight: 800; color: #1F162B; margin: 0 0 0.85rem;">
-            ${lead.title}
+            ${esc(lead.title)}
           </h1>
           <p style="font-size: 0.96rem; line-height: 1.58; color: #4A3E56; margin: 0;">
-            ${lead.ex}
+            ${esc(lead.ex)}
           </p>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.2rem; margin-top: 1.2rem; border-top: 1px solid #E8DFEE; font-size: 0.82rem; color: #6E5E7A;">
           <div>
-            <strong style="color: #1F162B; display: block;">Par ${lead.author || 'La Rédaction'}</strong>
-            <span style="font-size: 0.72rem;">${lead.authorRole || 'FemCurrent Média'}</span>
+            <strong style="color: #1F162B; display: block;">Par ${esc(lead.author || 'La Rédaction')}</strong>
+            <span style="font-size: 0.72rem;">${esc(lead.authorRole || 'FemCurrent Média')}</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: #E91E63;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--magenta-ink);">
             <span>${lead.mins || 5} min de lecture</span>
             <span>→</span>
           </div>
@@ -4658,9 +4978,10 @@ function vHome() {
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #4B1D6D; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             ENQUÊTES &amp; ANALYSES
           </span>
-          <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
+          <!-- M-20 · niveau h2 : ces trois pôles suivaient directement le titre h1 de la une ; un h3 aurait sauté un niveau. -->
+          <h2 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
             ${enq.title}
-          </h3>
+          </h2>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
             ${enq.ex}
           </p>
@@ -4674,38 +4995,40 @@ function vHome() {
       <!-- 2. Pôle INITIATIVES -->
       <a href="${initUrl}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #E91E63; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
-          <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #E91E63; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
+          <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: var(--magenta-ink); letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             INITIATIVES DE TERRAIN
           </span>
-          <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
+          <!-- M-20 · niveau h2 : ces trois pôles suivaient directement le titre h1 de la une ; un h3 aurait sauté un niveau. -->
+          <h2 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
             ${init.name || init.title}
-          </h3>
+          </h2>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
             ${init.desc || init.ex}
           </p>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
           <span>${init.org || init.prov || "Collectif de terrain"}</span>
-          <span style="color: #E91E63; font-weight: 700;">Découvrir →</span>
+          <span style="color: var(--magenta-ink); font-weight: 700;">Découvrir →</span>
         </div>
       </a>
 
       <!-- 3. Pôle OBSERVATOIRE -->
       <a href="${obsUrl}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #FF8C00; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
-          <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #FF8C00; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
+          <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: var(--orange-ink); letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             OBSERVATOIRE &amp; DONNÉES
           </span>
-          <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
+          <!-- M-20 · niveau h2 : ces trois pôles suivaient directement le titre h1 de la une ; un h3 aurait sauté un niveau. -->
+          <h2 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
             ${obs.title}
-          </h3>
+          </h2>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
             ${obs.desc || obs.ex}
           </p>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.2rem; padding-top: 0.8rem; border-top: 1px solid #F3EEF7; font-size: 0.78rem; color: #8C7E98;">
           <span>Édition ${obs.year || "2026"}</span>
-          <span style="color: #FF8C00; font-weight: 700;">Consulter →</span>
+          <span style="color: var(--orange-ink); font-weight: 700;">Consulter →</span>
         </div>
       </a>
 
@@ -4720,6 +5043,7 @@ function vHome() {
   ${tickerItems.map(t => `<a href="${t.url}"><b>${t.label}</b> ${t.text} <i>✦</i></a>`).join("")}
   ${tickerItems.map(t => `<a href="${t.url}" aria-hidden="true"><b>${t.label}</b> ${t.text} <i>✦</i></a>`).join("")}
  </div></div>
+ <button type="button" class="mq-pause" data-mq-pause aria-pressed="false" aria-label="Interrompre le défilement du bandeau"><span class="mq-ic" aria-hidden="true">❚❚</span></button>
 </div></div>
 
 <section class="section" id="alaune"><div class="container">
@@ -4752,7 +5076,7 @@ function vHome() {
  ${homeEnquetes.map((e, i) => `<a class="card" href="${(WP_STORE.enquetes.some(x => x.slug === e.slug) ? '/enquetes/' : '/actualites/') + e.slug}" data-reveal data-delay="${i * 90}">
   <div class="img"><img src="${e.customImg || IMG(e.seed, 600, 380)}" alt="" loading="lazy"></div>
   <div class="body"><span class="tag ${e.cls || 'violet'}" style="align-self:flex-start">${e.cat || 'Enquête'}</span><h3>${e.title}</h3><p>${e.ex}</p>
-  <div class="card-foot"><span class="meta">${e.detail || (e.prov ? e.prov + ' · ' : '') + e.date}</span><span class="meta" style="color:var(--magenta)">Lire →</span></div></div></a>`).join("")}
+  <div class="card-foot"><span class="meta">${e.detail || (e.prov ? e.prov + ' · ' : '') + e.date}</span><span class="meta" style="color: var(--magenta-ink)">Lire →</span></div></div></a>`).join("")}
  </div>
 </div></section>
 
@@ -4795,7 +5119,7 @@ function vHome() {
       <div>
         <span class="kicker">Méthodologie &amp; Action</span>
         <h2>Le cycle de l'activisme technologique féministe</h2>
-        <p class="lead" style="margin-top:0.6rem">Transformer la technologie en pouvoir politique à travers un circuit complet et éprouvé en RDC.</p>
+  <p class="lead" style="margin-top:0.6rem">Une méthode que FemCurrent souhaite expérimenter, documenter et améliorer avec les communautés en RDC.</p>
       </div>
     </div>
 
@@ -4803,37 +5127,37 @@ function vHome() {
       
       <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #4B1D6D;border-radius:14px;padding:1.4rem;">
         <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#4B1D6D;">ÉTAPE 01</span>
-        <h4 style="margin:0.5rem 0 0.3rem;">Alerte &amp; Enquête</h4>
+        <h3 style="margin:0.5rem 0 0.3rem;">Alerte &amp; Enquête</h3>
         <p style="font-size:0.85rem;color:#5A4E66;margin:0;">Une situation ou cyberviolence (TFGBV) est détectée sur le terrain ou en ligne.</p>
         <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#4B1D6D;">FemCurrent documente →</div>
       </div>
 
       <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #E91E63;border-radius:14px;padding:1.4rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#E91E63;">ÉTAPE 02</span>
-        <h4 style="margin:0.5rem 0 0.3rem;">Production de Données</h4>
-        <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Data produit les données chiffrées, la cartographie et l'analyse rigoureuse.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#E91E63;">Preuves vérifiées →</div>
+        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color: var(--magenta-ink);">ÉTAPE 02</span>
+        <h3 style="margin:0.5rem 0 0.3rem;">Production de Données</h3>
+        <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Data co-construira les méthodes, la cartographie et l'analyse avec les communautés concernées.</p>
+        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color: var(--magenta-ink);">Méthodes à co-construire →</div>
       </div>
 
       <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #FF8C00;border-radius:14px;padding:1.4rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#FF8C00;">ÉTAPE 03</span>
-        <h4 style="margin:0.5rem 0 0.3rem;">Récits &amp; Voix</h4>
+        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color: var(--orange-ink);">ÉTAPE 03</span>
+        <h3 style="margin:0.5rem 0 0.3rem;">Récits &amp; Voix</h3>
         <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Voices donne directement la parole aux concernées avec consentement éclairé.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#FF8C00;">Amplification sonore →</div>
+        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color: var(--orange-ink);">Amplification sonore →</div>
       </div>
 
       <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #B3114B;border-radius:14px;padding:1.4rem;">
         <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#B3114B;">ÉTAPE 04</span>
-        <h4 style="margin:0.5rem 0 0.3rem;">Solutions au Lab</h4>
+        <h3 style="margin:0.5rem 0 0.3rem;">Solutions au Lab</h3>
         <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Lab conçoit des technologies de protection et outils civic tech adaptés.</p>
         <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#B3114B;">Outils créés par les femmes →</div>
       </div>
 
       <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #2E1143;border-radius:14px;padding:1.4rem;">
         <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#2E1143;">ÉTAPE 05</span>
-        <h4 style="margin:0.5rem 0 0.3rem;">Plaidoyer &amp; Impact</h4>
+        <h3 style="margin:0.5rem 0 0.3rem;">Plaidoyer &amp; Impact</h3>
         <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Impact transforme les résultats en plaidoyer et changement de politiques.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#2E1143;">Pouvoir politique réel →</div>
+        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#2E1143;">Plaidoyer à construire →</div>
       </div>
 
     </div>
@@ -4842,14 +5166,8 @@ function vHome() {
 
 <section class="section obs"><div class="container" style="display:grid;gap:3rem">
  <div data-reveal><span class="kicker on-dark">FemCurrent Data · Observatoire</span>
- <h2 style="margin-top:1rem">Les données pour comprendre et <span style="color:var(--orange);font-style:italic">agir</span></h2>
- <p class="lead" style="margin-top:1.1rem">L'Observatoire documente, mesure et rend visibles les dynamiques du leadership féminin : indicateurs, baromètres, études et cartographies.</p>
- <div class="counters">
-  <div class="counter"><b><span data-count="128">0</span>+</b><span>Femmes leaders documentées</span></div>
-  <div class="counter"><b><span data-count="76">0</span></b><span>Initiatives recensées</span></div>
-  <div class="counter"><b><span data-count="23">0</span></b><span>Études &amp; rapports publiés</span></div>
-  <div class="counter"><b><span data-count="14">0</span></b><span>Provinces couvertes</span></div>
- </div>
+ <h2 style="margin-top:1rem">Les données pour comprendre et <span style="color: var(--orange-ink);font-style:italic">agir</span></h2>
+ <p class="lead" style="margin-top:1.1rem">FemCurrent Data construit un observatoire participatif des droits numériques et des réalités des femmes. Les données et méthodes seront publiées après validation communautaire et examen des risques.</p>
  <a href="/observatoire" class="btn btn-white">Consulter l'Observatoire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 </div></section>
 
@@ -4858,7 +5176,7 @@ function vHome() {
  <div class="events-list">
  ${homeEvents.map((e, i) => `<article class="event" data-reveal data-delay="${i * 90}" style="padding:1.4rem;background:#FFF;border:1px solid #E8DFEE;border-radius:14px;display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap;box-shadow:0 2px 8px rgba(75,29,109,0.03);margin-bottom:1.2rem;">
   <div class="event-date" style="background:var(--lavande);border:1px solid #E8DFEE;border-radius:12px;padding:0.75rem 1.1rem;text-align:center;min-width:70px;">
-    <b style="font-size:1.5rem;color:var(--magenta);display:block;line-height:1;">${e.d}</b>
+    <b style="font-size:1.5rem;color: var(--magenta-ink);display:block;line-height:1;">${e.d}</b>
     <span style="font-size:0.72rem;font-weight:700;color:#6E5E7A;text-transform:uppercase;">${e.m}</span>
   </div>
   <div style="flex:1;min-width:240px;">
@@ -4867,7 +5185,7 @@ function vHome() {
       <span class="tag" style="background:#E8F5E9;color:#2E7D32;font-size:0.62rem;font-weight:700;">Inscriptions ouvertes</span>
     </div>
     <h3 style="margin:0 0 0.35rem;font-size:1.15rem;"><a href="/agenda/${e.slug}" style="color:inherit;text-decoration:none;">${e.title}</a></h3>
-    <div class="meta" style="color:#5A4E66;font-size:0.82rem;">⏰ ${e.time} · 📍 ${e.location} · <strong style="color:var(--magenta)">${e.places}</strong></div>
+    <div class="meta" style="color:#5A4E66;font-size:0.82rem;">⏰ ${e.time} · 📍 ${e.location} · <strong style="color: var(--magenta-ink)">${e.places}</strong></div>
   </div>
   <div class="event-cta">
     <a class="btn btn-primary" href="/agenda/${e.slug}" style="padding:0.55rem 1.2rem;font-size:0.82rem;">S'inscrire →</a>
@@ -4884,12 +5202,7 @@ function vHome() {
  </div>
 </div></section>
 
-<section class="partners"><p>Ils nous font confiance · <a href="/partenariat" style="color:var(--magenta)">Devenir partenaire →</a></p>
- <div class="partners-track">
-  <span>Ministère du Genre &amp; Famille <i>✦</i></span><span>ONU Femmes RDC <i>✦</i></span><span>Université de Kinshasa <i>✦</i></span><span>Radio Okapi <i>✦</i></span><span>Internews <i>✦</i></span><span>Fondation Panzi <i>✦</i></span><span>Collectif Elongo <i>✦</i></span>
-  <span aria-hidden="true">Ministère du Genre &amp; Famille <i>✦</i></span><span aria-hidden="true">ONU Femmes RDC <i>✦</i></span><span aria-hidden="true">Université de Kinshasa <i>✦</i></span><span aria-hidden="true">Radio Okapi <i>✦</i></span><span aria-hidden="true">Internews <i>✦</i></span><span aria-hidden="true">Fondation Panzi <i>✦</i></span><span aria-hidden="true">Collectif Elongo <i>✦</i></span>
- </div>
-</section>
+<section class="partners"><p>Une initiative émergente, ouverte aux collaborations · <a href="/partenariat" style="color: var(--magenta-ink)">Construire un partenariat →</a></p></section>
 
 <section class="section commu"><div class="container">
  <div data-reveal><span class="kicker" style="color:#fff">Rejoindre la communauté</span>
@@ -4898,7 +5211,7 @@ function vHome() {
  ${nlBlock(true)}
  <span class="nl-ok" style="display:none"></span></div>
  <div class="wa-card" data-reveal data-delay="120" style="background: linear-gradient(135deg, rgba(233,30,99,0.92), rgba(46,17,67,0.95)); border: 1px solid rgba(255,255,255,0.2);">
-  <span class="wa-ic" style="background:#fff;color:#E91E63;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></span>
+  <span class="wa-ic" style="background:#fff;color: var(--magenta-ink);"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></span>
   <h3>Communauté Cyberféministe</h3>
   <p>Rejoignez notre espace d'échange, de mobilisation collective et de partage d'expériences en RDC.</p>
   <a class="btn btn-white" href="https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr" target="_blank" rel="noopener">Rejoindre le groupe Facebook</a>
@@ -4923,10 +5236,10 @@ function vHome() {
     <a href="https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr" target="_blank" rel="noopener" style="background:#E91E63;color:#fff;padding:0.3rem 0.8rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Rejoindre le groupe</a>
    </div>
    <div class="sc-body">
-    <h4 style="margin:0.5rem 0;color:#2E1143;">Espace d'échange &amp; mobilisation</h4>
+    <h3 style="margin:0.5rem 0;color:#2E1143;">Espace d'échange &amp; mobilisation</h3>
     <p>Partage d'expériences, récits citoyens, débats en direct et actions collectives coordonnées à travers toute la RDC.</p>
    </div>
-   <div class="sc-foot"><span style="color:#E91E63;font-weight:700;">✦ Groupe officiel actif</span></div>
+   <div class="sc-foot"><span style="color: var(--magenta-ink);font-weight:700;">✦ Groupe officiel actif</span></div>
   </article>
 
   <!-- Page LinkedIn Officielle -->
@@ -4937,10 +5250,10 @@ function vHome() {
     <a href="https://www.linkedin.com/company/femcurrent/" target="_blank" rel="noopener" style="background:#0A66C2;color:#fff;padding:0.3rem 0.8rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Suivre l'initiative</a>
    </div>
    <div class="sc-body">
-    <h4 style="margin:0.5rem 0;color:#2E1143;">Données, Plaidoyer &amp; Impact</h4>
+    <h3 style="margin:0.5rem 0;color:#2E1143;">Données, Plaidoyer &amp; Impact</h3>
     <p>Publications stratégiques, notes d'analyse des droits numériques, cartographies du Lab et opportunités de partenariats institutionnels.</p>
    </div>
-   <div class="sc-foot"><span style="color:#0A66C2;font-weight:700;">✦ Organisation vérifiée</span></div>
+   <div class="sc-foot"><span style="color: var(--li-ink);font-weight:700;">Compte LinkedIn officiel</span></div>
   </article>
 
  </div>
@@ -4981,15 +5294,15 @@ function vActualites() {
           </div>
           <div class="lead-hero-body">
             <div>
-              <span style="font-family:var(--mono);font-size:0.72rem;color:#FF8C00;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
+              <span style="font-family:var(--mono);font-size:0.72rem;color: var(--orange-ink);font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
                 ${leadArt.prov || 'Kinshasa'} · ${leadArt.date}
               </span>
               <h2>${leadArt.title}</h2>
               <p>${leadArt.ex}</p>
             </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid #E8DFEE;font-size:0.8rem;color:var(--gris);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid #E8DFEE;font-size:0.8rem;color: var(--gris-ink);">
               <span>Par ${leadArt.author || 'La Rédaction'}</span>
-              <span style="color:var(--magenta);font-weight:700;">${leadArt.mins} min · Lire l'article →</span>
+              <span style="color: var(--magenta-ink);font-weight:700;">${leadArt.mins} min · Lire l'article →</span>
             </div>
           </div>
         </a>
@@ -5004,7 +5317,7 @@ function vActualites() {
               <h3>${pillar1.title}</h3>
               <p>${pillar1.ex}</p>
             </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid #F3EEF7;font-size:0.76rem;color:var(--gris);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid #F3EEF7;font-size:0.76rem;color: var(--gris-ink);">
               <span>${pillar1.date}</span>
               <span style="color:#4B1D6D;font-weight:700;">${pillar1.mins} min →</span>
             </div>
@@ -5012,15 +5325,15 @@ function vActualites() {
 
           <a class="magazine-mini-card" href="/actualites/${pillar2.slug}" style="border-top:4px solid #FF8C00;" data-reveal data-delay="160">
             <div>
-              <span style="font-family:var(--mono);font-size:0.68rem;color:#FF8C00;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:0.3rem;">
+              <span style="font-family:var(--mono);font-size:0.68rem;color: var(--orange-ink);font-weight:800;letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:0.3rem;">
                 ${pillar2.cat} · ${pillar2.prov}
               </span>
               <h3>${pillar2.title}</h3>
               <p>${pillar2.ex}</p>
             </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid #F3EEF7;font-size:0.76rem;color:var(--gris);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid #F3EEF7;font-size:0.76rem;color: var(--gris-ink);">
               <span>${pillar2.date}</span>
-              <span style="color:#FF8C00;font-weight:700;">${pillar2.mins} min →</span>
+              <span style="color: var(--orange-ink);font-weight:700;">${pillar2.mins} min →</span>
             </div>
           </a>
         </div>
@@ -5058,7 +5371,7 @@ function vActualites() {
                   <p>${a.ex}</p>
                 </div>
                 <div class="actu-thumb"><img src="${a.customImg || IMG(a.seed, 300, 220)}" alt="" loading="lazy"></div>
-                <span class="meta" style="font-weight:700;color:var(--magenta);">${a.mins} min</span>
+                <span class="meta" style="font-weight:700;color: var(--magenta-ink);">${a.mins} min</span>
               </a>
             `).join("")}
           </div>
@@ -5289,7 +5602,7 @@ function vEnquetes() {
             <h2>${mainEnq.title}</h2>
             <p>${mainEnq.ex}</p>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.82rem;color:var(--gris);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.82rem;color: var(--gris-ink);">
             <span>${mainEnq.detail || 'Investigation FemCurrent'}</span>
             <a href="/enquetes/${mainEnq.slug}" class="btn btn-primary" style="padding:0.5rem 1.2rem;font-size:0.8rem;">Consulter le dossier →</a>
           </div>
@@ -5314,7 +5627,7 @@ function vEnquetes() {
               <p>${e.ex}</p>
               <div class="card-foot">
                 <span class="meta">${e.detail || e.date}</span>
-                <span class="meta" style="color:var(--magenta);font-weight:700;">Lire le dossier →</span>
+                <span class="meta" style="color: var(--magenta-ink);font-weight:700;">Lire le dossier →</span>
               </div>
             </div>
           </a>
@@ -5394,14 +5707,14 @@ function vFemmes() {
         </div>
         <div class="lead-hero-body">
           <div>
-            <span style="font-family:var(--mono);font-size:0.72rem;color:#FF8C00;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
+            <span style="font-family:var(--mono);font-size:0.72rem;color: var(--orange-ink);font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
               PROVINCE DU ${leadFemme.prov.toUpperCase()}
             </span>
             <h2>${leadFemme.name}</h2>
             <p style="font-size:1.05rem;font-style:italic;color:#1F162B;margin-bottom:1rem;">« ${leadFemme.quote} »</p>
             <p style="color:#5A4E66;">${leadFemme.role}</p>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.82rem;color:var(--gris);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.82rem;color: var(--gris-ink);">
             <span>Récit documenté par FemCurrent</span>
             <a href="/femmes/${leadFemme.slug}" class="btn btn-primary" style="padding:0.5rem 1.2rem;font-size:0.8rem;">Découvrir son parcours →</a>
           </div>
@@ -5468,7 +5781,7 @@ function vPortrait(slug) {
       <span class="tag magenta" style="margin-bottom:0.8rem;">${f.prov}</span>
       <h1 class="article-headline" style="max-width: 960px;">${f.name}</h1>
       <p class="article-chapeau" style="max-width: 920px; font-style: italic;">« ${f.quote} »</p>
-      <span class="meta" style="font-size:0.9rem;color:#FF8C00;font-weight:700;">${f.role}</span>
+      <span class="meta" style="font-size:0.9rem;color: var(--orange-ink);font-weight:700;">${f.role}</span>
     </div>
   </section>
 
@@ -5541,13 +5854,13 @@ function vInitiatives() {
         </div>
         <div class="lead-hero-body">
           <div>
-            <span style="font-family:var(--mono);font-size:0.72rem;color:#FF8C00;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
+            <span style="font-family:var(--mono);font-size:0.72rem;color: var(--orange-ink);font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">
               ${leadInit.cat} · ${leadInit.prov}
             </span>
             <h2>${leadInit.name}</h2>
             <p>${leadInit.desc}</p>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.82rem;color:var(--gris);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.82rem;color: var(--gris-ink);">
             <span>Porté par ${leadInit.org}</span>
             <a href="/initiatives/${leadInit.slug}" class="btn btn-primary" style="padding:0.5rem 1.2rem;font-size:0.8rem;">Découvrir le projet →</a>
           </div>
@@ -5670,7 +5983,7 @@ function vInitiative(slug) {
 }
 
 function vObs() {
-  const featuredDocs = (WP_STORE.ressources.length > 0 ? WP_STORE.ressources : DOCS).slice(0, 3);
+  const featuredDocs = WP_STORE.ressources.slice(0, 3);
 
   return `
   <section class="page-hero">
@@ -5678,63 +5991,22 @@ function vObs() {
       ${crumb([["Observatoire"]])}
       <span class="kicker">FemCurrent Data · Mesure &amp; Analyse</span>
       <h1>L'Observatoire du <span class="accent">Leadership</span></h1>
-      <p class="lead">Comprendre par les chiffres pour transformer par l'action : baromètres annuels, indicateurs territoriaux et cartographies de la participation des femmes en RDC.</p>
+      <p class="lead">Construire des connaissances avec les femmes concernées. Les indicateurs seront publiés avec leur méthode, leurs sources et une vérification des risques de réidentification.</p>
     </div>
   </section>
 
   <section class="section" style="padding-top: 2rem;">
     <div class="container">
       
-      <!-- Key Statistics Strip -->
-      <div class="counters" style="margin-bottom: 3.5rem;" data-reveal>
-        <div class="counter"><b><span data-count="128">0</span>+</b><span>Femmes leaders documentées</span></div>
-        <div class="counter"><b><span data-count="76">0</span></b><span>Initiatives recensées</span></div>
-        <div class="counter"><b><span data-count="23">0</span></b><span>Études &amp; rapports publiés</span></div>
-        <div class="counter"><b><span data-count="14">0</span></b><span>Provinces couvertes en données</span></div>
-      </div>
-
-      <!-- Graphique & Tableaux d'évolution -->
       <div class="section-head" style="margin-bottom:1.5rem;">
         <div>
-          <span class="kicker">Données Vérifiées</span>
-          <h2>Représentation politique provinciale (2020 - 2025)</h2>
-        </div>
-      </div>
-
-      <div class="table-card" style="margin-bottom: 3.5rem;" data-reveal>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Province</th>
-              <th>2020</th>
-              <th>2022</th>
-              <th>2024</th>
-              <th>2025</th>
-              <th>Évolution</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td><strong>Kinshasa</strong></td><td>22 %</td><td>26 %</td><td>32 %</td><td><strong>36 %</strong></td><td style="color:#2E7D32;font-weight:700;">+14 pts</td></tr>
-            <tr><td><strong>Haut-Katanga</strong></td><td>19 %</td><td>24 %</td><td>30 %</td><td><strong>35 %</strong></td><td style="color:#2E7D32;font-weight:700;">+16 pts</td></tr>
-            <tr><td><strong>Sud-Kivu</strong></td><td>18 %</td><td>21 %</td><td>28 %</td><td><strong>31 %</strong></td><td style="color:#2E7D32;font-weight:700;">+13 pts</td></tr>
-            <tr><td><strong>Nord-Kivu</strong></td><td>16 %</td><td>19 %</td><td>25 %</td><td><strong>29 %</strong></td><td style="color:#2E7D32;font-weight:700;">+13 pts</td></tr>
-            <tr><td><strong>Lualaba</strong></td><td>17 %</td><td>22 %</td><td>27 %</td><td><strong>32 %</strong></td><td style="color:#2E7D32;font-weight:700;">+15 pts</td></tr>
-            <tr><td><strong>Kasaï-Central</strong></td><td>12 %</td><td>15 %</td><td>19 %</td><td><strong>24 %</strong></td><td style="color:#2E7D32;font-weight:700;">+12 pts</td></tr>
-            <tr><td><strong>Moyenne 14 provinces</strong></td><td>17 %</td><td>21 %</td><td>27 %</td><td><strong>31 %</strong></td><td style="color:#E91E63;font-weight:800;">+14 pts</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Featured Studies Cards -->
-      <div class="section-head" style="margin-bottom:1.5rem;">
-        <div>
-          <span class="kicker">Publications de l'Observatoire</span>
-          <h2>Études &amp; Baromètres disponibles</h2>
+          <span class="kicker">Ressources publiées dans WordPress</span>
+          <h2>Études &amp; méthodes</h2>
         </div>
       </div>
 
       <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.8rem;">
-        ${featuredDocs.map(d => cardDoc(d)).join("")}
+        ${featuredDocs.length ? featuredDocs.map(d => cardDoc(d)).join("") : '<p class="lead">Aucune étude n’est publiée pour le moment. Les premières ressources seront ajoutées après validation de leur méthode et des risques associés.</p>'}
       </div>
 
     </div>
@@ -5751,7 +6023,7 @@ function vRessources() {
       ${crumb([["Ressources"]])}
       <span class="kicker">Publications · Guides · Outils</span>
       <h1>Centre de <span class="accent">ressources</span></h1>
-      <p class="lead">Téléchargez librement nos baromètres, guides méthodologiques, kits de plaidoyer et notes de politique publique pour nourrir vos travaux et actions.</p>
+ <p class="lead">Consultez les guides, études et outils effectivement publiés par FemCurrent.</p>
     </div>
   </section>
 
@@ -5766,7 +6038,7 @@ function vRessources() {
             <h2 style="font-size: clamp(1.4rem, 2.5vw, 2rem); margin-bottom:1rem;">${leadDoc.title}</h2>
             <p style="font-size:1rem; line-height:1.6; color:#5A4E66; margin-bottom:1.5rem;">${leadDoc.desc}</p>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.85rem;color:var(--gris);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid #E8DFEE;font-size:0.85rem;color: var(--gris-ink);">
             <span>${leadDoc.pages || 'Rapport complet'} · Accès libre</span>
             <a href="/ressources/${leadDoc.slug}" class="btn btn-primary">Consulter &amp; Télécharger →</a>
           </div>
@@ -5873,7 +6145,7 @@ function vAgenda() {
       ${crumb([["Agenda"]])}
       <span class="kicker">FemCurrent Academy &amp; Événements</span>
       <h1>Agenda &amp; <span class="accent">Événements</span></h1>
-      <p class="lead">Masterclass, ateliers pratiques, webinaires méthodologiques et forums citoyens organisés par FemCurrent et ses partenaires.</p>
+      <p class="lead">Retrouvez les rencontres et ateliers annoncés par FemCurrent. Les inscriptions ne sont ouvertes que pour les événements confirmés.</p>
     </div>
   </section>
 
@@ -5959,7 +6231,7 @@ function vEvent(slug) {
 
   const isPast = !!e.isPast;
   const statusBadge = isPast
-    ? `<span class="tag orange" style="background:#FFF3E0;color:#E65100;border:1px solid #FFE0B2;">✦ Session terminée</span>`
+    ? `<span class="tag orange" style="background:#FFF3E0;color: var(--orange-deep-ink);border:1px solid #FFE0B2;">✦ Session terminée</span>`
     : `<span class="tag" style="background:#E8F5E9;color:#2E7D32;border:1px solid #C8E6C9;font-weight:700;">✦ Inscriptions ouvertes (${e.places || 'Sur inscription'})</span>`;
 
   const relatedEvents = (WP_STORE.evenements.length > 0 ? WP_STORE.evenements : EVENTS)
@@ -6008,7 +6280,7 @@ function vEvent(slug) {
 
           <!-- Featured Photo / Banner -->
           <div class="article-hero-img-wrap" data-reveal>
-            <img src="${e.customImg || IMG(e.seed || e.slug, 1100, 580)}" alt="${e.title}" class="article-hero-img">
+            <img src="${esc(e.customImg || IMG(e.seed || e.slug, 1100, 580))}" alt="${esc(e.title)}" class="article-hero-img">
             <div class="article-img-caption">
               <span>Événement officiel · FemCurrent</span>
               <span>© Rédaction &amp; Équipe Projets FemCurrent</span>
@@ -6046,29 +6318,29 @@ function vEvent(slug) {
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
                   <div class="field">
-                    <label>Nom &amp; Prénom *</label>
-                    <input type="text" name="name" required placeholder="Ex : Marie Kabila">
+                    <label for="eventRegForm-name">Nom &amp; Prénom *</label>
+                    <input id="eventRegForm-name" type="text" name="name" required placeholder="Ex : Marie Kabila">
                   </div>
                   <div class="field">
-                    <label>Adresse e-mail *</label>
-                    <input type="email" name="email" required placeholder="marie@exemple.com">
+                    <label for="eventRegForm-email">Adresse e-mail *</label>
+                    <input id="eventRegForm-email" type="email" name="email" required placeholder="marie@exemple.com">
                   </div>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
                   <div class="field">
-                    <label>Numéro WhatsApp / Téléphone *</label>
-                    <input type="tel" name="phone" required placeholder="+243 81 000 00 00">
+                    <label for="eventRegForm-phone">Numéro WhatsApp / Téléphone *</label>
+                    <input id="eventRegForm-phone" type="tel" name="phone" required placeholder="+243 81 000 00 00">
                   </div>
                   <div class="field">
-                    <label>Organisation / Profession</label>
-                    <input type="text" name="org" placeholder="Ex : Média, Association, Étudiante…">
+                    <label for="eventRegForm-org">Organisation / Profession</label>
+                    <input id="eventRegForm-org" type="text" name="org" placeholder="Ex : Média, Association, Étudiante…">
                   </div>
                 </div>
 
                 <div class="field">
-                  <label>Questions ou attentes particulières pour les intervenantes</label>
-                  <textarea name="notes" rows="3" placeholder="Précisez vos attentes ou les points que vous aimeriez voir abordés…"></textarea>
+                  <label for="eventRegForm-notes">Questions ou attentes particulières pour les intervenantes</label>
+                  <textarea id="eventRegForm-notes" name="notes" rows="3" placeholder="Précisez vos attentes ou les points que vous aimeriez voir abordés…"></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width:100%;padding:0.85rem;font-size:0.95rem;margin-top:0.5rem;">
@@ -6111,11 +6383,11 @@ function vEvent(slug) {
               ${isPast ? `
                 <span class="tag orange" style="display:block;text-align:center;padding:0.5rem;">Session passée</span>
               ` : `
-                <a href="#inscription" class="btn btn-primary" style="display:block;text-align:center;width:100%;margin-bottom:0.8rem;" onclick="document.getElementById('inscription')&amp;&amp;document.getElementById('inscription').scrollIntoView({behavior:'smooth'})">
+                <a href="#inscription" data-scroll="inscription" class="btn btn-primary" style="display:block;text-align:center;width:100%;margin-bottom:0.8rem;">
                   S'inscrire à cette session →
                 </a>
               `}
-              <button class="btn btn-ghost" style="display:block;text-align:center;width:100%;font-size:0.78rem;padding:0.5rem;" onclick="toast('📅 Événement ajouté à votre calendrier (.ics)')">
+              <button type="button" class="btn btn-ghost" data-toast="📅 Événement ajouté à votre calendrier (.ics)" style="display:block;text-align:center;width:100%;font-size:0.78rem;padding:0.5rem;">
                 📅 Ajouter à mon agenda
               </button>
             </div>
@@ -6130,7 +6402,7 @@ function vEvent(slug) {
                 ${relatedEvents.map(r => `
                   <a class="side-recent-item" href="/agenda/${r.slug}">
                     <div style="width:48px;height:48px;background:var(--lavande);border:1px solid #E8DFEE;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
-                      <b style="font-size:0.95rem;color:var(--magenta);line-height:1;">${r.d}</b>
+                      <b style="font-size:0.95rem;color: var(--magenta-ink);line-height:1;">${r.d}</b>
                       <span style="font-size:0.62rem;color:#6E5E7A;text-transform:uppercase;font-weight:700;">${r.m.slice(0,3)}</span>
                     </div>
                     <div class="side-recent-info">
@@ -6185,7 +6457,7 @@ function vMediatheque() {
               <h3>${p.n}</h3>
               <p>${p.meta}</p>
               <div class="card-foot" style="margin-top:1rem;">
-                <button class="btn btn-primary" onclick="toast('▶ Lecture de l\\'épisode en cours…')" style="padding:0.45rem 1rem;font-size:0.8rem;">▶ Écouter l'épisode</button>
+                <button type="button" class="btn btn-primary" data-toast="▶ Lecture de l’épisode en cours…" style="padding:0.45rem 1rem;font-size:0.8rem;">▶ Écouter l'épisode</button>
               </div>
             </div>
           </div>
@@ -6286,12 +6558,12 @@ function vAPropos() {
     
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin:2rem 0;">
       <div style="background:#FFF;border:1px solid #E8DFEE;border-radius:12px;padding:1.3rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;color:#E91E63;font-weight:800;text-transform:uppercase;">Le média</span>
+        <span style="font-family:var(--mono);font-size:0.75rem;color: var(--magenta-ink);font-weight:800;text-transform:uppercase;">Le média</span>
         <h4 style="margin:0.4rem 0;">Un moyen, pas une finalité</h4>
         <p style="font-size:0.9rem;color:#5A4E66;margin:0;">L'information et les récits sont des leviers d'éveil, de documentation et de conscientisation citoyenne.</p>
       </div>
       <div style="background:#FFF;border:1px solid #E8DFEE;border-radius:12px;padding:1.3rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;color:#FF8C00;font-weight:800;text-transform:uppercase;">La technologie</span>
+        <span style="font-family:var(--mono);font-size:0.75rem;color: var(--orange-ink);font-weight:800;text-transform:uppercase;">La technologie</span>
         <h4 style="margin:0.4rem 0;">Un espace d'activisme</h4>
         <p style="font-size:0.9rem;color:#5A4E66;margin:0;">La tech n'est pas neutre : c'est un terrain de lutte politique, de réappropriation et d'auto-défense numérique.</p>
       </div>
@@ -6311,12 +6583,12 @@ function vAPropos() {
       </div>
 
       <div style="border-left:4px solid #E91E63;padding-left:1.2rem;">
-        <h3 style="color:#E91E63;margin-bottom:0.4rem;">🟣 2. CONNAISSANCE — Produire nos propres données (FemCurrent Data)</h3>
+        <h3 style="color: var(--magenta-ink);margin-bottom:0.4rem;">🟣 2. CONNAISSANCE — Produire nos propres données (FemCurrent Data)</h3>
         <p>Les femmes ne sont pas seulement des personnes sur lesquelles on collecte des données : elles deviennent productrices de connaissances sur leurs propres réalités. Cartographie des initiatives féminines, documentation quantitative et qualitative de la TFGBV, enquêtes communautaires, observatoire des droits numériques et recherche féministe participative.</p>
       </div>
 
       <div style="border-left:4px solid #FF8C00;padding-left:1.2rem;">
-        <h3 style="color:#FF8C00;margin-bottom:0.4rem;">🟣 3. TECHNOLOGIE — Expérimenter (FemCurrent Lab)</h3>
+        <h3 style="color: var(--orange-ink);margin-bottom:0.4rem;">🟣 3. TECHNOLOGIE — Expérimenter (FemCurrent Lab)</h3>
         <p>Le cœur technologique de l'initiative. Un espace où de jeunes femmes conçoivent et expérimentent : civic tech féministe, solutions contre les violences en ligne, technologies de protection et sécurité numérique, IA et féminisme, archivage numérique militant et cartographies participatives.</p>
       </div>
 
@@ -6337,9 +6609,9 @@ function vAPropos() {
       <p style="font-weight:700;color:#1F162B;margin-bottom:1rem;">Exemple d'opérationnalisation :</p>
       <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.95rem;color:#4A3E56;">
         <div><strong>1.</strong> Une enquête révèle une forme de cyberviolence contre les jeunes femmes (TFGBV).</div>
-        <div style="color:var(--orange)">↓ FemCurrent documente avec rigueur et sécurité</div>
+        <div style="color: var(--orange-ink)">↓ FemCurrent documente avec rigueur et sécurité</div>
         <div><strong>2.</strong> <strong>FemCurrent Data</strong> produit les données chiffrées et l'analyse systémique.</div>
-        <div style="color:var(--magenta)">↓ FemCurrent donne la parole aux concernées</div>
+        <div style="color: var(--magenta-ink)">↓ FemCurrent donne la parole aux concernées</div>
         <div><strong>3.</strong> <strong>FemCurrent Voices</strong> recueille et amplifie les témoignages vécus.</div>
         <div style="color:var(--violet)">↓ FemCurrent conçoit des solutions concrètes</div>
         <div><strong>4.</strong> <strong>FemCurrent Lab</strong> co-construit un outil technique de protection ou d'alerte.</div>
@@ -6386,16 +6658,16 @@ function vContact() {
     <div class="container" style="max-width: 700px;">
       <form id="contactForm" class="contact-form-box" data-reveal>
         <div class="field">
-          <label>Votre nom complet *</label>
-          <input type="text" name="name" required placeholder="Ex : Marie Mwamba">
+          <label for="contactForm-name">Votre nom complet *</label>
+          <input id="contactForm-name" type="text" name="name" required placeholder="Ex : Marie Mwamba">
         </div>
         <div class="field">
-          <label>Votre adresse e-mail *</label>
-          <input type="email" name="email" required placeholder="contact@exemple.com">
+          <label for="contactForm-email">Votre adresse e-mail *</label>
+          <input id="contactForm-email" type="email" name="email" required placeholder="contact@exemple.com">
         </div>
         <div class="field">
-          <label>Objet du message *</label>
-          <select name="subject" required>
+          <label for="contactForm-subject">Objet du message *</label>
+          <select id="contactForm-subject" name="subject" required>
             <option value="">Sélectionnez un motif</option>
             <option value="Signalement d'information">Signalement d'information</option>
             <option value="Demande presse & médias">Demande presse &amp; médias</option>
@@ -6403,8 +6675,8 @@ function vContact() {
           </select>
         </div>
         <div class="field">
-          <label>Votre message *</label>
-          <textarea name="message" required rows="5" placeholder="Détaillez votre message…"></textarea>
+          <label for="contactForm-message">Votre message *</label>
+          <textarea id="contactForm-message" name="message" required rows="5" placeholder="Détaillez votre message…"></textarea>
         </div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem;">Envoyer le message</button>
       </form>
@@ -6438,30 +6710,31 @@ function vLumiere(pre) {
 
       <form id="lumForm" class="contact-form-box" data-reveal>
         <div class="lum-panel ${pre==='temoignage'||pre==='initiative'?'':'on'}" id="lum-femme">
-          <div class="field"><label>Nom de la femme à mettre en lumière *</label><input type="text" name="name" required placeholder="Nom complet"></div>
-          <div class="field"><label>Province / Localisation *</label><input type="text" name="province" required placeholder="Ex : Sud-Kivu, Bukavu"></div>
-          <div class="field"><label>Rôle et impact documenté *</label><textarea name="role" required rows="4" placeholder="Décrivez son action et pourquoi elle doit être visible…"></textarea></div>
+          <div class="field"><label for="lumForm-name">Nom de la femme à mettre en lumière *</label><input id="lumForm-name" type="text" name="name" required placeholder="Nom complet"></div>
+          <div class="field"><label for="lumForm-province">Province / Localisation *</label><input id="lumForm-province" type="text" name="province" required placeholder="Ex : Sud-Kivu, Bukavu"></div>
+          <div class="field"><label for="lumForm-role">Rôle et impact documenté *</label><textarea id="lumForm-role" name="role" required rows="4" placeholder="Décrivez son action et pourquoi elle doit être visible…"></textarea></div>
         </div>
 
         <div class="lum-panel ${pre==='initiative'?'on':''}" id="lum-init">
-          <div class="field"><label>Nom de l'initiative *</label><input type="text" name="init_name" placeholder="Nom du projet"></div>
-          <div class="field"><label>Organisation porteuse *</label><input type="text" name="init_org" placeholder="Organisation ou collectif"></div>
-          <div class="field"><label>Description de l'action *</label><textarea name="init_desc" rows="4" placeholder="Objectifs et réalisations…"></textarea></div>
+          <div class="field"><label for="lumForm-init_name">Nom de l'initiative *</label><input id="lumForm-init_name" type="text" name="init_name" placeholder="Nom du projet"></div>
+          <div class="field"><label for="lumForm-init_org">Organisation porteuse *</label><input id="lumForm-init_org" type="text" name="init_org" placeholder="Organisation ou collectif"></div>
+          <div class="field"><label for="lumForm-init_desc">Description de l'action *</label><textarea id="lumForm-init_desc" name="init_desc" rows="4" placeholder="Objectifs et réalisations…"></textarea></div>
         </div>
 
         <div class="lum-panel ${pre==='temoignage'?'on':''}" id="lum-tem">
-          <div class="field"><label>Titre de votre témoignage *</label><input type="text" name="tem_title" placeholder="Sujet abordé"></div>
-          <div class="field"><label>Votre récit *</label><textarea name="tem_story" rows="5" placeholder="Votre expérience de terrain…"></textarea></div>
+          <div class="field"><label for="lumForm-tem_title">Titre de votre témoignage *</label><input id="lumForm-tem_title" type="text" name="tem_title" placeholder="Sujet abordé"></div>
+          <div class="field"><label for="lumForm-tem_story">Votre récit *</label><textarea id="lumForm-tem_story" name="tem_story" rows="5" placeholder="Votre expérience de terrain…"></textarea></div>
         </div>
 
         <div class="lum-panel ${pre==='cyberviolence'?'on':''}" id="lum-cyber">
-          <div style="background:#FFF3E0;border:1px solid #FFE0B2;border-radius:10px;padding:1rem;margin-bottom:1.2rem;font-size:0.88rem;color:#E65100;">
-            <strong>Sécurité &amp; Confidentialité stricte :</strong> Ce formulaire permet de documenter les cas de violences numériques facilitées par la technologie (TFGBV), cyberharcèlement ou censure en ligne. Vos données sont chiffrées et ne seront jamais publiées sans consentement express.
+          <div style="background:#FFF3E0;border:1px solid #FFE0B2;border-radius:10px;padding:1rem;margin-bottom:1.2rem;font-size:0.88rem;color: var(--orange-deep-ink);">
+            <strong>Signalement confidentiel :</strong> Ne saisissez aucun nom, numéro, adresse ni élément permettant d'identifier une personne. Quand le canal sécurisé est activé, le récit est chiffré avant son enregistrement, accessible aux administrateurs autorisés et supprimé après 30 jours. Il n'est jamais publié.
+            <div id="tfgbvSecureStatus" role="status" aria-live="polite" data-enabled="unknown" style="margin-top:.6rem;font-weight:700;">Vérification du canal sécurisé… Ne saisissez pas encore de détails personnels.</div>
           </div>
-          <div class="field"><label>Plateforme ou espace numérique concerné *</label><input type="text" name="cyber_platform" placeholder="Ex : Facebook, WhatsApp, X, TikTok, Forum…"></div>
-          <div class="field"><label>Description de l'incident ou de la situation *</label><textarea name="cyber_desc" rows="5" placeholder="Expliquez la situation, le mode opératoire et l'impact constaté…"></textarea></div>
-          <div class="field"><label>Souhaitez-vous un accompagnement en sécurité numérique ?</label>
-            <select name="cyber_support" style="width:100%;padding:0.7rem;border:1.5px solid #D9CEE2;border-radius:8px;">
+          <div class="field"><label for="lumForm-cyber_platform">Plateforme ou espace numérique concerné *</label><input id="lumForm-cyber_platform" type="text" name="cyber_platform" required maxlength="200" placeholder="Ex : Facebook, WhatsApp, X, TikTok, Forum…"></div>
+          <div class="field"><label for="lumForm-cyber_desc">Description de l'incident ou de la situation *</label><textarea id="lumForm-cyber_desc" name="cyber_desc" required maxlength="10000" rows="5" placeholder="Décrivez la situation sans nom ni coordonnée personnelle."></textarea></div>
+          <div class="field"><label for="lumForm-cyber_support">Souhaitez-vous un accompagnement en sécurité numérique ?</label>
+            <select id="lumForm-cyber_support" name="cyber_support" style="width:100%;padding:0.7rem;border:1.5px solid #D9CEE2;border-radius:8px;">
               <option value="Documentation anonyme uniquement">Documentation anonyme pour la recherche / Observatoire uniquement</option>
               <option value="Oui, besoin de conseils en sécurité numérique">Oui, être recontactée par l'équipe pour des conseils de protection</option>
             </select>
@@ -6469,7 +6742,10 @@ function vLumiere(pre) {
         </div>
 
         <div class="field" style="margin-top:1.5rem;">
-          <label><input type="checkbox" id="lumConsent" required> Je certifie avoir recueilli le consentement préalable de la personne concernée ou témoigner sous ma propre responsabilité.</label>
+          <label for="lumConsent"><input type="checkbox" id="lumConsent" required> Je confirme le consentement de la personne concernée, ou je témoigne de ma propre situation.</label>
+          <div id="lumPrivacyConsentField" style="display:none;margin-top:.65rem;">
+            <label for="lumPrivacyConsent"><input type="checkbox" id="lumPrivacyConsent"> J'accepte le traitement de ce récit sous forme chiffrée par les administrateurs autorisés, pour 30 jours au maximum, sans publication.</label>
+          </div>
         </div>
 
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.5rem;">Soumettre la proposition</button>
@@ -6505,11 +6781,11 @@ function vContribuer() {
       </div>
 
       <form id="contribForm" class="contact-form-box" data-reveal>
-        <div class="field"><label>Nom &amp; Prénom *</label><input type="text" name="name" required placeholder="Votre nom complet"></div>
-        <div class="field"><label>Adresse e-mail *</label><input type="email" name="email" required placeholder="nom@exemple.org"></div>
+        <div class="field"><label for="contribForm-name">Nom &amp; Prénom *</label><input id="contribForm-name" type="text" name="name" required placeholder="Votre nom complet"></div>
+        <div class="field"><label for="contribForm-email">Adresse e-mail *</label><input id="contribForm-email" type="email" name="email" required placeholder="nom@exemple.org"></div>
         <div class="field">
-          <label>Votre profil principal *</label>
-          <select name="expertise" required style="width:100%;padding:0.75rem;border:1.5px solid #D9CEE2;border-radius:8px;">
+          <label for="contribForm-expertise">Votre profil principal *</label>
+          <select id="contribForm-expertise" name="expertise" required style="width:100%;padding:0.75rem;border:1.5px solid #D9CEE2;border-radius:8px;">
             <option value="">Sélectionnez votre profil d'engagement…</option>
             <option value="Développeuse / Conceptrice tech">Développeuse / Conceptrice tech (Civic Tech, Code, IA)</option>
             <option value="Data Activist / Analyste">Data Activist / Analyste de données féministe</option>
@@ -6520,8 +6796,8 @@ function vContribuer() {
             <option value="Autre profil engagé">Autre profil d'action collective</option>
           </select>
         </div>
-        <div class="field"><label>Province de résidence ou Pays *</label><input type="text" name="province" required placeholder="Ex : Kinshasa, Nord-Kivu, Diaspora…"></div>
-        <div class="field"><label>Motivation &amp; Enjeux sur lesquels vous souhaitez agir *</label><textarea name="message" required rows="4" placeholder="Parlez-nous de vos compétences, de vos projets ou de vos idées pour la communauté…"></textarea></div>
+        <div class="field"><label for="contribForm-province">Province de résidence ou Pays *</label><input id="contribForm-province" type="text" name="province" required placeholder="Ex : Kinshasa, Nord-Kivu, Diaspora…"></div>
+        <div class="field"><label for="contribForm-message">Motivation &amp; Enjeux sur lesquels vous souhaitez agir *</label><textarea id="contribForm-message" name="message" required rows="4" placeholder="Parlez-nous de vos compétences, de vos projets ou de vos idées pour la communauté…"></textarea></div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem;">Rejoindre la communauté active</button>
       </form>
       <div id="contribOk" class="alert-success" style="display:none;padding:2rem;text-align:center;background:#E8F5E9;border-radius:12px;margin-top:1.5rem;">
@@ -6546,10 +6822,10 @@ function vPartenariat() {
   <section class="section" style="padding-top: 2rem;">
     <div class="container" style="max-width: 700px;">
       <form id="partForm" class="contact-form-box" data-reveal>
-        <div class="field"><label>Organisation / Institution *</label><input type="text" name="org" required></div>
-        <div class="field"><label>Nom du contact *</label><input type="text" name="name" required></div>
-        <div class="field"><label>Adresse e-mail professionnelle *</label><input type="email" name="email" required></div>
-        <div class="field"><label>Type de collaboration envisagée *</label><textarea name="message" required rows="4" placeholder="Soutien de programmes, co-production de données…"></textarea></div>
+        <div class="field"><label for="partForm-org">Organisation / Institution *</label><input id="partForm-org" type="text" name="org" required></div>
+        <div class="field"><label for="partForm-name">Nom du contact *</label><input id="partForm-name" type="text" name="name" required></div>
+        <div class="field"><label for="partForm-email">Adresse e-mail professionnelle *</label><input id="partForm-email" type="email" name="email" required></div>
+        <div class="field"><label for="partForm-message">Type de collaboration envisagée *</label><textarea id="partForm-message" name="message" required rows="4" placeholder="Soutien de programmes, co-production de données…"></textarea></div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem;">Proposer un partenariat</button>
       </form>
       <div id="partOk" class="alert-success" style="display:none;padding:2rem;text-align:center;background:#E8F5E9;border-radius:12px;margin-top:1.5rem;">
@@ -6578,7 +6854,7 @@ function vFaq() {
           <div class="acc" style="margin-bottom:1rem;border:1px solid #E8DFEE;border-radius:10px;background:#fff;" data-reveal data-delay="${i * 50}">
             <button style="width:100%;text-align:left;padding:1.2rem 1.5rem;font-weight:700;font-size:1.05rem;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
               <span>${item[0]}</span>
-              <span>▾</span>
+              <span class="acc-chev" aria-hidden="true">▾</span>
             </button>
             <div class="acc-body" style="padding:0 1.5rem 1.2rem;color:#5A4E66;line-height:1.6;">
               <p>${item[1]}</p>
@@ -6617,7 +6893,7 @@ function v404() {
   return `
   <section class="section" style="padding: 6rem 1rem; text-align:center;">
     <div class="container" style="max-width:600px;margin:0 auto;">
-      <h1 style="font-size:4rem;font-family:var(--display);color:#E91E63;margin-bottom:1rem;">404</h1>
+      <h1 style="font-size:4rem;font-family:var(--display);color: var(--magenta-ink);margin-bottom:1rem;">404</h1>
       <h2>Page introuvable</h2>
       <p style="color:#6E5E7A;margin:1rem 0 2rem;">La page que vous recherchez n'existe pas ou a été déplacée.</p>
       <a href="/" class="btn btn-primary">Retour à l'accueil</a>
@@ -6773,6 +7049,45 @@ function animateCount(el) {
 
 function bindCommon(root) {
   if (!root) return;
+
+  /* B-14 · Pause / reprise des bandeaux défilants (WCAG 2.2.2).
+     La règle CSS `.ticker.paused .ticker-track` existait déjà mais aucun
+     bouton ne la déclenchait. Le conteneur est ciblé par délégation. */
+  $$("[data-mq-pause]", root).forEach(b => {
+    if (b.dataset.boundMq) return;
+    b.dataset.boundMq = "1";
+    const box = b.closest(".ticker, .partners");
+    b.addEventListener("click", () => {
+      if (!box) return;
+      const paused = box.classList.toggle("paused");
+      b.setAttribute("aria-pressed", String(paused));
+    });
+  });
+
+  /* S6 · Remplacement des gestionnaires inline retirés pour la CSP à nonce. */
+  $$("[data-toast]", root).forEach(b => {
+    if (b.dataset.boundToast) return;
+    b.dataset.boundToast = "1";
+    b.addEventListener("click", () => toast(b.dataset.toast));
+  });
+  $$("[data-copy-link]", root).forEach(b => {
+    if (b.dataset.boundCopy) return;
+    b.dataset.boundCopy = "1";
+    b.addEventListener("click", () => copyLink());
+  });
+  $$("[data-scroll]", root).forEach(a => {
+    if (a.dataset.boundScroll) return;
+    a.dataset.boundScroll = "1";
+    a.addEventListener("click", (ev) => {
+      const t = document.getElementById(a.dataset.scroll);
+      if (!t) return;
+      ev.preventDefault();
+      t.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+      if (t.tabIndex < 0) t.setAttribute("tabindex", "-1");
+      t.focus({ preventScroll: true });
+    });
+  });
+
   if (io) $$("[data-reveal]", root).forEach(el => { const d = el.dataset.delay; if (d) el.style.transitionDelay = d + "ms"; io.observe(el); });
   if (ioC) $$("[data-count]", root).forEach(el => ioC.observe(el));
   // B-03 · Accordéon accessible avec aria-expanded
@@ -6810,6 +7125,43 @@ function bindCommon(root) {
   });
 
   // F6 · Onglets accessibles avec role tab et aria-selected
+  const cyberStatus = $("#tfgbvSecureStatus", root);
+  const cyberPanel = $("#lum-cyber", root);
+  const cyberPrivacyField = $("#lumPrivacyConsentField", root);
+  const cyberPrivacyConsent = $("#lumPrivacyConsent", root);
+  const cyberControls = cyberPanel ? $$('input, textarea, select', cyberPanel) : [];
+  const updateCyberAvailability = () => {
+    const panelActive = !!(cyberPanel && cyberPanel.classList.contains("on"));
+    const enabled = !!(cyberStatus && cyberStatus.dataset.enabled === "true");
+    cyberControls.forEach(control => { control.disabled = !(panelActive && enabled); });
+    if (cyberPrivacyField) cyberPrivacyField.style.display = panelActive ? "block" : "none";
+    if (cyberPrivacyConsent) {
+      cyberPrivacyConsent.required = panelActive;
+      cyberPrivacyConsent.disabled = !panelActive;
+    }
+  };
+  if (cyberStatus && !cyberStatus.dataset.checked) {
+    cyberStatus.dataset.checked = "1";
+    updateCyberAvailability();
+    fetch(WP_CUSTOM_API_BASE + "/status", { cache: "no-store" })
+      .then(res => res.ok ? res.json() : Promise.reject(new Error("status unavailable")))
+      .then(data => {
+        const enabled = data && data.tfgbv_enabled === true;
+        cyberStatus.dataset.enabled = String(enabled);
+        cyberStatus.textContent = enabled
+          ? "Canal sécurisé activé. Chiffrement avant stockage; suppression automatique après 30 jours."
+          : "Canal sécurisé indisponible. Le formulaire reste fermé et aucune donnée ne sera envoyée.";
+        updateCyberAvailability();
+      })
+      .catch(() => {
+        cyberStatus.dataset.enabled = "false";
+        cyberStatus.textContent = "Impossible de vérifier le canal sécurisé. Le formulaire reste fermé et aucune donnée ne sera envoyée.";
+        updateCyberAvailability();
+      });
+  } else if (cyberStatus) {
+    updateCyberAvailability();
+  }
+
   $(".lum-tab", root).forEach(t => {
     t.setAttribute("role", "tab");
     t.setAttribute("aria-selected", String(t.classList.contains("active")));
@@ -6821,6 +7173,7 @@ function bindCommon(root) {
       });
       const pId = t.dataset.panel;
       $(".lum-panel", root).forEach(p => p.classList.toggle("on", p.id === "lum-" + pId));
+      updateCyberAvailability();
     });
   });
 
@@ -6988,6 +7341,10 @@ function bindCommon(root) {
         type = "Initiative";
       } else if (activePanel === "cyber") {
         // B-05 · Branche dédiée au Signalement TFGBV / cyberviolence
+        if (!cyberStatus || cyberStatus.dataset.enabled !== "true") {
+          toast("✕ Le canal sécurisé n'est pas disponible. Aucune donnée n'a été envoyée.");
+          return;
+        }
         const plat = (lum.querySelector("#lum-cyber input[name='cyber_platform']") || {}).value || "";
         const desc = (lum.querySelector("#lum-cyber textarea[name='cyber_desc']") || {}).value || "";
         const sup = (lum.querySelector("#lum-cyber select[name='cyber_support']") || {}).value || "Accompagnement et documentation";
@@ -7016,6 +7373,12 @@ function bindCommon(root) {
         return;
       }
 
+      const privacyConsent = $("#lumPrivacyConsent", lum);
+      if (activePanel === "cyber" && (!privacyConsent || !privacyConsent.checked)) {
+        toast("✕ Le consentement au traitement sécurisé est obligatoire.");
+        return;
+      }
+
       if (!name) {
         toast("✕ Merci de renseigner les informations obligatoires.");
         return;
@@ -7024,19 +7387,30 @@ function bindCommon(root) {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Enregistrement…"; }
 
       try {
+        const consentedAt = new Date().toISOString();
+        const payload = activePanel === "cyber"
+          ? {
+              name: "Signalement TFGBV",
+              type,
+              platform: (lum.querySelector("#lum-cyber input[name='cyber_platform']") || {}).value || "",
+              support: (lum.querySelector("#lum-cyber select[name='cyber_support']") || {}).value || "",
+              story,
+              consent: true,
+              consented_at: consentedAt
+            }
+          : { name, type, province, role, story, contact: "Consentement certifié le " + consentedAt };
         const res = await fetch(WP_CUSTOM_API_BASE + "/submit-light", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name, type, province, role, story,
-            contact: "Consentement certifié le " + new Date().toISOString()
-          })
+          body: JSON.stringify(payload)
         });
         if (res.ok) {
           lum.style.display = "none";
           const lOk = $("#lumOk", root);
           if (lOk) lOk.style.display = "block";
           toast("✦ <b>Proposition enregistrée</b> dans la base de données officielle !");
+        } else if (activePanel === "cyber" && res.status === 503) {
+          toast("✕ Le canal sécurisé n'est pas configuré. Le récit n'a pas été enregistré.");
         } else {
           toast("✕ <b>Erreur lors de l'enregistrement.</b> Veuillez réessayer ou nous écrire à contact@femcurrent.com.");
         }
@@ -7136,12 +7510,26 @@ function trapTabInDrawer(e) {
   }
 }
 
+/* M-19 · Verrouillage du défilement sans saut de mise en page :
+   `body.lock { padding-right: var(--sbw) }` existe en CSS mais --sbw n'était
+   jamais alimenté. On mesure la barre de défilement une fois pour toutes. */
+function measureScrollbar() {
+  if (typeof document === "undefined" || !document.documentElement) return;
+  const w = window.innerWidth - document.documentElement.clientWidth;
+  document.documentElement.style.setProperty("--sbw", (w > 0 ? w : 0) + "px");
+}
+function lockScroll(o) {
+  if (typeof document === "undefined" || !document.body) return;
+  measureScrollbar();
+  document.body.classList.toggle("lock", !!o);
+}
+
 function toggleDrawer(o) {
   if (drawer && drawer.classList) {
     if (o) lastFocusedBeforeDrawer = document.activeElement;
     drawer.classList.toggle("open", o);
     drawer.setAttribute("aria-hidden", !o);
-    document.body.classList.toggle("lock", o);
+    lockScroll(o);
     if (burger && typeof burger.setAttribute === "function") burger.setAttribute("aria-expanded", o);
 
     if (o) {
@@ -7161,11 +7549,16 @@ if (burger && typeof burger.addEventListener === "function") burger.addEventList
 const dClose = $("#drawerClose");
 if (dClose && typeof dClose.addEventListener === "function") dClose.addEventListener("click", () => toggleDrawer(false));
 
+/* M-10 · aria-expanded était figé à "false" : le gestionnaire ne faisait que
+   basculer la classe. On le synchronise désormais (même motif que #dEspaces). */
 $$(".d-accordion-toggle").forEach(btn => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
     const item = btn.closest(".d-nav-item");
-    if (item) item.classList.toggle("open");
+    if (item) {
+      const open = item.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+    }
   });
 });
 
@@ -7223,7 +7616,7 @@ function openSearch() {
   if (sOverlay) {
     lastFocusedBeforeSearch = document.activeElement;
     sOverlay.classList.add("open");
-    document.body.classList.add("lock");
+    lockScroll(true);          // M-19
     renderResults();
     if (sInput) setTimeout(() => sInput.focus(), 120);
   }
@@ -7232,7 +7625,7 @@ function openSearch() {
 function closeSearch() {
   if (sOverlay) {
     sOverlay.classList.remove("open");
-    document.body.classList.remove("lock");
+    lockScroll(false);         // M-19
     if (lastFocusedBeforeSearch && typeof lastFocusedBeforeSearch.focus === "function") {
       lastFocusedBeforeSearch.focus();
     }
@@ -7254,6 +7647,8 @@ if (typeof addEventListener === "function") {
 if (typeof location !== "undefined" && location.hash && location.hash.startsWith("#/")) {
   history.replaceState(null, "", location.hash.replace(/^#/, ""));
 }
+// Revalide les contenus WordPress dès l'ouverture, sans attendre le cycle d'une minute.
+syncWordPressData();
 router();
 if (typeof window !== "undefined") {
   window.WP_STORE = WP_STORE;
