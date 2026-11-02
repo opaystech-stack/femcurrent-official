@@ -4991,8 +4991,8 @@ function vHome() {
 
     <!-- Action Buttons -->
     <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-      <a href="#fonctions" data-scroll="fonctions" class="btn btn-primary" style="padding: 0.85rem 1.6rem; font-size: 0.88rem; font-weight: 800;">
-        <span>Explorer les 5 Fonctions Cyberféministes ↓</span>
+      <a href="/espaces" class="btn btn-primary" style="padding: 0.85rem 1.6rem; font-size: 0.88rem; font-weight: 800;">
+        <span>Explorer les 5 Fonctions Cyberféministes →</span>
       </a>
       <a href="/community" class="btn btn-white" style="padding: 0.85rem 1.5rem; font-size: 0.88rem; font-weight: 700;">
         <span>Rejoindre la Communauté d'Activistes</span>
@@ -5005,37 +5005,7 @@ function vHome() {
   </div>
 </section>
 
-<!-- SECTION 2 : LES 5 FONCTIONS CYBERFÉMINISTES -->
-<section class="section" id="fonctions" style="background: #FFFFFF; padding-top: 3.5rem;">
-  <div class="container">
-    <div class="section-head" data-reveal>
-      <div>
-        <span class="kicker">Architecture Fondatrice</span>
-        <h2>Construire FemCurrent autour de <span class="accent">5 fonctions cyberféministes</span></h2>
-        <p class="lead" style="margin-top: 0.8rem; max-width: 960px;">
-          Nous ne voulons pas simplement créer un nouveau média féministe. Nous voulons expérimenter en RDC un modèle de cyberféminisme organisé autour d’une infrastructure numérique permettant aux femmes de produire des connaissances, développer des solutions technologiques, raconter leurs réalités, s’organiser et transformer les rapports de pouvoir.
-        </p>
-      </div>
-      <a class="see-all" href="/espaces">Explorer l'écosystème complet →</a>
-    </div>
-
-    <div class="uni-grid">
-      ${uniCard("voices", UNIV.voices, "w3", 0)}
-      ${uniCard("data", UNIV.data, "w3", 70)}
-      ${uniCard("lab", UNIV.lab, "w2", 140)}
-      ${uniCard("community", UNIV.community, "w2", 210)}
-      ${uniCard("impact", UNIV.impact, "w2", 280)}
-    </div>
-
-    <!-- Axes complémentaires -->
-    <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem;" data-reveal>
-      ${uniCard("matendo", UNIV.matendo, "w3", 320)}
-      ${uniCard("academy", UNIV.academy, "w3", 360)}
-    </div>
-  </div>
-</section>
-
-<!-- SECTION 3 : LE CYCLE D'ACTIVISME TECHNOLOGIQUE FÉMINISTE -->
+<!-- SECTION CYBERFÉMINISTE : LE CYCLE D'ACTIVISME TECHNOLOGIQUE FÉMINISTE --><!-- SECTION 3 : LE CYCLE D'ACTIVISME TECHNOLOGIQUE FÉMINISTE -->
 <section class="section" style="background: #FAF7FC; border-top: 1px solid #EBE4F0; border-bottom: 1px solid #EBE4F0;">
   <div class="container">
     <div class="section-head" data-reveal>
@@ -5266,27 +5236,6 @@ function vHome() {
  <a href="/observatoire" class="btn btn-white">Consulter l'Observatoire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 </div></section>
 
-<section class="section"><div class="container">
- <div class="section-head" data-reveal><div><span class="kicker">Agenda &amp; Formations</span><h2>Prochains événements</h2></div><a class="see-all" href="/agenda">Tout l'agenda →</a></div>
- <div class="events-list">
- ${homeEvents.map((e, i) => `<article class="event" data-reveal data-delay="${i * 90}" style="padding:1.4rem;background:#FFF;border:1px solid #E8DFEE;border-radius:14px;display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap;box-shadow:0 2px 8px rgba(75,29,109,0.03);margin-bottom:1.2rem;">
-  <div class="event-date" style="background:var(--lavande);border:1px solid #E8DFEE;border-radius:12px;padding:0.75rem 1.1rem;text-align:center;min-width:70px;">
-    <b style="font-size:1.5rem;color: var(--magenta-ink);display:block;line-height:1;">${e.d}</b>
-    <span style="font-size:0.72rem;font-weight:700;color:#6E5E7A;text-transform:uppercase;">${e.m}</span>
-  </div>
-  <div style="flex:1;min-width:240px;">
-    <div style="display:flex;gap:0.5rem;margin-bottom:0.35rem;align-items:center;flex-wrap:wrap;">
-      <span class="tag violet" style="font-size:0.62rem;">${e.organizer || 'FemCurrent Academy'}</span>
-      <span class="tag" style="background:#E8F5E9;color:#2E7D32;font-size:0.62rem;font-weight:700;">Inscriptions ouvertes</span>
-    </div>
-    <h3 style="margin:0 0 0.35rem;font-size:1.15rem;"><a href="/agenda/${e.slug}" style="color:inherit;text-decoration:none;">${e.title}</a></h3>
-    <div class="meta" style="color:#5A4E66;font-size:0.82rem;">⏰ ${e.time} · 📍 ${e.location} · <strong style="color: var(--magenta-ink)">${e.places}</strong></div>
-  </div>
-  <div class="event-cta">
-    <a class="btn btn-primary" href="/agenda/${e.slug}" style="padding:0.55rem 1.2rem;font-size:0.82rem;">S'inscrire →</a>
-  </div></article>`).join("")}
- </div>
-</div></section>
 
 <section class="section section-alt"><div class="container">
  <div class="banner-cta" data-reveal>
@@ -5307,50 +5256,13 @@ function vHome() {
  <span class="nl-ok" style="display:none"></span></div>
  <div class="wa-card" data-reveal data-delay="120" style="background: linear-gradient(135deg, rgba(233,30,99,0.92), rgba(46,17,67,0.95)); border: 1px solid rgba(255,255,255,0.2);">
   <span class="wa-ic" style="background:#fff;color: var(--magenta-ink);"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></span>
-  <h3>Communauté Cyberféministe</h3>
+  <h3>FemCurrent CyberFeminist Community</h3>
   <p>Rejoignez notre espace d'échange, de mobilisation collective et de partage d'expériences en RDC.</p>
   <a class="btn btn-white" href="https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr" target="_blank" rel="noopener">Rejoindre le groupe Facebook</a>
  </div>
 </div></section>
 
-<section class="section" style="background:#FAF7FC;"><div class="container">
- <div class="section-head" data-reveal>
-   <div>
-     <span class="kicker">Nos Espaces Officiels</span>
-     <h2>Rejoindre FemCurrent sur nos canaux officiels</h2>
-     <p class="lead" style="margin-top:0.6rem">Participez aux conversations, accédez aux données exclusives et engagez-vous avec notre communauté cyberféministe.</p>
-   </div>
- </div>
- <div class="social-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-  
-  <article class="social-card" data-reveal style="border-top:4px solid #E91E63;">
-   <div class="sc-head">
-    <svg viewBox="0 0 24 24" fill="#E91E63"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-    <b>Communauté FemCurrent</b>
-    <a href="https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr" target="_blank" rel="noopener" style="background:#E91E63;color:#fff;padding:0.3rem 0.8rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Rejoindre le groupe</a>
-   </div>
-   <div class="sc-body">
-    <h3 style="margin:0.5rem 0;color:#2E1143;">Espace d'échange &amp; mobilisation</h3>
-    <p>Partage d'expériences, récits citoyens, débats en direct et actions collectives coordonnées à travers toute la RDC.</p>
-   </div>
-   <div class="sc-foot"><span style="color: var(--magenta-ink);font-weight:700;">✦ Groupe officiel actif</span></div>
-  </article>
-
-  <article class="social-card" data-reveal data-delay="80" style="border-top:4px solid #0A66C2;">
-   <div class="sc-head">
-    <svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-    <b>FemCurrent sur LinkedIn</b>
-    <a href="https://www.linkedin.com/company/femcurrent/" target="_blank" rel="noopener" style="background:#0A66C2;color:#fff;padding:0.3rem 0.8rem;border-radius:20px;font-size:0.75rem;font-weight:700;">Suivre l'initiative</a>
-   </div>
-   <div class="sc-body">
-    <h3 style="margin:0.5rem 0;color:#2E1143;">Données, Plaidoyer &amp; Impact</h3>
-    <p>Publications stratégiques, notes d'analyse des droits numériques, cartographies du Lab et opportunités de partenariats institutionnels.</p>
-   </div>
-   <div class="sc-foot"><span style="color: var(--li-ink);font-weight:700;">Compte LinkedIn officiel</span></div>
-  </article>
-
- </div>
-</div></section>`;
+`;
 }
 
 function vActualites() {

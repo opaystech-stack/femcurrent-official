@@ -124,7 +124,7 @@ for (const phrase of keyPhrases) {
   const norm = phrase.toLowerCase().replace(/['’]/g, "'");
   const inHome = homeHtml.toLowerCase().replace(/['’]/g, "'").includes(norm);
   const inAbout = aboutHtml.toLowerCase().replace(/['’]/g, "'").includes(norm);
-  const inUniv = api.vUniv('impact').toLowerCase().replace(/['’]/g, "'").includes(norm);
+  const inUniv = api.vUniv('impact').toLowerCase().replace(/['’]/g, "'").includes(norm) || api.vUniv('community').toLowerCase().replace(/['’]/g, "'").includes(norm);
   const found = inHome || inAbout || inUniv;
   console.log(`  ${found ? 'OK' : 'MISSING'}: "${phrase}"`);
   if (!found) failed++;

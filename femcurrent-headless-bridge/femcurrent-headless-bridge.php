@@ -3,7 +3,7 @@
  * Plugin Name: FemCurrent Headless Bridge
  * Plugin URI: https://femcurrent.com
  * Description: Moteur Headless officiel pour FemCurrent Média : CORS, Custom Post Types complets, redirection frontend propre sans # et API REST temps réel.
- * Version: 2.1.0
+ * Version: 2.2.0
  * Author: Équipe FemCurrent & OPAYSTECH
  * Author URI: https://femcurrent.com
  * License: GPL-2.0+
@@ -205,6 +205,7 @@ register_deactivation_hook(__FILE__, function () {
     wp_clear_scheduled_hook('femcurrent_purge_tfgbv_submissions');
 });
 
+if (!function_exists('femcurrent_purge_tfgbv_submissions')) {
 function femcurrent_purge_tfgbv_submissions() {
     $cutoff = gmdate('Y-m-d H:i:s', time() - (30 * DAY_IN_SECONDS));
     $expired = get_posts([
@@ -220,6 +221,7 @@ function femcurrent_purge_tfgbv_submissions() {
     foreach ($expired as $post_id) {
         wp_delete_post((int) $post_id, true);
     }
+}
 }
 
 /* ==========================================================================
@@ -257,12 +259,15 @@ add_action('rest_api_init', function () {
     ]);
 });
 
+if (!function_exists('femcurrent_tfgbv_encryption_key')) {
 function femcurrent_tfgbv_encryption_key() {
     if (!defined('FEMCURRENT_TFGBV_KEY')) return null;
     $key = base64_decode(trim((string) FEMCURRENT_TFGBV_KEY), true);
     return is_string($key) && strlen($key) === 32 ? $key : null;
 }
+}
 
+if (!function_exists('femcurrent_encrypt_tfgbv')) {
 function femcurrent_encrypt_tfgbv($plaintext) {
     $key = femcurrent_tfgbv_encryption_key();
     if ($key === null || !function_exists('openssl_encrypt')) return false;
@@ -276,7 +281,9 @@ function femcurrent_encrypt_tfgbv($plaintext) {
     if ($ciphertext === false || strlen($tag) !== 16) return false;
     return 'FC-TFGBV:v1:' . base64_encode($iv . $tag . $ciphertext);
 }
+}
 
+if (!function_exists('femcurrent_decrypt_tfgbv')) {
 function femcurrent_decrypt_tfgbv($payload) {
     $key = femcurrent_tfgbv_encryption_key();
     if ($key === null || !function_exists('openssl_decrypt') || strpos($payload, 'FC-TFGBV:v1:') !== 0) return false;
@@ -287,7 +294,9 @@ function femcurrent_decrypt_tfgbv($payload) {
     $ciphertext = substr($packed, 28);
     return openssl_decrypt($ciphertext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag, '');
 }
+}
 
+if (!function_exists('femcurrent_submission_rate_limit')) {
 function femcurrent_submission_rate_limit($bucket, $limit = 10) {
     $ip = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : '';
     if ($ip === '') return new WP_Error('femcurrent_rate_limit', 'Soumission momentanément indisponible.', ['status' => 429]);
@@ -299,6 +308,7 @@ function femcurrent_submission_rate_limit($bucket, $limit = 10) {
     }
     set_transient($transient, $count + 1, HOUR_IN_SECONDS);
     return true;
+}
 }
 
 add_action('add_meta_boxes_soumission', function ($post) {
@@ -314,6 +324,7 @@ add_action('add_meta_boxes_soumission', function ($post) {
     );
 });
 
+if (!function_exists('femcurrent_render_tfgbv_meta_box')) {
 function femcurrent_render_tfgbv_meta_box($post) {
     if (!current_user_can('manage_options')) {
         echo '<p>Accès réservé aux administratrices et administrateurs autorisés.</p>';
@@ -327,7 +338,9 @@ function femcurrent_render_tfgbv_meta_box($post) {
     }
     echo '<textarea class="widefat" rows="12" readonly>' . esc_textarea($plaintext) . '</textarea>';
 }
+}
 
+if (!function_exists('femcurrent_handle_submission')) {
 function femcurrent_handle_submission($request) {
     $limit = femcurrent_submission_rate_limit('light', 10);
     if (is_wp_error($limit)) return $limit;
@@ -392,7 +405,9 @@ function femcurrent_handle_submission($request) {
     }
     return new WP_REST_Response(['success' => true, 'id' => $post_id, 'message' => 'Proposition reçue.'], 200);
 }
+}
 
+if (!function_exists('femcurrent_handle_contact')) {
 function femcurrent_handle_contact($request) {
     $limit = femcurrent_submission_rate_limit('contact', 10);
     if (is_wp_error($limit)) return $limit;
@@ -423,4 +438,5 @@ function femcurrent_handle_contact($request) {
         return new WP_REST_Response(['success' => false, 'message' => 'Erreur'], 500);
     }
     return new WP_REST_Response(['success' => true, 'id' => $post_id, 'message' => 'Message reçu.'], 200);
+}
 }
