@@ -1289,9 +1289,9 @@ h4 { font-size: clamp(1.05rem, 1.6vw, 1.25rem); }
 .portrait-cta p { font-size: 0.88rem; opacity: 0.92; }
 
 /* Universes */
-.uni-grid { display: grid; gap: 1.2rem; grid-template-columns: 1fr; }
-@media (min-width: 700px) { .uni-grid { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1020px) {
+.uni-grid { display: grid; gap: 1.35rem; grid-template-columns: 1fr; }
+@media (min-width: 600px) { .uni-grid { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); } }
+@media (min-width: 1040px) {
   .uni-grid { grid-template-columns: repeat(6, 1fr); }
   .uni-card.w3 { grid-column: span 3; }
   .uni-card.w2 { grid-column: span 2; }
@@ -3110,18 +3110,23 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
   <div style="max-width: 1280px; margin: 0 auto; position: relative; display: flex; align-items: center; justify-content: center; padding: 0 1.5rem; height: 56px;">
     
     <!-- Centered Menu Links -->
-    <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: nowrap; overflow-x: auto;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: nowrap; overflow-x: auto;">
       <!-- F7 · data-nav = 1er segment de route, exploité par setActiveNav() -->
       <a href="/" data-nav="" style="display: flex; align-items: center; color: var(--magenta-ink); text-decoration: none; padding: 0.3rem;" aria-label="Accueil">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
       </a>
-      <a href="/actualites" data-nav="actualites" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Actualités</a>
-      <a href="/enquetes" data-nav="enquetes" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Enquêtes</a>
-      <a href="/initiatives" data-nav="initiatives" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Initiatives</a>
-      <a href="/observatoire" data-nav="observatoire" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Observatoire</a>
-      <a href="/espaces" data-nav="espaces" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Nos espaces</a>
-      <a href="/ressources" data-nav="ressources" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Ressources</a>
-      <a href="/a-propos" data-nav="a-propos" style="font-size: 0.92rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">À propos</a>
+      <a href="/espaces" data-nav="espaces" style="font-size: 0.88rem; font-weight: 800; color: #4B1D6D; text-decoration: none; white-space: nowrap; transition: color 0.2s;">🟣 5 Fonctions</a>
+      <a href="/voices" data-nav="voices" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Voix</a>
+      <a href="/data" data-nav="data" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Données</a>
+      <a href="/lab" data-nav="lab" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Lab Tech</a>
+      <a href="/community" data-nav="community" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Communauté</a>
+      <a href="/impact" data-nav="impact" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Impact</a>
+      <a href="/actualites" data-nav="actualites" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Actualités</a>
+      <a href="/enquetes" data-nav="enquetes" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Enquêtes</a>
+      <a href="/initiatives" data-nav="initiatives" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Matendo</a>
+      <a href="/observatoire" data-nav="observatoire" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Observatoire</a>
+      <a href="/ressources" data-nav="ressources" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Ressources</a>
+      <a href="/a-propos" data-nav="a-propos" style="font-size: 0.88rem; font-weight: 700; color: #1F162B; text-decoration: none; white-space: nowrap; transition: color 0.2s;">Manifeste</a>
     </div>
 
     <!-- Right: Search Circle Button Positioned on Far Right -->
@@ -3291,11 +3296,11 @@ button.d-nav-link { width: 100%; text-align: left; background: none; border: non
         <span class="plus-ic">＋</span>
       </button>
       <div class="d-espaces-list">
-        <a class="d-espace-row" href="/espaces/voices"><strong>🟣 VOIX</strong> — Reprendre l'espace numérique</a>
-        <a class="d-espace-row" href="/espaces/data"><strong>🟣 CONNAISSANCE</strong> — Produire nos propres données</a>
-        <a class="d-espace-row" href="/espaces/lab"><strong>🟣 TECHNOLOGIE</strong> — Expérimenter au Lab</a>
-        <a class="d-espace-row" href="/espaces/community"><strong>🟣 ORGANISATION</strong> — Créer la communauté</a>
-        <a class="d-espace-row" href="/espaces/impact"><strong>🟣 IMPACT</strong> — Pouvoir politique & Plaidoyer</a>
+        <a class="d-espace-row" href="/voices"><strong>🟣 VOIX</strong> — Reprendre l'espace numérique</a>
+        <a class="d-espace-row" href="/data"><strong>🟣 CONNAISSANCE</strong> — Produire nos propres données</a>
+        <a class="d-espace-row" href="/lab"><strong>🟣 TECHNOLOGIE</strong> — Expérimenter au Lab</a>
+        <a class="d-espace-row" href="/community"><strong>🟣 ORGANISATION</strong> — Créer la communauté</a>
+        <a class="d-espace-row" href="/impact"><strong>🟣 IMPACT</strong> — Pouvoir politique &amp; Plaidoyer</a>
         <a class="d-espace-row" href="/espaces" style="color:var(--orange-on-dark);font-weight:800;">→ Explorer les 5 fonctions</a>
       </div>
     </div>
@@ -4430,17 +4435,20 @@ const UNIV = {
     emo: ICONS.voices,
     g: "linear-gradient(135deg,#4B1D6D,#E91E63)",
     tag: "Permettre aux femmes de raconter leurs expériences, produire leurs propres récits et participer aux conversations publiques.",
-    d: "Dans une approche cyberféministe résolue, FemCurrent Voices crée les espaces où les femmes reprennent la parole en ligne. Nous documentons les violences numériques fondées sur le genre (TFGBV), défendons la liberté d'expression numérique, déconstruisons les stéréotypes par des contre-discours féministes percutants et favorisons la puissance de la narration numérique.",
+    quote: "Permettre aux femmes de raconter leurs expériences, produire leurs propres récits et participer aux conversations publiques avec une approche cyberféministe résolue.",
+    d: "Dans une approche cyberféministe résolue, FemCurrent Voices crée et sécurise les espaces où les femmes reprennent la parole en ligne. Nous documentons les cyberviolences et les violences facilitées par la technologie (TFGBV), défendons la liberté d'expression numérique, déconstruisons les stéréotypes par des contre-discours féministes percutants et déployons la puissance de la narration numérique et sonore.",
     pts: [
       "Voix des femmes dans les espaces numériques et prise de parole publique",
-      "Récits et documentation des cyberviolences et de la TFGBV",
-      "Défense active de la liberté d'expression des femmes en ligne",
-      "Représentation des femmes et contre-discours féministes",
+      "Récits de cyberviolences et documentation rigoureuse de la TFGBV",
+      "Défense active de la liberté d’expression des femmes en ligne",
+      "Représentation des femmes en ligne et légitimité médiatique",
+      "Contre-discours féministes face aux stéréotypes et au harcèlement",
       "Narration numérique, créations sonores et podcasts immersifs"
     ],
     links: [
       ["Écouter les épisodes Voices", "/mediatheque"],
       ["Envoyer un récit / témoignage", "/lumiere/temoignage"],
+      ["Signaler une situation TFGBV", "/lumiere/cyberviolence"],
       ["Voir les voix à la une", "/femmes"]
     ]
   },
@@ -4449,19 +4457,22 @@ const UNIV = {
     pillar: "2. 🟣 CONNAISSANCE — Produire nos propres données",
     emo: ICONS.data,
     g: "linear-gradient(135deg,#2E1143,#E91E63)",
-    tag: "Les femmes ne sont pas seulement des personnes sur lesquelles on collecte des données : elles deviennent productrices de connaissances sur leurs propres réalités.",
-    d: "FemCurrent Data renverse la logique extractive de la donnée. Nous produisons des indicateurs communautaires, menons des recherches participatives sur la participation numérique des femmes et bâtissons l'Observatoire des droits numériques en RDC. Les données produites sont ouvertes, fiables et mises au service de la sécurité et de l'émancipation collective.",
+    tag: "Les femmes ne sont pas seulement des personnes sur lesquelles on collecte des données. Elles peuvent devenir productrices de connaissances sur leurs propres réalités.",
+    quote: "Les femmes ne sont pas seulement des personnes sur lesquelles on collecte des données. Elles peuvent devenir productrices de connaissances sur leurs propres réalités.",
+    d: "FemCurrent Data renverse la logique extractive de la recherche traditionnelle. Nous produisons des indicateurs communautaires, menons des recherches participatives sur la participation numérique des femmes et bâtissons l'Observatoire des droits numériques des femmes en RDC. Les données produites sont ouvertes, fiables, éthiques et mises au service de la sécurité et de l'émancipation collective.",
     pts: [
       "Cartographie des initiatives féminines et citoyennes",
-      "Documentation quantitative et qualitative de la TFGBV (violences en ligne)",
-      "Observatoire des droits numériques et de la participation des femmes",
-      "Enquêtes communautaires et recherche féministe participative",
-      "Données ouvertes éthiques et réutilisables en toute sécurité"
+      "Données sur la participation numérique des femmes en RDC",
+      "Documentation quantitative et qualitative de la TFGBV",
+      "Enquêtes communautaires et analyses territoriales",
+      "Observatoire des droits numériques des femmes",
+      "Données ouvertes éthiques, lorsque cela est sûr",
+      "Recherche féministe participative et co-construite"
     ],
     links: [
       ["Consulter l'Observatoire", "/observatoire"],
       ["Télécharger les études & données", "/ressources"],
-      ["Consulter les enquêtes", "/enquetes"]
+      ["Consulter les grandes enquêtes", "/enquetes"]
     ]
   },
   lab: {
@@ -4469,38 +4480,44 @@ const UNIV = {
     pillar: "3. 🟣 TECHNOLOGIE — Expérimenter",
     emo: ICONS.lab,
     g: "linear-gradient(135deg,#FF8C00,#4B1D6D)",
-    tag: "Le cœur technologique où les femmes conçoivent elles-mêmes les solutions numériques et d'intelligence collective.",
-    d: "FemCurrent Lab est l'atelier d'expérimentation technologique et de civic tech féministe. Les jeunes femmes développeuses, activistes et conceptrices y créent des outils concrets : technologies de protection, dispositifs de documentation sécurisés, algorithmes éthiques, archivage numérique militant et systèmes participatifs adaptés aux contextes locaux de la RDC.",
+    tag: "Le cœur technologique où de jeunes femmes conçoivent et expérimentent elles-mêmes les solutions.",
+    quote: "C’est le cœur technologique où de jeunes femmes expérimentent. Et surtout : les femmes conçoivent elles-mêmes les solutions.",
+    d: "FemCurrent Lab est l'atelier de création technologique et de civic tech féministe. Les jeunes femmes développeuses, activistes et conceptrices y créent des outils numériques concrets : technologies de protection, dispositifs de documentation sécurisés, algorithmes éthiques sans biais patriarcaux, archivage numérique militant et systèmes participatifs adaptés aux réalités locales de la RDC.",
     pts: [
-      "Civic tech féministe et outils numériques d'action collective",
-      "Technologies de protection et sécurité numérique pour les activistes",
-      "Intelligence Artificielle et féminisme : débiaisage et outils adaptés",
-      "Outils de documentation sécurisée et archivage numérique militant",
-      "Cartographies interactives et systèmes communautaires participatifs"
+      "Outils numériques et civic tech féministe",
+      "Solutions concrètes contre les violences en ligne (TFGBV)",
+      "Outils de documentation sécurisée et signalements chiffrés",
+      "Technologies de protection et sécurité numérique pour activistes",
+      "IA et féminisme : analyse des biais algorithmiques et IA inclusive",
+      "Archivage numérique militant et mémoire collective",
+      "Outils de mobilisation citoyenne et systèmes participatifs",
+      "Cartographies interactives des initiatives et des luttes"
     ],
     links: [
       ["Découvrir les initiatives du Lab", "/initiatives"],
-      ["Proposer un projet / outil", "/lumiere/initiative"],
+      ["Proposer un outil / projet", "/lumiere/initiative"],
       ["Rejoindre le Lab", "/contribuer"]
     ]
   },
   community: {
-    title: "FemCurrent Community",
+    title: "FemCurrent CyberFeminist Community",
     pillar: "4. 🟣 ORGANISATION — Créer une communauté",
     emo: ICONS.community,
     g: "linear-gradient(135deg,#E91E63,#FF8C00)",
-    tag: "Plus qu'une audience, une communauté d'activistes qui apprend, expérimente, produit et mène des actions collectives.",
-    d: "FemCurrent CyberFeminist Community rassemble les jeunes femmes, journalistes, chercheuses, créatrices de contenu, développeuses, militantes, data activists et communicatrices de toutes les provinces de la RDC et de la diaspora. C'est l'espace d'auto-organisation, d'entraide technologique, de montée en compétences et d'action politique concertée.",
+    tag: "FemCurrent ne devrait pas seulement avoir une audience. Elle devrait avoir une communauté d’activistes.",
+    quote: "FemCurrent ne devrait pas seulement avoir une audience. Elle devrait avoir une communauté d’activistes.",
+    d: "FemCurrent CyberFeminist Community rassemble des jeunes femmes, journalistes, chercheuses, créatrices de contenu, développeuses, militantes, data activists et communicatrices de toutes les provinces de la RDC et de la diaspora. C'est l'espace d'auto-organisation, d'apprentissage continu, d'expérimentation technologique et d'action collective concertée.",
     pts: [
-      "Réseau solidaire de codeuses, chercheuses, activistes et communicatrices",
-      "Ateliers d'apprentissage par les pairs et sécurité numérique pratique",
-      "Production collective de savoirs et ressources partagées",
+      "Réseau solidaire de codeuses, chercheuses, militantes et communicatrices",
+      "Apprentissage par les pairs et montée en compétences stratégiques",
+      "Ateliers pratiques de sécurité numérique et autodéfense en ligne",
+      "Production collective de connaissances et de ressources partagées",
       "Actions de mobilisation coordonnées en ligne et sur le terrain",
-      "Rencontres régulières, cercles d'échanges et masterclass"
+      "Cercles d'échange, masterclass et alliances régionales"
     ],
     links: [
       ["Rejoindre la Communauté", "/contribuer"],
-      ["Accéder au canal d'action", "https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr"],
+      ["Rejoindre le groupe Facebook officiel", "https://www.facebook.com/share/1C7PAoK48f/?mibextid=wwXIfr"],
       ["Consulter l'agenda communautaire", "/agenda"]
     ]
   },
@@ -4510,18 +4527,27 @@ const UNIV = {
     emo: ICONS.impact,
     g: "linear-gradient(135deg,#4B1D6D,#FF8C00)",
     tag: "Données → Connaissances → Mobilisation → Plaidoyer → Changement.",
-    d: "FemCurrent Impact boucle le cycle de l'activisme technologique féministe. Lorsqu'une enquête révèle une cyberviolence ou une inégalité structurelle, FemCurrent documente, produit la donnée, donne la parole aux concernées, conçoit des solutions au Lab et transforme l'ensemble en plaidoyer politique contraignant auprès des institutions, des plateformes et des décideurs.",
+    quote: "Données → Connaissances → Mobilisation → Plaidoyer → Changement.",
+    d: "FemCurrent Impact boucle le cycle de l'activisme technologique féministe. Lorsqu'une enquête révèle une cyberviolence ou une inégalité structurelle : FemCurrent documente, FemCurrent Data produit les données, FemCurrent Voices donne la parole aux concernées, FemCurrent Lab conçoit des solutions, et FemCurrent Impact transforme les résultats en plaidoyer politique contraignant pour transformer durablement les rapports de pouvoir.",
+    cycle: [
+      { step: "01", name: "Enquête & Alerte", text: "Une enquête révèle une forme de cyberviolence (TFGBV) ou une inégalité numérique contre les jeunes femmes." },
+      { step: "02", name: "Documentation Rigoureuse", text: "FemCurrent documente la situation avec rigueur, consentement libre et éclairé, et sécurité stricte." },
+      { step: "03", name: "FemCurrent Data", text: "FemCurrent Data produit les données, cartographies et indicateurs probants sur les réalités vécues." },
+      { step: "04", name: "FemCurrent Voices", text: "FemCurrent Voices donne la parole aux concernées, diffuse leurs récits et propage des contre-discours." },
+      { step: "05", name: "FemCurrent Lab", text: "FemCurrent Lab conçoit et expérimente des solutions technologiques et outils de protection adaptés." },
+      { step: "06", name: "FemCurrent Impact", text: "FemCurrent Impact transforme les résultats en plaidoyer politique, mobilisation citoyenne et changement institutionnel." }
+    ],
     pts: [
       "Cycle complet d'activisme technologique féministe",
       "Notes de politique publique et plaidoyer pour les droits numériques",
-      "Interpellation des plateformes numériques et régulateurs sur la TFGBV",
+      "Interpellation directe des plateformes numériques et régulateurs sur la TFGBV",
       "Mobilisation citoyenne et campagnes d'influence basées sur des données",
-      "Accompagnement au changement législatif et institutionnel en RDC"
+      "Transformation effective et durable des rapports de pouvoir"
     ],
     links: [
       ["Télécharger les notes de plaidoyer", "/ressources"],
       ["Devenir partenaire de plaidoyer", "/partenariat"],
-      ["Lire les dossiers d'impact", "/enquetes"]
+      ["Lire les dossiers d'enquête", "/enquetes"]
     ]
   },
   matendo: {
@@ -4529,17 +4555,17 @@ const UNIV = {
     pillar: "Actions de terrain",
     emo: ICONS.matendo,
     g: "linear-gradient(135deg,#E91E63,#FF8C00)",
-    tag: "Les femmes en action sur le terrain.",
-    d: "Matendo documente les actions concrètes des femmes et des collectifs dans les 26 provinces de la RDC : initiatives citoyennes, entrepreneuriat communautaire et victoires locales.",
+    tag: "Les femmes en action sur le terrain : initiatives, victoires et résilience.",
+    d: "Matendo documente les actions concrètes des femmes et des collectifs dans les 26 provinces de la RDC : initiatives citoyennes, entrepreneuriat communautaire, victoires locales et plaidoyer de proximité.",
     pts: ["Portraits et parcours inspirants", "Reportages de proximité", "Histoires de changement", "Témoignages vérifiés et consentis"],
-    links: [["Voir les femmes à la une", "/femmes"], ["Découvrir les initiatives", "/initiatives"], ["Proposer une femme", "/lumiere"]]
+    links: [["Voir les femmes à la une", "/femmes"], ["Découvrir les initiatives", "/initiatives"], ["Proposer une femme en lumière", "/lumiere"]]
   },
   academy: {
     title: "FemCurrent Academy",
     pillar: "Capacitation & Savoirs",
     emo: ICONS.academy,
     g: "linear-gradient(135deg,#FF8C00,#E91E63)",
-    tag: "Apprendre, renforcer, transformer.",
+    tag: "Apprendre, renforcer, transformer : compétences numériques stratégiques.",
     d: "Academy outille les femmes en compétences numériques stratégiques : sécurité opérationnelle, code, analyse de données, communication de plaidoyer et leadership décolonial.",
     pts: ["Sécurité numérique & protection", "Masterclass civic tech & code", "Plaidoyer basé sur les données", "Kits pratiques ouverts"],
     links: [["Consulter l'agenda", "/agenda"], ["Télécharger les guides", "/ressources"], ["Devenir formatrice", "/contribuer"]]
@@ -4648,7 +4674,7 @@ const cardDoc = d => `<a class="doc-card" href="/ressources/${esc(d.slug)}" data
  <div class="meta"><span>${esc(d.year)}</span><span>${esc(d.pages)}</span></div>
  <span class="meta" style="color: var(--magenta-ink);font-weight:700">Consulter →</span></a>`;
 
-const uniCard = (id, u, w, dl) => `<a class="uni-card ${w}" href="/espaces/${id}" style="--uc:${u.g}" ${dl ? `data-reveal data-delay="${dl}"` : ""}>
+const uniCard = (id, u, w, dl) => `<a class="uni-card ${w}" href="/${id}" style="--uc:${u.g}" ${dl ? `data-reveal data-delay="${dl}"` : ""}>
  <span class="uni-emo">${u.emo}</span><h3><small style="color: var(--orange-ink);font-weight:800;letter-spacing:0.08em;text-transform:uppercase;">${u.pillar || "Fonction Cyberféministe"}</small>${u.title || ("FemCurrent " + id.charAt(0).toUpperCase() + id.slice(1))}</h3><p>${u.tag}</p><span class="uni-link">Explorer la fonction →</span></a>`;
 
 const nlBlock = (dark) => `<form class="nl-form ${dark ? "" : "light"} nl" novalidate>
@@ -4912,27 +4938,180 @@ function vHome() {
   const excludedFromFil = [lead.slug, alaUne.feature.slug, ...alaUne.list.map(x => x.slug)].filter(Boolean);
   const leFil = WP_ENGINE.getLeFil(excludedFromFil, 4);
 
-  // Strict limitation to exactly 3 items for Enquêtes & Analyses on homepage
   const homeEnquetes = WP_ENGINE.getHomeEnquetes(3);
   const homeFemmes = WP_ENGINE.getHomeFemmes(6);
   const homeInits = WP_ENGINE.getHomeInitiatives(4);
   const homeEvents = WP_ENGINE.getHomeEvents(2);
 
   return `
-<section class="hero-media-modele-3" style="padding: 2rem 0 2.5rem; background: #FFFFFF; border-bottom: 1px solid #EBE4F0;">
-  <div class="container">
+<!-- HERO CYBERFÉMINISTE FONDATEUR -->
+<section class="hero-cyberfeminism" style="padding: 2.8rem 0 3.2rem; background: linear-gradient(135deg, #1E0A30 0%, #2E1143 50%, #4B1D6D 100%); color: #ffffff; border-bottom: 4px solid #E91E63; position: relative; overflow: hidden;">
+  <div style="position: absolute; top: -60px; right: -60px; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(233,30,99,0.22) 0%, transparent 70%); pointer-events: none;"></div>
+  <div class="container" style="position: relative; z-index: 2;">
     
-    <!-- Rubriques / Switcher Pills (Visible & scrollable sur mobile) -->
-    <div class="hero-tabs-header">
-      <a href="/actualites" class="hero-tab-pill active">HOT ACTU</a>
-      <a href="/enquetes" class="hero-tab-pill subtle">TOP ENQUÊTES</a>
-      <a href="/initiatives" class="hero-tab-pill subtle">INITIATIVES</a>
-      <a href="/observatoire" class="hero-tab-pill subtle">OBSERVATOIRE</a>
+    <div style="display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 0.4rem 1.1rem; border-radius: 9999px; font-family: var(--mono); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #FFB3D1; margin-bottom: 1.2rem;">
+      <span>🟣 Initiative Cyberféministe · RDC &amp; Afrique</span>
     </div>
 
-    <!-- TOP LEAD STORY (Grande Une Horizontale Responsive) -->
+    <h1 style="font-family: var(--display); font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.12; font-weight: 800; color: #FFFFFF; margin: 0 0 1.2rem; max-width: 1040px;">
+      La technologie comme <span style="background: linear-gradient(135deg, #FF8C00, #E91E63); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">espace d'activisme</span>, les femmes comme bâtisseuses de changement.
+    </h1>
+
+    <div style="background: rgba(255,255,255,0.08); border-left: 4px solid #E91E63; border-radius: 14px; padding: 1.4rem 1.8rem; margin-bottom: 2.2rem; max-width: 1040px; backdrop-filter: blur(8px);">
+      <p style="font-size: clamp(1.04rem, 1.8vw, 1.22rem); line-height: 1.6; color: #FFFFFF; margin: 0 0 1rem; font-weight: 600;">
+        « FemCurrent est une initiative cyberféministe qui utilise les technologies, les médias, les données et la production de connaissances pour renforcer le pouvoir d’agir des femmes et transformer les rapports de pouvoir dans les espaces numériques et sociaux. »
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.95rem; color: #F3E8FA; line-height: 1.5;">
+        <span>✦ <strong>Le média devient alors un moyen, pas la finalité.</strong></span>
+        <span>✦ <strong>La technologie devient un espace d’activisme.</strong></span>
+        <span>✦ <strong>Les femmes deviennent non seulement des bénéficiaires ou des sujets de contenu, mais des actrices, contributrices, productrices de connaissances et activistes.</strong></span>
+      </div>
+    </div>
+
+    <!-- Triptyque de Rupture -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; margin-bottom: 2.2rem;">
+      <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-left: 4px solid #E91E63; border-radius: 14px; padding: 1.2rem 1.4rem; backdrop-filter: blur(10px);">
+        <span style="font-family: var(--mono); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #FFB3D1; display: block; margin-bottom: 0.35rem;">Le Média</span>
+        <strong style="font-size: 1.02rem; color: #FFFFFF; display: block; margin-bottom: 0.3rem;">Un moyen, pas la finalité</strong>
+        <p style="font-size: 0.84rem; line-height: 1.48; color: #D5C2E6; margin: 0;">L'information, les enquêtes et les récits sont des leviers d'éveil, de conscientisation et d'action politique.</p>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-left: 4px solid #FF8C00; border-radius: 14px; padding: 1.2rem 1.4rem; backdrop-filter: blur(10px);">
+        <span style="font-family: var(--mono); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #FFCC80; display: block; margin-bottom: 0.35rem;">La Technologie</span>
+        <strong style="font-size: 1.02rem; color: #FFFFFF; display: block; margin-bottom: 0.3rem;">Un espace d'activisme</strong>
+        <p style="font-size: 0.84rem; line-height: 1.48; color: #D5C2E6; margin: 0;">Un terrain de lutte, d'expérimentation civic tech, d'autodéfense numérique et de création de solutions par les femmes.</p>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-left: 4px solid #4CAF50; border-radius: 14px; padding: 1.2rem 1.4rem; backdrop-filter: blur(10px);">
+        <span style="font-family: var(--mono); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #C8E6C9; display: block; margin-bottom: 0.35rem;">Les Femmes</span>
+        <strong style="font-size: 1.02rem; color: #FFFFFF; display: block; margin-bottom: 0.3rem;">Actrices &amp; Bâtisseuses</strong>
+        <p style="font-size: 0.84rem; line-height: 1.48; color: #D5C2E6; margin: 0;">Non pas des bénéficiaires passives ou des sujets de contenu, mais des chercheuses, développeuses et activistes productrices de savoirs.</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+      <a href="#fonctions" data-scroll="fonctions" class="btn btn-primary" style="padding: 0.85rem 1.6rem; font-size: 0.88rem; font-weight: 800;">
+        <span>Explorer les 5 Fonctions Cyberféministes ↓</span>
+      </a>
+      <a href="/community" class="btn btn-white" style="padding: 0.85rem 1.5rem; font-size: 0.88rem; font-weight: 700;">
+        <span>Rejoindre la Communauté d'Activistes</span>
+      </a>
+      <a href="/lumiere?tab=cyberviolence" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #FFD54F; text-decoration: none; font-size: 0.84rem; font-weight: 700; padding: 0.6rem 1rem;">
+        <span>✦ Signaler TFGBV / Mettre en lumière →</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 2 : LES 5 FONCTIONS CYBERFÉMINISTES -->
+<section class="section" id="fonctions" style="background: #FFFFFF; padding-top: 3.5rem;">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <div>
+        <span class="kicker">Architecture Fondatrice</span>
+        <h2>Construire FemCurrent autour de <span class="accent">5 fonctions cyberféministes</span></h2>
+        <p class="lead" style="margin-top: 0.8rem; max-width: 960px;">
+          Nous ne voulons pas simplement créer un nouveau média féministe. Nous voulons expérimenter en RDC un modèle de cyberféminisme organisé autour d’une infrastructure numérique permettant aux femmes de produire des connaissances, développer des solutions technologiques, raconter leurs réalités, s’organiser et transformer les rapports de pouvoir.
+        </p>
+      </div>
+      <a class="see-all" href="/espaces">Explorer l'écosystème complet →</a>
+    </div>
+
+    <div class="uni-grid">
+      ${uniCard("voices", UNIV.voices, "w3", 0)}
+      ${uniCard("data", UNIV.data, "w3", 70)}
+      ${uniCard("lab", UNIV.lab, "w2", 140)}
+      ${uniCard("community", UNIV.community, "w2", 210)}
+      ${uniCard("impact", UNIV.impact, "w2", 280)}
+    </div>
+
+    <!-- Axes complémentaires -->
+    <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem;" data-reveal>
+      ${uniCard("matendo", UNIV.matendo, "w3", 320)}
+      ${uniCard("academy", UNIV.academy, "w3", 360)}
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 : LE CYCLE D'ACTIVISME TECHNOLOGIQUE FÉMINISTE -->
+<section class="section" style="background: #FAF7FC; border-top: 1px solid #EBE4F0; border-bottom: 1px solid #EBE4F0;">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <div>
+        <span class="kicker">Méthodologie &amp; Action Collective</span>
+        <h2>Le cycle de l'activisme technologique féministe</h2>
+        <p class="lead" style="margin-top: 0.6rem;">
+          Données → Connaissances → Mobilisation → Plaidoyer → Changement politique.
+        </p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.2rem; margin-top: 1.8rem;" data-reveal>
+      
+      <div style="background: #FFFFFF; border: 1px solid #E8DFEE; border-top: 4px solid #4B1D6D; border-radius: 14px; padding: 1.4rem; box-shadow: 0 4px 15px rgba(75,29,109,0.03);">
+        <span style="font-family: var(--mono); font-size: 0.72rem; font-weight: 800; color: #4B1D6D; text-transform: uppercase;">01 · Alerte &amp; Enquête</span>
+        <h3 style="margin: 0.5rem 0 0.3rem; font-size: 1.1rem; color: #1F162B;">Détection TFGBV</h3>
+        <p style="font-size: 0.84rem; color: #5A4E66; margin: 0; line-height: 1.45;">Une enquête ou un signalement confidentiel révèle une forme de cyberviolence ou d'inégalité numérique.</p>
+        <div style="margin-top: 0.8rem; font-size: 0.76rem; font-weight: 700; color: #4B1D6D;">FemCurrent documente →</div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E8DFEE; border-top: 4px solid #2E1143; border-radius: 14px; padding: 1.4rem; box-shadow: 0 4px 15px rgba(75,29,109,0.03);">
+        <span style="font-family: var(--mono); font-size: 0.72rem; font-weight: 800; color: #2E1143; text-transform: uppercase;">02 · FemCurrent Data</span>
+        <h3 style="margin: 0.5rem 0 0.3rem; font-size: 1.1rem; color: #1F162B;">Produire les Données</h3>
+        <p style="font-size: 0.84rem; color: #5A4E66; margin: 0; line-height: 1.45;">Les femmes deviennent productrices de savoirs : cartographies, indicateurs rigoureux et analyses vérifiées.</p>
+        <div style="margin-top: 0.8rem; font-size: 0.76rem; font-weight: 700; color: #2E1143;"><a href="/data" style="color:inherit;text-decoration:none;">Données probantes →</a></div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E8DFEE; border-top: 4px solid #E91E63; border-radius: 14px; padding: 1.4rem; box-shadow: 0 4px 15px rgba(75,29,109,0.03);">
+        <span style="font-family: var(--mono); font-size: 0.72rem; font-weight: 800; color: var(--magenta-ink); text-transform: uppercase;">03 · FemCurrent Voices</span>
+        <h3 style="margin: 0.5rem 0 0.3rem; font-size: 1.1rem; color: #1F162B;">Récits &amp; Contre-discours</h3>
+        <p style="font-size: 0.84rem; color: #5A4E66; margin: 0; line-height: 1.45;">Donner directement la parole aux concernées, diffuser leurs témoignages sonores et déconstruire les stéréotypes.</p>
+        <div style="margin-top: 0.8rem; font-size: 0.76rem; font-weight: 700; color: var(--magenta-ink);"><a href="/voices" style="color:inherit;text-decoration:none;">Amplification des voix →</a></div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E8DFEE; border-top: 4px solid #FF8C00; border-radius: 14px; padding: 1.4rem; box-shadow: 0 4px 15px rgba(75,29,109,0.03);">
+        <span style="font-family: var(--mono); font-size: 0.72rem; font-weight: 800; color: var(--orange-ink); text-transform: uppercase;">04 · FemCurrent Lab</span>
+        <h3 style="margin: 0.5rem 0 0.3rem; font-size: 1.1rem; color: #1F162B;">Solutions Technologiques</h3>
+        <p style="font-size: 0.84rem; color: #5A4E66; margin: 0; line-height: 1.45;">De jeunes femmes développeuses conçoivent elles-mêmes les outils : civic tech, protection numérique et alertes sécurisées.</p>
+        <div style="margin-top: 0.8rem; font-size: 0.76rem; font-weight: 700; color: var(--orange-ink);"><a href="/lab" style="color:inherit;text-decoration:none;">Conception féministe →</a></div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E8DFEE; border-top: 4px solid #B3114B; border-radius: 14px; padding: 1.4rem; box-shadow: 0 4px 15px rgba(75,29,109,0.03);">
+        <span style="font-family: var(--mono); font-size: 0.72rem; font-weight: 800; color: #B3114B; text-transform: uppercase;">05 · FemCurrent Impact</span>
+        <h3 style="margin: 0.5rem 0 0.3rem; font-size: 1.1rem; color: #1F162B;">Plaidoyer &amp; Changement</h3>
+        <p style="font-size: 0.84rem; color: #5A4E66; margin: 0; line-height: 1.45;">Transformer la technologie et les données en pouvoir politique : interpellation des régulateurs et changement de normes.</p>
+        <div style="margin-top: 0.8rem; font-size: 0.76rem; font-weight: 700; color: #B3114B;"><a href="/impact" style="color:inherit;text-decoration:none;">Pouvoir politique →</a></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4 : LE DISPOSITIF MÉDIATIQUE & ENQUÊTES -->
+<div class="ticker" aria-label="En ce moment sur FemCurrent"><div class="ticker-inner">
+ <div class="ticker-label"><span class="dot"></span>En ce moment</div>
+ <div class="ticker-view"><div class="ticker-track">
+  ${tickerItems.map(t => `<a href="${t.url}"><b>${t.label}</b> ${t.text} <i>✦</i></a>`).join("")}
+  ${tickerItems.map(t => `<a href="${t.url}" aria-hidden="true"><b>${t.label}</b> ${t.text} <i>✦</i></a>`).join("")}
+ </div></div>
+ <button type="button" class="mq-pause" data-mq-pause aria-pressed="false" aria-label="Interrompre le défilement du bandeau"><span class="mq-ic" aria-hidden="true">❚❚</span></button>
+</div></div>
+
+<section class="hero-media-modele-3" style="padding: 2.5rem 0; background: #FFFFFF; border-bottom: 1px solid #EBE4F0;">
+  <div class="container">
+    
+    <div class="section-head" data-reveal style="margin-bottom: 1.5rem;">
+      <div>
+        <span class="kicker">Le Média au Service de l'Action</span>
+        <h2>Enquêtes, décryptages &amp; récits de terrain</h2>
+      </div>
+      <a class="see-all" href="/actualites">Toutes les actualités →</a>
+    </div>
+
+    <!-- TOP LEAD STORY -->
     <a href="/actualites/${lead.slug}" class="home-lead-card">
-      <!-- Photojournalism Image -->
       <div class="home-lead-img-wrap">
         <img src="${esc(leadImg)}" alt="${esc(lead.title)}">
         <div style="position: absolute; top: 1rem; left: 1rem; z-index: 5;">
@@ -4942,15 +5121,14 @@ function vHome() {
         </div>
       </div>
 
-      <!-- Lead Story Content -->
       <div class="home-lead-body">
         <div>
           <span style="font-size: 0.76rem; font-weight: 800; font-family: var(--mono); color: var(--orange-ink); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             ${esc(lead.prov || "RDC &amp; GRANDS LACS")} · ${esc(lead.date)}
           </span>
-          <h1 style="font-family: var(--display); font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.18; font-weight: 800; color: #1F162B; margin: 0 0 0.85rem;">
+          <h2 style="font-family: var(--display); font-size: clamp(1.4rem, 2.8vw, 2.2rem); line-height: 1.18; font-weight: 800; color: #1F162B; margin: 0 0 0.85rem;">
             ${esc(lead.title)}
-          </h1>
+          </h2>
           <p style="font-size: 0.96rem; line-height: 1.58; color: #4A3E56; margin: 0;">
             ${esc(lead.ex)}
           </p>
@@ -4969,7 +5147,7 @@ function vHome() {
       </div>
     </a>
 
-    <!-- BOTTOM 3 EDITORIAL PILLARS (3 Colonnes Équilibrées) -->
+    <!-- BOTTOM 3 EDITORIAL PILLARS -->
     <div class="home-pillars-grid">
       
       <!-- 1. Pôle ENQUÊTES -->
@@ -4978,10 +5156,9 @@ function vHome() {
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: #4B1D6D; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             ENQUÊTES &amp; ANALYSES
           </span>
-          <!-- M-20 · niveau h2 : ces trois pôles suivaient directement le titre h1 de la une ; un h3 aurait sauté un niveau. -->
-          <h2 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
+          <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
             ${enq.title}
-          </h2>
+          </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
             ${enq.ex}
           </p>
@@ -4992,16 +5169,15 @@ function vHome() {
         </div>
       </a>
 
-      <!-- 2. Pôle INITIATIVES -->
+      <!-- 2. Pôle INITIATIVES MATENDO -->
       <a href="${initUrl}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #E91E63; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: var(--magenta-ink); letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
-            INITIATIVES DE TERRAIN
+            INITIATIVES DE TERRAIN · MATENDO
           </span>
-          <!-- M-20 · niveau h2 : ces trois pôles suivaient directement le titre h1 de la une ; un h3 aurait sauté un niveau. -->
-          <h2 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
+          <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
             ${init.name || init.title}
-          </h2>
+          </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
             ${init.desc || init.ex}
           </p>
@@ -5012,16 +5188,15 @@ function vHome() {
         </div>
       </a>
 
-      <!-- 3. Pôle OBSERVATOIRE -->
+      <!-- 3. Pôle OBSERVATOIRE DATA -->
       <a href="${obsUrl}" style="background: #ffffff; border: 1px solid #E8DFEE; border-top: 4px solid #FF8C00; border-radius: 16px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(75,29,109,0.04); transition: all 0.2s ease;">
         <div>
           <span style="font-size: 0.72rem; font-weight: 800; font-family: var(--mono); color: var(--orange-ink); letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">
             OBSERVATOIRE &amp; DONNÉES
           </span>
-          <!-- M-20 · niveau h2 : ces trois pôles suivaient directement le titre h1 de la une ; un h3 aurait sauté un niveau. -->
-          <h2 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
+          <h3 style="font-family: var(--display); font-size: 1.22rem; line-height: 1.3; font-weight: 800; color: #1F162B; margin: 0 0 0.6rem;">
             ${obs.title}
-          </h2>
+          </h3>
           <p style="font-size: 0.88rem; line-height: 1.5; color: #5A4E66; margin: 0;">
             ${obs.desc || obs.ex}
           </p>
@@ -5036,15 +5211,6 @@ function vHome() {
 
   </div>
 </section>
-
-<div class="ticker" aria-label="En ce moment sur FemCurrent"><div class="ticker-inner">
- <div class="ticker-label"><span class="dot"></span>En ce moment</div>
- <div class="ticker-view"><div class="ticker-track">
-  ${tickerItems.map(t => `<a href="${t.url}"><b>${t.label}</b> ${t.text} <i>✦</i></a>`).join("")}
-  ${tickerItems.map(t => `<a href="${t.url}" aria-hidden="true"><b>${t.label}</b> ${t.text} <i>✦</i></a>`).join("")}
- </div></div>
- <button type="button" class="mq-pause" data-mq-pause aria-pressed="false" aria-label="Interrompre le défilement du bandeau"><span class="mq-ic" aria-hidden="true">❚❚</span></button>
-</div></div>
 
 <section class="section" id="alaune"><div class="container">
  <div class="section-head" data-reveal><div><span class="kicker">À la une</span><h2>Ce qui fait l'actualité</h2></div><a class="see-all" href="/actualites">Toutes les actualités →</a></div>
@@ -5093,81 +5259,10 @@ function vHome() {
  <div class="cards-grid c4">${homeInits.map((x, i) => cardInit(x)).join("")}</div>
 </div></section>
 
-<section class="section" style="background:linear-gradient(180deg,#F8F4FA,#ffffff);border-top:1px solid #EBE4F0;border-bottom:1px solid #EBE4F0;"><div class="container">
- <div class="section-head" data-reveal>
-   <div>
-     <span class="kicker">Infrastructure Cyberféministe</span>
-     <h2>Construire FemCurrent autour de <span class="accent">5 fonctions clés</span></h2>
-     <p class="lead" style="margin-top:0.8rem">Le média devient un moyen, pas la finalité. La technologie devient un espace d'activisme. Les femmes deviennent des actrices, contributrices, productrices de connaissances et activistes.</p>
-   </div>
-   <a class="see-all" href="/espaces">Explorer l'écosystème →</a>
- </div>
- 
- <div class="uni-grid">
-  ${uniCard("voices", UNIV.voices, "w3", 0)}
-  ${uniCard("data", UNIV.data, "w3", 70)}
-  ${uniCard("lab", UNIV.lab, "w2", 140)}
-  ${uniCard("community", UNIV.community, "w2", 210)}
-  ${uniCard("impact", UNIV.impact, "w2", 280)}
- </div>
-</div></section>
-
-<!-- CYCLE D'ACTIVISME TECHNOLOGIQUE FÉMINISTE -->
-<section class="section" style="background:#FFFFFF;">
-  <div class="container">
-    <div class="section-head" data-reveal>
-      <div>
-        <span class="kicker">Méthodologie &amp; Action</span>
-        <h2>Le cycle de l'activisme technologique féministe</h2>
-  <p class="lead" style="margin-top:0.6rem">Une méthode que FemCurrent souhaite expérimenter, documenter et améliorer avec les communautés en RDC.</p>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:1.5rem;" data-reveal>
-      
-      <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #4B1D6D;border-radius:14px;padding:1.4rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#4B1D6D;">ÉTAPE 01</span>
-        <h3 style="margin:0.5rem 0 0.3rem;">Alerte &amp; Enquête</h3>
-        <p style="font-size:0.85rem;color:#5A4E66;margin:0;">Une situation ou cyberviolence (TFGBV) est détectée sur le terrain ou en ligne.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#4B1D6D;">FemCurrent documente →</div>
-      </div>
-
-      <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #E91E63;border-radius:14px;padding:1.4rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color: var(--magenta-ink);">ÉTAPE 02</span>
-        <h3 style="margin:0.5rem 0 0.3rem;">Production de Données</h3>
-        <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Data co-construira les méthodes, la cartographie et l'analyse avec les communautés concernées.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color: var(--magenta-ink);">Méthodes à co-construire →</div>
-      </div>
-
-      <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #FF8C00;border-radius:14px;padding:1.4rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color: var(--orange-ink);">ÉTAPE 03</span>
-        <h3 style="margin:0.5rem 0 0.3rem;">Récits &amp; Voix</h3>
-        <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Voices donne directement la parole aux concernées avec consentement éclairé.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color: var(--orange-ink);">Amplification sonore →</div>
-      </div>
-
-      <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #B3114B;border-radius:14px;padding:1.4rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#B3114B;">ÉTAPE 04</span>
-        <h3 style="margin:0.5rem 0 0.3rem;">Solutions au Lab</h3>
-        <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Lab conçoit des technologies de protection et outils civic tech adaptés.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#B3114B;">Outils créés par les femmes →</div>
-      </div>
-
-      <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-top:4px solid #2E1143;border-radius:14px;padding:1.4rem;">
-        <span style="font-family:var(--mono);font-size:0.75rem;font-weight:800;color:#2E1143;">ÉTAPE 05</span>
-        <h3 style="margin:0.5rem 0 0.3rem;">Plaidoyer &amp; Impact</h3>
-        <p style="font-size:0.85rem;color:#5A4E66;margin:0;">FemCurrent Impact transforme les résultats en plaidoyer et changement de politiques.</p>
-        <div style="margin-top:0.8rem;font-size:0.75rem;font-weight:700;color:#2E1143;">Plaidoyer à construire →</div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
 <section class="section obs"><div class="container" style="display:grid;gap:3rem">
  <div data-reveal><span class="kicker on-dark">FemCurrent Data · Observatoire</span>
  <h2 style="margin-top:1rem">Les données pour comprendre et <span style="color: var(--orange-ink);font-style:italic">agir</span></h2>
- <p class="lead" style="margin-top:1.1rem">FemCurrent Data construit un observatoire participatif des droits numériques et des réalités des femmes. Les données et méthodes seront publiées après validation communautaire et examen des risques.</p>
+ <p class="lead" style="margin-top:1.1rem">FemCurrent Data construit un observatoire participatif des droits numériques et des réalités des femmes. Les données et méthodes sont publiées après validation communautaire et examen éthique des risques.</p>
  <a href="/observatoire" class="btn btn-white">Consulter l'Observatoire <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 </div></section>
 
@@ -5195,10 +5290,10 @@ function vHome() {
 
 <section class="section section-alt"><div class="container">
  <div class="banner-cta" data-reveal>
-  <span class="kicker" style="justify-content:center">Fonctionnalité signature</span>
+  <span class="kicker" style="justify-content:center">Dispositif Signature</span>
   <h2 style="margin-top:1rem">Mettre une femme <span class="accent">en lumière</span></h2>
-  <p class="lead" style="margin:1rem auto 0;text-align:center">Proposez une femme leader, une initiative, une organisation ou un témoignage. Après vérification et consentement, l'histoire est publiée puis adaptée pour chaque réseau social.</p>
-  <div class="btns"><a class="btn btn-primary" href="/lumiere">Proposer maintenant</a><a class="btn btn-ghost" href="/lumiere">Comprendre le circuit</a></div>
+  <p class="lead" style="margin:1rem auto 0;text-align:center">Proposez une femme leader, une initiative civic tech ou signalez confidentiellement une situation de cyberviolence (TFGBV).</p>
+  <div class="btns"><a class="btn btn-primary" href="/lumiere">Proposer maintenant</a><a class="btn btn-ghost" href="/lumiere?tab=cyberviolence">Signalement TFGBV</a></div>
  </div>
 </div></section>
 
@@ -5228,7 +5323,6 @@ function vHome() {
  </div>
  <div class="social-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
   
-  <!-- Communauté Facebook Officielle -->
   <article class="social-card" data-reveal style="border-top:4px solid #E91E63;">
    <div class="sc-head">
     <svg viewBox="0 0 24 24" fill="#E91E63"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
@@ -5242,7 +5336,6 @@ function vHome() {
    <div class="sc-foot"><span style="color: var(--magenta-ink);font-weight:700;">✦ Groupe officiel actif</span></div>
   </article>
 
-  <!-- Page LinkedIn Officielle -->
   <article class="social-card" data-reveal data-delay="80" style="border-top:4px solid #0A66C2;">
    <div class="sc-head">
     <svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
@@ -5989,19 +6082,40 @@ function vObs() {
   <section class="page-hero">
     <div class="container">
       ${crumb([["Observatoire"]])}
-      <span class="kicker">FemCurrent Data · Mesure &amp; Analyse</span>
-      <h1>L'Observatoire du <span class="accent">Leadership</span></h1>
-      <p class="lead">Construire des connaissances avec les femmes concernées. Les indicateurs seront publiés avec leur méthode, leurs sources et une vérification des risques de réidentification.</p>
+      <span class="kicker">FemCurrent Data · Mesure &amp; Recherche Participative</span>
+      <h1>L'Observatoire des <span class="accent">Droits Numériques</span></h1>
+      <p class="lead">« Les femmes ne sont pas seulement des personnes sur lesquelles on collecte des données : elles deviennent productrices de connaissances sur leurs propres réalités. »</p>
     </div>
   </section>
 
   <section class="section" style="padding-top: 2rem;">
     <div class="container">
       
+      <div style="background:#FAF5FF;border:1px solid #E8DFEE;border-left:5px solid #4B1D6D;border-radius:14px;padding:1.8rem;margin-bottom:2.5rem;">
+        <h2 style="font-size:1.3rem;color:#2E1143;margin-top:0;">Produire nos propres connaissances en RDC</h2>
+        <p style="font-size:0.95rem;color:#4A3E56;line-height:1.6;margin-bottom:1rem;">
+          FemCurrent Data renverse la logique extractive de la recherche : nous documentons la participation numérique des femmes, analysons la TFGBV (cyberviolences), menons des enquêtes communautaires et publions des données ouvertes fiables pour alimenter le plaidoyer et l'action collective.
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.9rem;margin-top:1.2rem;">
+          <div style="background:#fff;border-radius:8px;padding:0.85rem;border:1px solid #E8DFEE;">
+            <strong style="color:var(--magenta-ink);font-size:0.85rem;display:block;">Cartographie</strong>
+            <span style="font-size:0.8rem;color:#5A4E66;">Documentation des initiatives féminines et citoyennes</span>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:0.85rem;border:1px solid #E8DFEE;">
+            <strong style="color:#4B1D6D;font-size:0.85rem;display:block;">Documentation TFGBV</strong>
+            <span style="font-size:0.8rem;color:#5A4E66;">Récits chiffrés et indicateurs de cyberviolences</span>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:0.85rem;border:1px solid #E8DFEE;">
+            <strong style="color:var(--orange-ink);font-size:0.85rem;display:block;">Recherche Participative</strong>
+            <span style="font-size:0.8rem;color:#5A4E66;">Enquêtes communautaires co-construites</span>
+          </div>
+        </div>
+      </div>
+
       <div class="section-head" style="margin-bottom:1.5rem;">
         <div>
-          <span class="kicker">Ressources publiées dans WordPress</span>
-          <h2>Études &amp; méthodes</h2>
+          <span class="kicker">Ressources Publiées dans WordPress</span>
+          <h2>Études &amp; méthodes vérifiées</h2>
         </div>
       </div>
 
@@ -6470,23 +6584,27 @@ function vMediatheque() {
 
 function vEspaces() {
   return `
-  <section class="page-hero">
+  <section class="page-hero" style="background: linear-gradient(135deg, #1E0A30 0%, #2E1143 50%, #4B1D6D 100%); color: #fff;">
     <div class="container">
-      ${crumb([["Espaces"]])}
-      <span class="kicker">Infrastructure Cyberféministe · 5 Fonctions Clés</span>
-      <h1>L'Écosystème <span class="accent">Cyberféministe</span></h1>
-      <p class="lead">FemCurrent est une infrastructure numérique permettant aux femmes de produire des connaissances, développer des solutions technologiques, raconter leurs réalités, s'organiser et transformer les rapports de pouvoir.</p>
+      ${crumb([["Espaces &amp; Fonctions"]])}
+      <div style="display:inline-flex;align-items:center;gap:0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:0.35rem 0.9rem;border-radius:9999px;font-family:var(--mono);font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#FFB3D1;margin-bottom:0.8rem;">
+        <span>Infrastructure Cyberféministe</span>
+      </div>
+      <h1 style="color:#ffffff;">L'Écosystème <span class="accent">Cyberféministe</span></h1>
+      <p class="lead" style="color:#E8D7F5;max-width:960px;">FemCurrent est une infrastructure numérique permettant aux femmes de produire des connaissances, développer des solutions technologiques, raconter leurs réalités, s'organiser et transformer les rapports de pouvoir.</p>
     </div>
   </section>
 
-  <section class="section" style="padding-top: 2rem;">
+  <section class="section" style="padding-top: 2.5rem;">
     <div class="container">
       
       <div class="section-head" style="margin-bottom:2rem;">
         <div>
-          <span class="kicker">Architecture en 5 Fonctions</span>
+          <span class="kicker">Modèle Fondateur en 5 Fonctions</span>
           <h2>De la production de données au pouvoir politique</h2>
-          <p class="lead" style="margin-top:0.6rem;">Le média devient un moyen, la technologie un espace d'activisme, et les femmes des créatrices de changement.</p>
+          <p class="lead" style="margin-top:0.6rem;max-width:940px;">
+            Le média devient un moyen, la technologie un espace d'activisme, et les femmes des actrices, contributrices, productrices de connaissances et activistes.
+          </p>
         </div>
       </div>
 
@@ -6519,26 +6637,61 @@ function vUniv(id) {
   if (!u) return v404();
 
   return `
-  <section class="page-hero">
+  <section class="page-hero" style="background: linear-gradient(135deg, #1E0A30 0%, #2E1143 50%, #4B1D6D 100%); color: #fff;">
     <div class="container">
-      ${crumb([["Espaces", "/espaces"], [u.title || (id.charAt(0).toUpperCase() + id.slice(1))]])}
-      <span class="kicker">${u.pillar || "Fonction Cyberféministe"}</span>
-      <h1>${u.title || ("FemCurrent " + id.charAt(0).toUpperCase() + id.slice(1))}</h1>
-      <p class="lead">${u.tag}</p>
+      ${crumb([["Espaces &amp; Fonctions", "/espaces"], [u.title || (id.charAt(0).toUpperCase() + id.slice(1))]])}
+      <div style="display:inline-flex;align-items:center;gap:0.6rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:0.35rem 0.9rem;border-radius:9999px;font-family:var(--mono);font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#FFB3D1;margin-bottom:0.8rem;">
+        <span>${u.pillar || "Fonction Cyberféministe"}</span>
+      </div>
+      <h1 style="color:#ffffff;">${u.title || ("FemCurrent " + id.charAt(0).toUpperCase() + id.slice(1))}</h1>
+      <p class="lead" style="color:#E8D7F5;max-width:940px;">${u.tag}</p>
     </div>
   </section>
 
-  <section class="section" style="padding-top: 2rem;">
-    <div class="container" style="max-width: 900px;">
+  <section class="section" style="padding-top: 2.5rem;">
+    <div class="container" style="max-width: 960px;">
       <div class="article-body-content" data-reveal>
-        <p class="lead">${u.d}</p>
-        <h3 style="margin-top:2rem;margin-bottom:1rem;">Nos axes d'action</h3>
-        <ul>
-          ${u.pts.map(pt => `<li>${pt}</li>`).join('')}
-        </ul>
-        <div style="display:flex;gap:1rem;margin-top:2.5rem;flex-wrap:wrap;">
-          ${u.links.map(lk => `<a href="${lk[1]}" class="btn btn-primary">${lk[0]} →</a>`).join('')}
+        
+        <div class="cyber-manifesto-lead" style="background:linear-gradient(135deg,#FAF5FF,#FFF3E0);border-left:5px solid #E91E63;padding:1.8rem;border-radius:14px;margin-bottom:2.2rem;">
+          <p style="font-size:1.15rem;font-weight:600;color:#2E1143;line-height:1.6;margin:0;">
+            « ${u.quote || u.tag} »
+          </p>
         </div>
+
+        <h2>Vision &amp; Posture Cyberféministe</h2>
+        <p class="lead">${u.d}</p>
+
+        <h2 style="margin-top:2.5rem;">Nos Pôles &amp; Domaines d'Action</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1.5rem 0;">
+          ${u.pts.map((pt, i) => `
+            <div style="background:#FFF;border:1px solid #E8DFEE;border-left:4px solid ${i%2===0 ? '#4B1D6D' : '#E91E63'};border-radius:12px;padding:1.1rem;box-shadow:0 2px 8px rgba(75,29,109,0.03);">
+              <span style="font-size:0.95rem;color:#1F162B;font-weight:600;display:block;">${pt}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        ${u.cycle ? `
+        <h2 style="margin-top:2.5rem;">Le Cycle d'Activisme Technologique Féministe</h2>
+        <div style="background:#FAF7FC;border:1px solid #E8DFEE;border-radius:14px;padding:1.6rem;margin:1.5rem 0;">
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+            ${u.cycle.map(c => `
+              <div style="display:flex;gap:1rem;align-items:flex-start;">
+                <span style="background:#4B1D6D;color:#fff;font-family:var(--mono);font-size:0.75rem;font-weight:800;padding:0.25rem 0.6rem;border-radius:6px;flex-shrink:0;">${c.step}</span>
+                <div>
+                  <strong style="color:#2E1143;display:block;margin-bottom:0.2rem;">${c.name}</strong>
+                  <span style="font-size:0.88rem;color:#5A4E66;line-height:1.45;">${c.text}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <h2 style="margin-top:2.5rem;">Agir &amp; Participer</h2>
+        <div style="display:flex;gap:1rem;margin-top:1.2rem;flex-wrap:wrap;">
+          ${u.links.map(lk => `<a href="${lk[1]}" class="btn btn-primary" style="padding:0.75rem 1.4rem;font-size:0.88rem;">${lk[0]} →</a>`).join('')}
+        </div>
+
       </div>
     </div>
   </section>`;
@@ -6546,35 +6699,42 @@ function vUniv(id) {
 
 function vAPropos() {
   const wpPage = WP_ENGINE.getPageBySlug("a-propos");
-  const contentHtml = wpPage && wpPage.content ? wpPage.content : `
+  const isCyber = wpPage && wpPage.content && wpPage.content.includes("cyberféministe");
+  const contentHtml = isCyber ? wpPage.content : `
     <div class="cyber-manifesto-lead" style="background:linear-gradient(135deg,#FAF5FF,#FFF3E0);border-left:5px solid #E91E63;padding:1.8rem;border-radius:12px;margin-bottom:2.5rem;">
-      <p style="font-size:1.15rem;font-weight:600;color:#2E1143;line-height:1.6;margin:0;">
-        « FemCurrent est une initiative cyberféministe qui utilise les technologies, les médias, les données et la production de connaissances comme leviers d'organisation et d'action collective. Elle crée des espaces où les femmes peuvent raconter leurs réalités, produire leurs propres connaissances, expérimenter des solutions technologiques, s'organiser et agir pour transformer les rapports de pouvoir dans les espaces numériques et sociaux. »
+      <p style="font-size:1.15rem;font-weight:600;color:#2E1143;line-height:1.6;margin:0 0 1rem;">
+        « FemCurrent est une initiative cyberféministe qui utilise les technologies, les médias, les données et la production de connaissances pour renforcer le pouvoir d’agir des femmes et transformer les rapports de pouvoir dans les espaces numériques et sociaux. »
       </p>
+      <ul style="margin:0;padding-left:1.3rem;font-size:0.98rem;color:#4B1D6D;line-height:1.65;">
+        <li><strong>Le média devient alors un moyen, pas la finalité.</strong></li>
+        <li><strong>La technologie devient un espace d’activisme.</strong></li>
+        <li><strong>Les femmes deviennent non seulement des bénéficiaires ou des sujets de contenu, mais des actrices, contributrices, productrices de connaissances et activistes.</strong></li>
+      </ul>
     </div>
 
     <h2>1. Au-delà du média : une infrastructure cyberféministe</h2>
-    <p>Nous ne voulons pas simplement créer un nouveau média féministe. Nous voulons expérimenter en République Démocratique du Congo et en Afrique un <strong>modèle de cyberféminisme organisé autour d'une infrastructure numérique</strong> permettant aux femmes de produire des connaissances, développer des solutions technologiques, raconter leurs réalités, s'organiser et transformer durablement les rapports de pouvoir.</p>
+    <p>Nous ne voulons pas simplement créer un nouveau média féministe. Nous voulons expérimenter en République Démocratique du Congo un <strong>modèle de cyberféminisme organisé autour d'une infrastructure numérique</strong> permettant aux femmes de produire des connaissances, développer des solutions technologiques, raconter leurs réalités, s'organiser et transformer les rapports de pouvoir.</p>
+    <p>FemCurrent est une initiative émergente. Nous avons une vision, une architecture et une première conception, mais nous voulons maintenant expérimenter, tester et documenter ce modèle en RDC et dans la région.</p>
     
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin:2rem 0;">
-      <div style="background:#FFF;border:1px solid #E8DFEE;border-radius:12px;padding:1.3rem;">
+      <div style="background:#FFF;border:1px solid #E8DFEE;border-left:4px solid #E91E63;border-radius:12px;padding:1.3rem;">
         <span style="font-family:var(--mono);font-size:0.75rem;color: var(--magenta-ink);font-weight:800;text-transform:uppercase;">Le média</span>
-        <h4 style="margin:0.4rem 0;">Un moyen, pas une finalité</h4>
-        <p style="font-size:0.9rem;color:#5A4E66;margin:0;">L'information et les récits sont des leviers d'éveil, de documentation et de conscientisation citoyenne.</p>
+        <h3 style="margin:0.4rem 0;">Un moyen, pas la finalité</h3>
+        <p style="font-size:0.9rem;color:#5A4E66;margin:0;">L'information, les enquêtes et les récits sont des leviers d'éveil, de documentation et de conscientisation citoyenne.</p>
       </div>
-      <div style="background:#FFF;border:1px solid #E8DFEE;border-radius:12px;padding:1.3rem;">
+      <div style="background:#FFF;border:1px solid #E8DFEE;border-left:4px solid #FF8C00;border-radius:12px;padding:1.3rem;">
         <span style="font-family:var(--mono);font-size:0.75rem;color: var(--orange-ink);font-weight:800;text-transform:uppercase;">La technologie</span>
-        <h4 style="margin:0.4rem 0;">Un espace d'activisme</h4>
+        <h3 style="margin:0.4rem 0;">Un espace d'activisme</h3>
         <p style="font-size:0.9rem;color:#5A4E66;margin:0;">La tech n'est pas neutre : c'est un terrain de lutte politique, de réappropriation et d'auto-défense numérique.</p>
       </div>
-      <div style="background:#FFF;border:1px solid #E8DFEE;border-radius:12px;padding:1.3rem;">
+      <div style="background:#FFF;border:1px solid #E8DFEE;border-left:4px solid #4B1D6D;border-radius:12px;padding:1.3rem;">
         <span style="font-family:var(--mono);font-size:0.75rem;color:#4B1D6D;font-weight:800;text-transform:uppercase;">Les femmes</span>
-        <h4 style="margin:0.4rem 0;">Actrices &amp; Bâtisseuses</h4>
-        <p style="font-size:0.9rem;color:#5A4E66;margin:0;">Non pas des bénéficiaires passives, mais des développeuses, chercheuses, data activists et productrices de savoirs.</p>
+        <h3 style="margin:0.4rem 0;">Actrices &amp; Bâtisseuses</h3>
+        <p style="font-size:0.9rem;color:#5A4E66;margin:0;">Non pas des bénéficiaires passives ou des sujets de contenu, mais des développeuses, chercheuses, data activists et productrices de savoirs.</p>
       </div>
     </div>
 
-    <h2>2. Les 5 Fonctions Cyberféministes de FemCurrent</h2>
+    <h2>2. Les 5 Fonctions Cyberféministes</h2>
     <div style="display:flex;flex-direction:column;gap:1.4rem;margin:1.8rem 0;">
       
       <div style="border-left:4px solid #4B1D6D;padding-left:1.2rem;">
@@ -6589,12 +6749,12 @@ function vAPropos() {
 
       <div style="border-left:4px solid #FF8C00;padding-left:1.2rem;">
         <h3 style="color: var(--orange-ink);margin-bottom:0.4rem;">🟣 3. TECHNOLOGIE — Expérimenter (FemCurrent Lab)</h3>
-        <p>Le cœur technologique de l'initiative. Un espace où de jeunes femmes conçoivent et expérimentent : civic tech féministe, solutions contre les violences en ligne, technologies de protection et sécurité numérique, IA et féminisme, archivage numérique militant et cartographies participatives.</p>
+        <p>Le cœur technologique de l'initiative où de jeunes femmes conçoivent et expérimentent : civic tech féministe, solutions contre les violences en ligne, technologies de protection et sécurité numérique, IA et féminisme, archivage numérique militant et cartographies participatives.</p>
       </div>
 
       <div style="border-left:4px solid #B3114B;padding-left:1.2rem;">
         <h3 style="color:#B3114B;margin-bottom:0.4rem;">🟣 4. ORGANISATION — Créer une communauté (FemCurrent Community)</h3>
-        <p>FemCurrent ne se limite pas à une audience : c'est une communauté d'activistes rassemblant jeunes femmes, journalistes, chercheuses, créatrices de contenu, développeuses, militantes, data activists et communicatrices. Cette communauté apprend, expérimente, produit des savoirs et mène des actions collectives.</p>
+        <p>FemCurrent ne devrait pas seulement avoir une audience : elle bâtit une communauté d'activistes avec de jeunes femmes, journalistes, chercheuses, créatrices de contenu, développeuses, militantes, data activists et communicatrices. Cette communauté apprend, expérimente, produit des connaissances et mène des actions collectives.</p>
       </div>
 
       <div style="border-left:4px solid #2E1143;padding-left:1.2rem;">
@@ -6606,22 +6766,18 @@ function vAPropos() {
 
     <h2>3. Le Cycle d'Activisme Technologique Féministe</h2>
     <div style="background:#F9F6FC;border:1px solid #E8DFEE;border-radius:14px;padding:1.6rem;margin:2rem 0;">
-      <p style="font-weight:700;color:#1F162B;margin-bottom:1rem;">Exemple d'opérationnalisation :</p>
       <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.95rem;color:#4A3E56;">
         <div><strong>1.</strong> Une enquête révèle une forme de cyberviolence contre les jeunes femmes (TFGBV).</div>
         <div style="color: var(--orange-ink)">↓ FemCurrent documente avec rigueur et sécurité</div>
         <div><strong>2.</strong> <strong>FemCurrent Data</strong> produit les données chiffrées et l'analyse systémique.</div>
         <div style="color: var(--magenta-ink)">↓ FemCurrent donne la parole aux concernées</div>
-        <div><strong>3.</strong> <strong>FemCurrent Voices</strong> recueille et amplifie les témoignages vécus.</div>
+        <div><strong>3.</strong> <strong>FemCurrent Voices</strong> recueille et amplifie les témoignages et contre-discours.</div>
         <div style="color:var(--violet)">↓ FemCurrent conçoit des solutions concrètes</div>
         <div><strong>4.</strong> <strong>FemCurrent Lab</strong> co-construit un outil technique de protection ou d'alerte.</div>
         <div style="color:#2E7D32">↓ FemCurrent transforme les résultats en action publique</div>
         <div><strong>5.</strong> <strong>FemCurrent Impact</strong> porte le plaidoyer auprès des régulateurs et institutions.</div>
       </div>
     </div>
-
-    <h2>4. Une initiative émergente et vivante</h2>
-    <p>FemCurrent est une initiative émergente. Nous avons une vision, une architecture et une première conception, mais nous voulons maintenant expérimenter, tester et documenter ce modèle en RDC et dans la région avec toutes celles et ceux qui partagent notre conviction.</p>
   `;
 
   return `
@@ -6689,50 +6845,52 @@ function vContact() {
 }
 
 function vLumiere(pre) {
+  const activeTab = (pre === 'initiative' || pre === 'temoignage' || pre === 'cyberviolence') ? pre : 'femme';
+
   return `
   <section class="page-hero">
     <div class="container">
       ${crumb([["Mettre en lumière"]])}
-      <span class="kicker">Dispositif Signature</span>
-      <h1>Mettre une femme <span class="accent">en lumière</span></h1>
-      <p class="lead">Proposez une actrice de changement, une initiative ou un témoignage. Après vérification et consentement, l'histoire est documentée puis diffusée.</p>
+      <span class="kicker">Dispositif Signature &amp; Signalement</span>
+      <h1>Mettre en lumière · <span class="accent">Signaler TFGBV</span></h1>
+      <p class="lead">Proposez une actrice de changement, une initiative civic tech, un témoignage ou signalez une situation de cyberviolence en toute sécurité.</p>
     </div>
   </section>
 
   <section class="section" style="padding-top: 2rem;">
     <div class="container" style="max-width: 760px;">
       <div class="lum-tabs-nav" style="display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;">
-        <button class="lum-tab ${pre==='temoignage'||pre==='initiative'||pre==='cyberviolence'?'':'active'}" data-panel="femme">Femme leader / Actrice</button>
-        <button class="lum-tab ${pre==='initiative'?'active':''}" data-panel="init">Initiative / Civic Tech</button>
-        <button class="lum-tab ${pre==='temoignage'?'active':''}" data-panel="tem">Témoignage / Récit de terrain</button>
-        <button class="lum-tab ${pre==='cyberviolence'?'active':''}" data-panel="cyber" style="background:#FFF0F5;border-color:#E91E63;color:#B3114B;">🟣 Signalement TFGBV &amp; Cyberviolence</button>
+        <button class="lum-tab ${activeTab==='femme'?'active':''}" data-panel="femme">Femme leader / Actrice</button>
+        <button class="lum-tab ${activeTab==='initiative'?'active':''}" data-panel="init">Initiative / Civic Tech</button>
+        <button class="lum-tab ${activeTab==='temoignage'?'active':''}" data-panel="tem">Témoignage / Récit de terrain</button>
+        <button class="lum-tab ${activeTab==='cyberviolence'?'active':''}" data-panel="cyber" style="background:#FFF0F5;border-color:#E91E63;color:#B3114B;">🟣 Signalement TFGBV &amp; Cyberviolence</button>
       </div>
 
       <form id="lumForm" class="contact-form-box" data-reveal>
-        <div class="lum-panel ${pre==='temoignage'||pre==='initiative'?'':'on'}" id="lum-femme">
-          <div class="field"><label for="lumForm-name">Nom de la femme à mettre en lumière *</label><input id="lumForm-name" type="text" name="name" required placeholder="Nom complet"></div>
-          <div class="field"><label for="lumForm-province">Province / Localisation *</label><input id="lumForm-province" type="text" name="province" required placeholder="Ex : Sud-Kivu, Bukavu"></div>
-          <div class="field"><label for="lumForm-role">Rôle et impact documenté *</label><textarea id="lumForm-role" name="role" required rows="4" placeholder="Décrivez son action et pourquoi elle doit être visible…"></textarea></div>
+        <div class="lum-panel ${activeTab==='femme'?'on':''}" id="lum-femme">
+          <div class="field"><label for="lumForm-name">Nom de la femme à mettre en lumière *</label><input id="lumForm-name" type="text" name="name" placeholder="Nom complet"></div>
+          <div class="field"><label for="lumForm-province">Province / Localisation *</label><input id="lumForm-province" type="text" name="province" placeholder="Ex : Sud-Kivu, Bukavu"></div>
+          <div class="field"><label for="lumForm-role">Rôle et impact documenté *</label><textarea id="lumForm-role" name="role" rows="4" placeholder="Décrivez son action et pourquoi elle doit être visible…"></textarea></div>
         </div>
 
-        <div class="lum-panel ${pre==='initiative'?'on':''}" id="lum-init">
+        <div class="lum-panel ${activeTab==='initiative'?'on':''}" id="lum-init">
           <div class="field"><label for="lumForm-init_name">Nom de l'initiative *</label><input id="lumForm-init_name" type="text" name="init_name" placeholder="Nom du projet"></div>
           <div class="field"><label for="lumForm-init_org">Organisation porteuse *</label><input id="lumForm-init_org" type="text" name="init_org" placeholder="Organisation ou collectif"></div>
           <div class="field"><label for="lumForm-init_desc">Description de l'action *</label><textarea id="lumForm-init_desc" name="init_desc" rows="4" placeholder="Objectifs et réalisations…"></textarea></div>
         </div>
 
-        <div class="lum-panel ${pre==='temoignage'?'on':''}" id="lum-tem">
+        <div class="lum-panel ${activeTab==='temoignage'?'on':''}" id="lum-tem">
           <div class="field"><label for="lumForm-tem_title">Titre de votre témoignage *</label><input id="lumForm-tem_title" type="text" name="tem_title" placeholder="Sujet abordé"></div>
           <div class="field"><label for="lumForm-tem_story">Votre récit *</label><textarea id="lumForm-tem_story" name="tem_story" rows="5" placeholder="Votre expérience de terrain…"></textarea></div>
         </div>
 
-        <div class="lum-panel ${pre==='cyberviolence'?'on':''}" id="lum-cyber">
+        <div class="lum-panel ${activeTab==='cyberviolence'?'on':''}" id="lum-cyber">
           <div style="background:#FFF3E0;border:1px solid #FFE0B2;border-radius:10px;padding:1rem;margin-bottom:1.2rem;font-size:0.88rem;color: var(--orange-deep-ink);">
-            <strong>Signalement confidentiel :</strong> Ne saisissez aucun nom, numéro, adresse ni élément permettant d'identifier une personne. Quand le canal sécurisé est activé, le récit est chiffré avant son enregistrement, accessible aux administrateurs autorisés et supprimé après 30 jours. Il n'est jamais publié.
+            <strong>Signalement confidentiel TFGBV :</strong> Ne saisissez aucun nom, numéro, adresse ni élément permettant d'identifier une personne. Quand le canal sécurisé est activé, le récit est chiffré avant son enregistrement, accessible aux administrateurs autorisés et supprimé après 30 jours. Il n'est jamais publié.
             <div id="tfgbvSecureStatus" role="status" aria-live="polite" data-enabled="unknown" style="margin-top:.6rem;font-weight:700;">Vérification du canal sécurisé… Ne saisissez pas encore de détails personnels.</div>
           </div>
-          <div class="field"><label for="lumForm-cyber_platform">Plateforme ou espace numérique concerné *</label><input id="lumForm-cyber_platform" type="text" name="cyber_platform" required maxlength="200" placeholder="Ex : Facebook, WhatsApp, X, TikTok, Forum…"></div>
-          <div class="field"><label for="lumForm-cyber_desc">Description de l'incident ou de la situation *</label><textarea id="lumForm-cyber_desc" name="cyber_desc" required maxlength="10000" rows="5" placeholder="Décrivez la situation sans nom ni coordonnée personnelle."></textarea></div>
+          <div class="field"><label for="lumForm-cyber_platform">Plateforme ou espace numérique concerné *</label><input id="lumForm-cyber_platform" type="text" name="cyber_platform" maxlength="200" placeholder="Ex : Facebook, WhatsApp, X, TikTok, Forum…"></div>
+          <div class="field"><label for="lumForm-cyber_desc">Description de l'incident ou de la situation *</label><textarea id="lumForm-cyber_desc" name="cyber_desc" maxlength="10000" rows="5" placeholder="Décrivez la situation sans nom ni coordonnée personnelle."></textarea></div>
           <div class="field"><label for="lumForm-cyber_support">Souhaitez-vous un accompagnement en sécurité numérique ?</label>
             <select id="lumForm-cyber_support" name="cyber_support" style="width:100%;padding:0.7rem;border:1.5px solid #D9CEE2;border-radius:8px;">
               <option value="Documentation anonyme uniquement">Documentation anonyme pour la recherche / Observatoire uniquement</option>
@@ -6932,7 +7090,7 @@ function render(html, title) {
 
 function setActiveNav() {
   const p = getRouteSegments()[0] || "";
-  $("[data-nav]").forEach(a => {
+  $$("[data-nav]").forEach(a => {
     const on = a.dataset.nav === p;
     a.classList.toggle("current", on);
     if (on) a.setAttribute("aria-current", "page");
@@ -6989,6 +7147,14 @@ function router() {
 
   if (!a) return render(vHome(), "FemCurrent — Initiative Cyberféministe");
   switch (a) {
+    case "voices": return render(vUniv("voices"), "FemCurrent Voices — Reprendre l'espace numérique");
+    case "data": return render(vUniv("data"), "FemCurrent Data — Produire nos propres données");
+    case "lab": return render(vUniv("lab"), "FemCurrent Lab — Expérimenter");
+    case "community": return render(vUniv("community"), "FemCurrent CyberFeminist Community");
+    case "impact": return render(vUniv("impact"), "FemCurrent Impact — Pouvoir politique");
+    case "matendo": return render(vUniv("matendo"), "FemCurrent Matendo — Initiatives de terrain");
+    case "academy": return render(vUniv("academy"), "FemCurrent Academy — Capacitation continue");
+    case "manifeste": return render(vAPropos(), "Manifeste Cyberféministe");
     case "actualites": return b ? render(vArticle("actualites", b), ((WP_ENGINE.getPostBySlug(b) || {}).title || "Article")) : render(vActualites(), "Actualités");
     case "enquetes": return b ? render(vArticle("enquetes", b), ((WP_ENGINE.getPostBySlug(b) || {}).title || "Enquête")) : render(vEnquetes(), "Enquêtes & Analyses");
     case "femmes": return b ? render(vPortrait(b), ((WP_ENGINE.getFemmeBySlug(b) || {}).name || "Portrait")) : render(vFemmes(), "Femmes à la une");
@@ -7091,7 +7257,7 @@ function bindCommon(root) {
   if (io) $$("[data-reveal]", root).forEach(el => { const d = el.dataset.delay; if (d) el.style.transitionDelay = d + "ms"; io.observe(el); });
   if (ioC) $$("[data-count]", root).forEach(el => ioC.observe(el));
   // B-03 · Accordéon accessible avec aria-expanded
-  $(".acc > button", root).forEach(b => {
+  $$(".acc > button", root).forEach(b => {
     const isOpen = b.parentElement.classList.contains("open");
     b.setAttribute("aria-expanded", String(isOpen));
     b.addEventListener("click", () => {
@@ -7101,20 +7267,20 @@ function bindCommon(root) {
   });
   
   // B-04 · Filtres accessibles avec role button et aria-pressed
-  $(".filters", root).forEach(bar => {
+  $$(".filters", root).forEach(bar => {
     const scope = bar.parentElement;
-    $(".f-chip", bar).forEach(ch => {
+    $$(".f-chip", bar).forEach(ch => {
       ch.setAttribute("role", "button");
       ch.setAttribute("aria-pressed", String(ch.classList.contains("on")));
       ch.addEventListener("click", () => {
-        $(".f-chip", bar).forEach(c => {
+        $$(".f-chip", bar).forEach(c => {
           c.classList.remove("on");
           c.setAttribute("aria-pressed", "false");
         });
         ch.classList.add("on");
         ch.setAttribute("aria-pressed", "true");
         const f = ch.dataset.f;
-        $(".filterable [data-cat], .filterable > *", scope).forEach(item => {
+        $$(".filterable [data-cat], .filterable > *", scope).forEach(item => {
           const target = item.dataset.cat ? item : item.querySelector("[data-cat]");
           const val = target ? target.dataset.cat : null;
           const show = f === "Tous" || f === "Toutes" || (val && (val === f || val.includes(f)));
@@ -7162,17 +7328,17 @@ function bindCommon(root) {
     updateCyberAvailability();
   }
 
-  $(".lum-tab", root).forEach(t => {
+  $$(".lum-tab", root).forEach(t => {
     t.setAttribute("role", "tab");
     t.setAttribute("aria-selected", String(t.classList.contains("active")));
     t.addEventListener("click", () => {
-      $(".lum-tab", root).forEach(x => {
+      $$(".lum-tab", root).forEach(x => {
         const isCurrent = x === t;
         x.classList.toggle("active", isCurrent);
         x.setAttribute("aria-selected", String(isCurrent));
       });
       const pId = t.dataset.panel;
-      $(".lum-panel", root).forEach(p => p.classList.toggle("on", p.id === "lum-" + pId));
+      $$(".lum-panel", root).forEach(p => p.classList.toggle("on", p.id === "lum-" + pId));
       updateCyberAvailability();
     });
   });
